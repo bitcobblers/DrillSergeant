@@ -23,10 +23,12 @@ namespace JustBehave
         }
 
         public BehaviorBuilderWithInput<TContext, TInput> Arrange(ArrangeStep<TContext, TInput> step) => this;
+        public BehaviorBuilderWithInput<TContext, TInput> Arrange<TStep>() where TStep : ArrangeStep<TContext, TInput>, new() => this;
         public BehaviorBuilderWithInput<TContext, TInput> Arrange(string description, Func<TContext, TInput, TContext> step) => this;
         public BehaviorBuilderWithInput<TContext, TInput> Arrange(Func<TContext, TInput, TContext> step) => this;
 
         public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Act<TIntermediate>(ActStep<TContext, TInput, TIntermediate> step) => new(this.Description);
+        public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Act<TStep, TIntermediate>() where TStep : ActStep<TContext, TInput, TIntermediate>, new() => new(this.Description);
         public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Act<TIntermediate>(Func<TContext, TInput, TIntermediate> step) => new(this.Description);
     }
 
@@ -35,6 +37,7 @@ namespace JustBehave
         public BehaviorBuilderWithResult(string description) : base(description) { }
 
         public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Assert(AssertStep<TContext, TInput, TIntermediate> step) => this;
+        public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Assert<TStep>() where TStep : AssertStep<TContext, TInput, TIntermediate>, new() => this;
         public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Assert(Action<TContext, TInput, TIntermediate> step) => this;
 
         public Behavior<TContext> Build() => new();

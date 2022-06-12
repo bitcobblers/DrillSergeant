@@ -8,20 +8,8 @@
                 .Arrange("Set first number", (c, i) => c with { A = i.A })
                 .Arrange(SetSecondNumber)
                 .Act(AddNumbers)
-                .Assert(CheckResult)
+                .Assert<CheckResultStep>()
                 .Build();
-
-        public CalculatorContext SetSecondNumber(CalculatorContext context, CalculatorInput input) => context with { B = input.B };
-
-        public ActStep<CalculatorContext, CalculatorInput, int> AddNumbers => ActStep<CalculatorContext, CalculatorInput, int>.Lamda()
-            .Named("Add numbers")
-            .Handle((c, _) => c.A + c.B)
-            .Teardown(() => Console.WriteLine("I do cleanup"));
-
-        public void CheckResult(CalculatorContext context, CalculatorInput input, int result)
-        {
-            Console.WriteLine($"{input.Expected} == {result}: {input.Expected == result}");
-        }
 
         public IEnumerable<CalculatorInput> AdditionInputs
         {
@@ -32,6 +20,21 @@
                 yield return new CalculatorInput(A: 3, B: 4, Expected: 7);
                 yield return new CalculatorInput(A: 4, B: 5, Expected: 9);
                 yield return new CalculatorInput(A: 5, B: 6, Expected: 11);
+            }
+        }
+
+        public CalculatorContext SetSecondNumber(CalculatorContext context, CalculatorInput input) => context with { B = input.B };
+
+        public ActStep<CalculatorContext, CalculatorInput, int> AddNumbers => ActStep<CalculatorContext, CalculatorInput, int>.Lamda()
+            .Named("Add numbers")
+            .Handle((c, _) => c.A + c.B)
+            .Teardown(() => Console.WriteLine("I do cleanup"));
+
+        public class CheckResultStep : AssertStep<CalculatorContext, CalculatorInput, int>
+        {
+            public override void Assert(CalculatorContext context, CalculatorInput input, int result)
+            {
+                Console.WriteLine($"{input.Expected} == {result}: {input.Expected == result}");
             }
         }
     }
