@@ -11,12 +11,14 @@ namespace JustBehave
         private ExecuteMethod? execute;
         private Action? teardownHandler;
 
-        public LambdaActStep<TContext, TInput, TResult> Handle(ExecuteMethod execute) => this.Handle(execute.GetType().FullName, execute);
+        public override string Name => this.name ?? nameof(LambdaActStep<TContext, TInput, TResult>);
 
-        public LambdaActStep<TContext, TInput, TResult> Handle(string? name, ExecuteMethod execute)
+        public LambdaActStep<TContext, TInput, TResult> Handle(ExecuteMethod? execute) => this.Handle(execute?.GetType().FullName, execute);
+
+        public LambdaActStep<TContext, TInput, TResult> Handle(string? name, ExecuteMethod? execute)
         {
             this.execute = execute;
-            this.name = string.IsNullOrWhiteSpace(name) ? execute.GetType().FullName : name.Trim();
+            this.name = string.IsNullOrWhiteSpace(name) ? execute?.GetType().FullName : name.Trim();
             return this;
         }
 
@@ -25,8 +27,6 @@ namespace JustBehave
             this.teardownHandler = teardown ?? new Action(() => { });
             return this;
         }
-
-        public override string Name => this.name ?? nameof(LambdaActStep<TContext, TInput, TResult>);
 
         public override TResult Act(TContext context, TInput input)
         {

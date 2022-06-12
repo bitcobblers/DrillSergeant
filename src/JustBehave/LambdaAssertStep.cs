@@ -12,9 +12,9 @@ namespace JustBehave
 
         public override string Name => this.name ?? nameof(LambdaArrangeStep<TContext, TInput>);
 
-        public LambdaAssertStep<TContext, TInput, TResult> Handle(ExecuteMethod execute) => this.Handle(execute.GetType()?.FullName, execute);
+        public LambdaAssertStep<TContext, TInput, TResult> Handle(ExecuteMethod? execute) => this.Handle(execute?.GetType().FullName, execute);
 
-        public LambdaAssertStep<TContext, TInput, TResult> Handle(string? name, ExecuteMethod execute)
+        public LambdaAssertStep<TContext, TInput, TResult> Handle(string? name, ExecuteMethod? execute)
         {
             this.execute = execute ?? new ExecuteMethod((_, _, _) => { });
             this.name = string.IsNullOrWhiteSpace(name) ? execute?.GetType().FullName : name.Trim();
@@ -27,7 +27,7 @@ namespace JustBehave
             return this;
         }
 
-        public override void Execute(TContext context, TInput input, TResult result) => this.execute?.Invoke(context, input, result);
+        public override void Assert(TContext context, TInput input, TResult result) => this.execute?.Invoke(context, input, result);
 
         protected override void Teardown() => this.teardownMethod?.Invoke();
     }
