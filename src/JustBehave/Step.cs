@@ -1,12 +1,36 @@
-﻿namespace JustBehave
-{
-    public class Step
-    {
-        public string Description { get; }
+﻿using System;
 
-        public Step(string? description)
+namespace JustBehave
+{
+    public class Step : IDisposable
+    {
+        private bool isDisposed;
+
+        ~Step()
         {
-            this.Description = string.IsNullOrWhiteSpace(description) ? "Untitled Step" : description.Trim();
+            this.Dispose(disposing: false);
+        }
+
+        public virtual string Name => this.GetType().FullName!;
+
+        public void Dispose()
+        {
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !this.isDisposed)
+            {
+                this.Teardown();
+            }
+
+            this.isDisposed = true;
+        }
+
+        protected virtual void Teardown()
+        {
         }
     }
 }

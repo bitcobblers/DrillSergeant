@@ -34,8 +34,6 @@ namespace JustBehave
     {
         public BehaviorBuilderWithResult(string description) : base(description) { }
 
-        public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Act<TIntermediate>(ActStep<TContext, TInput, TIntermediate> step) => new(this.Description);
-
         public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Assert(AssertStep<TContext, TInput, TIntermediate> step) => this;
         public BehaviorBuilderWithResult<TContext, TInput, TIntermediate> Assert(Action<TContext, TInput, TIntermediate> step) => this;
 

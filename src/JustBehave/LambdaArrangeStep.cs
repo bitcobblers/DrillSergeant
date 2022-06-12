@@ -2,49 +2,39 @@
 
 namespace JustBehave
 {
-
-    public class LambdaArrangeStep<TContext, TInput> : ArrangeStep<TContext, TInput>, IDisposable
+    public class LambdaArrangeStep<TContext, TInput> : ArrangeStep<TContext, TInput>
     {
         public delegate TContext ExecuteWithReturnMethod(TContext context, TInput input);
         public delegate void ExecuteNoReturnMethod(TContext context, TInput input);
-        public delegate void TeardownMethod();
 
-        private ExecuteWithReturnMethod executeWithReturnHandler = (context, __) => context;
-        private ExecuteNoReturnMethod executeNoReturnHandler = (_, __) => { };
-        private TeardownMethod teardownHandler = () => { };
+        private string? name;
+        private ExecuteWithReturnMethod? executeWithReturnHandler;
+        private ExecuteNoReturnMethod? executeNoReturnHandler;
+        private Action? teardownHandler;
 
-        private bool isDisposed;
+        public override string Name => this.name ?? nameof(LambdaArrangeStep<TContext, TInput>);
 
-        public LambdaArrangeStep()
-            : this(null)
+        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteNoReturnMethod execute) => this.Handle(execute.GetType().FullName, execute);
+
+        public LambdaArrangeStep<TContext, TInput> Handle(string? name, ExecuteNoReturnMethod execute)
         {
-        }
-
-        public LambdaArrangeStep(string? description)
-            : base(description)
-        {
-        }
-
-        ~LambdaArrangeStep()
-        {
-
-        }
-
-        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteWithReturnMethod execute)
-        {
-            this.executeWithReturnHandler = execute;
+            this.executeNoReturnHandler = execute ?? new ExecuteNoReturnMethod((_, _) => { });
+            this.name = string.IsNullOrWhiteSpace(name) ? execute?.GetType()?.FullName : name.Trim();
             return this;
         }
 
-        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteNoReturnMethod execute)
+        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteWithReturnMethod execute) => this.Handle(execute.GetType().FullName, execute);
+
+        public LambdaArrangeStep<TContext, TInput> Handle(string? name, ExecuteWithReturnMethod execute)
         {
-            this.executeNoReturnHandler = execute;
+            this.executeWithReturnHandler = execute ?? new ExecuteWithReturnMethod((c, _) => c);
+            this.name = string.IsNullOrWhiteSpace(name) ? execute?.GetType().FullName : name.Trim();
             return this;
         }
 
-        public LambdaArrangeStep<TContext, TInput> Teardown(TeardownMethod teardown)
+        public LambdaArrangeStep<TContext, TInput> Teardown(Action teardown)
         {
-            this.teardownHandler = teardown;
+            this.teardownHandler = teardown ?? new Action(() => { });
             return this;
         }
 
@@ -59,20 +49,9 @@ namespace JustBehave
             return context;
         }
 
-        public void Dispose()
+        protected override void Teardown()
         {
-            this.Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing && !this.isDisposed)
-            {
-                this.teardownHandler?.Invoke();
-            }
-
-            this.isDisposed = true;
+            this.teardownHandler?.Invoke();
         }
     }
 }
