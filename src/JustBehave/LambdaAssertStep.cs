@@ -10,14 +10,17 @@ namespace JustBehave
         private ExecuteMethod? execute;
         private Action? teardownMethod;
 
-        public override string Name => this.name ?? nameof(LambdaArrangeStep<TContext, TInput>);
+        public override string Name => this.name ?? this.execute?.GetType().FullName ?? nameof(LambdaArrangeStep<TContext, TInput>);
 
-        public LambdaAssertStep<TContext, TInput, TResult> Handle(ExecuteMethod? execute) => this.Handle(execute?.GetType().FullName, execute);
+        public LambdaAssertStep<TContext, TInput, TResult> Named(string name)
+        {
+            this.name = name?.Trim();
+            return this;
+        }
 
-        public LambdaAssertStep<TContext, TInput, TResult> Handle(string? name, ExecuteMethod? execute)
+        public LambdaAssertStep<TContext, TInput, TResult> Handle(ExecuteMethod? execute)
         {
             this.execute = execute ?? new ExecuteMethod((_, _, _) => { });
-            this.name = string.IsNullOrWhiteSpace(name) ? execute?.GetType().FullName : name.Trim();
             return this;
         }
 

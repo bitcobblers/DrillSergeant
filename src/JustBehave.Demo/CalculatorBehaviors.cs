@@ -13,7 +13,10 @@
 
         public CalculatorContext SetSecondNumber(CalculatorContext context, CalculatorInput input) => context with { B = input.B };
 
-        public int AddNumbers(CalculatorContext context, CalculatorInput input) => context.A + context.B;
+        public ActStep<CalculatorContext, CalculatorInput, int> AddNumbers => ActStep<CalculatorContext, CalculatorInput, int>.Lamda()
+            .Named("Add numbers")
+            .Handle((c, _) => c.A + c.B)
+            .Teardown(() => Console.WriteLine("I do cleanup"));
 
         public void CheckResult(CalculatorContext context, CalculatorInput input, int result)
         {

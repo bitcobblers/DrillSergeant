@@ -12,25 +12,25 @@ namespace JustBehave
         private ExecuteNoReturnMethod? executeNoReturnHandler;
         private Action? teardownHandler;
 
-        public override string Name => this.name ?? nameof(LambdaArrangeStep<TContext, TInput>);
+        public override string Name => this.name ?? this.executeWithReturnHandler?.GetType().FullName ?? this.executeNoReturnHandler?.GetType().FullName ?? nameof(LambdaArrangeStep<TContext, TInput>);
 
-        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteNoReturnMethod? execute) => this.Handle(execute?.GetType().FullName, execute);
-
-        public LambdaArrangeStep<TContext, TInput> Handle(string? name, ExecuteNoReturnMethod? execute)
+        public LambdaArrangeStep<TContext, TInput> Named(string name)
         {
-            this.executeNoReturnHandler = execute ?? new ExecuteNoReturnMethod((_, _) => { });
-            this.executeWithReturnHandler = null;
-            this.name = string.IsNullOrWhiteSpace(name) ? execute?.GetType()?.FullName : name.Trim();
+            this.name = name?.Trim();
             return this;
         }
 
-        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteWithReturnMethod? execute) => this.Handle(execute?.GetType().FullName, execute);
+        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteNoReturnMethod? execute)
+        {
+            this.executeNoReturnHandler = execute ?? new ExecuteNoReturnMethod((_, _) => { });
+            this.executeWithReturnHandler = null;
+            return this;
+        }
 
-        public LambdaArrangeStep<TContext, TInput> Handle(string? name, ExecuteWithReturnMethod? execute)
+        public LambdaArrangeStep<TContext, TInput> Handle(ExecuteWithReturnMethod? execute)
         {
             this.executeNoReturnHandler = null;
             this.executeWithReturnHandler = execute ?? new ExecuteWithReturnMethod((c, _) => c);
-            this.name = string.IsNullOrWhiteSpace(name) ? execute?.GetType().FullName : name.Trim();
             return this;
         }
 

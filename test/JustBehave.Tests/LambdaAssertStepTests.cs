@@ -25,7 +25,7 @@ namespace JustBehave.Tests
             var step = new TestLambdaAssertStep();
 
             // Act.
-            step.Handle("expected", (_, _, _) => { });
+            step.Named("expected");
 
             // Assert.
             Assert.Equal("expected", step.Name);
