@@ -4,9 +4,9 @@ using Xunit;
 
 namespace JustBehave.Tests
 {
-    using TestLambdaArrangeStep = LambdaArrangeStep<int, int>;
+    using TestLambdaArrangeStep = LambdaGivenStep<int, int>;
 
-    public class LambdaArrangeStepTests
+    public class LambdaGivenStepTests
     {
         [Fact]
         public void DefaultNameIsNotNull()
@@ -53,13 +53,13 @@ namespace JustBehave.Tests
         {
             // Arrange.
             var step = new TestLambdaArrangeStep();
-            var arrange = new Mock<TestLambdaArrangeStep.ExecuteWithReturnMethod>();
+            var arrange = new Mock<TestLambdaArrangeStep.GivenWithReturnMethod>();
 
             arrange.Setup(x => x(It.IsAny<int>(), It.IsAny<int>())).Verifiable();
             step.Handle(arrange.Object);
 
             // Act.
-            var result = step.Arrange(0, 0);
+            var result = step.Given(0, 0);
 
             // Assert.
             arrange.VerifyAll();
@@ -70,13 +70,13 @@ namespace JustBehave.Tests
         {
             // Arrange.
             var step = new TestLambdaArrangeStep();
-            var arrange = new Mock<TestLambdaArrangeStep.ExecuteNoReturnMethod>();
+            var arrange = new Mock<TestLambdaArrangeStep.GivenNoReturnMethod>();
 
             arrange.Setup(x => x(It.IsAny<int>(), It.IsAny<int>())).Verifiable();
             step.Handle(arrange.Object);
 
             // Act.
-            var result = step.Arrange(0, 0);
+            var result = step.Given(0, 0);
 
             // Assert.
             arrange.VerifyAll();
@@ -87,14 +87,14 @@ namespace JustBehave.Tests
         {
             // Arrange.
             var step = new TestLambdaArrangeStep();
-            var arrangeWithReturn = new Mock<TestLambdaArrangeStep.ExecuteWithReturnMethod>();
-            var arrangeNoReturn = new Mock<TestLambdaArrangeStep.ExecuteNoReturnMethod>();
+            var arrangeWithReturn = new Mock<TestLambdaArrangeStep.GivenWithReturnMethod>();
+            var arrangeNoReturn = new Mock<TestLambdaArrangeStep.GivenNoReturnMethod>();
 
             step.Handle(arrangeWithReturn.Object);
             step.Handle(arrangeNoReturn.Object);
 
             // Act.
-            var result = step.Arrange(0, 0);
+            var result = step.Given(0, 0);
 
             // Assert.
             arrangeWithReturn.Verify(x => x(It.IsAny<int>(), It.IsAny<int>()), Times.Never());
@@ -106,14 +106,14 @@ namespace JustBehave.Tests
         {
             // Arrange.
             var step = new TestLambdaArrangeStep();
-            var arrangeNoReturn = new Mock<TestLambdaArrangeStep.ExecuteNoReturnMethod>();
-            var arrangeWithReturn = new Mock<TestLambdaArrangeStep.ExecuteWithReturnMethod>();
+            var arrangeNoReturn = new Mock<TestLambdaArrangeStep.GivenNoReturnMethod>();
+            var arrangeWithReturn = new Mock<TestLambdaArrangeStep.GivenWithReturnMethod>();
 
             step.Handle(arrangeNoReturn.Object);
             step.Handle(arrangeWithReturn.Object);
 
             // Act.
-            var result = step.Arrange(0, 0);
+            var result = step.Given(0, 0);
 
             // Assert.
             arrangeNoReturn.Verify(x => x(It.IsAny<int>(), It.IsAny<int>()), Times.Never());

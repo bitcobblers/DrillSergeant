@@ -4,9 +4,9 @@ using Xunit;
 
 namespace JustBehave.Tests
 {
-    using TestLambdaActStep = LambdaActStep<int, int, int>;
+    using TestLambdaActStep = LambdaWhenStep<int, int, int>;
 
-    public class LambdaActStepTests
+    public class LambdaWhenStepTests
     {
         [Fact]
         public void DefaultNameIsNotNull()
@@ -57,7 +57,7 @@ namespace JustBehave.Tests
             step.Handle((_, _) => 1);
 
             // Act.
-            var result = step.Act(0, 0);
+            var result = step.When(0, 0);
 
             // Assert.
             Assert.Equal(1, result);
@@ -72,7 +72,7 @@ namespace JustBehave.Tests
             step.Handle(null!);
 
             // Act.
-            var result = step.Act(0, 0);
+            var result = step.When(0, 0);
 
             // Assert.
             Assert.Equal(0, result);

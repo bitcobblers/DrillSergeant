@@ -4,9 +4,9 @@ using Xunit;
 
 namespace JustBehave.Tests
 {
-    using TestLambdaAssertStep = LambdaAssertStep<int, int, int>;
+    using TestLambdaAssertStep = LambdaThenStep<int, int, int>;
 
-    public class LambdaAssertStepTests
+    public class LambdaThenStepTests
     {
         [Fact]
         public void DefaultNameIsNotNull()
@@ -52,14 +52,14 @@ namespace JustBehave.Tests
         public void AssertCallsHandler()
         {
             // Arrange.
-            var assert = new Mock<TestLambdaAssertStep.ExecuteMethod>();
+            var assert = new Mock<TestLambdaAssertStep.ThenMethod>();
             var step = new TestLambdaAssertStep();
 
             assert.Setup(x => x(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Verifiable();
             step.Handle(assert.Object);
 
             // Act.
-            step.Assert(0, 0, 0);
+            step.Then(0, 0, 0);
 
             // Assert.
             assert.VerifyAll();

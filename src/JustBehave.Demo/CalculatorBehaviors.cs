@@ -8,10 +8,10 @@
         public Behavior<Context> Addition =>
             new BehaviorBuilder<Context>(nameof(Addition))
                 .WithInput(AdditionInputs)
-                .Arrange("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
-                .Arrange(SetSecondNumber)
-                .Act(AddNumbers)
-                .Assert<CheckResultStep>()
+                .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
+                .Given(SetSecondNumber)
+                .When(AddNumbers)
+                .Then<CheckResultStep>()
                 .Build();
 
         public IEnumerable<Input> AdditionInputs
@@ -30,15 +30,15 @@
         public Context SetSecondNumber(Context context, Input input) => context with { B = input.B };
 
         // Step implemented as a lambda for greater flexibility.
-        public ActStep<Context, Input, int> AddNumbers => ActStep<Context, Input, int>.Lamda()
+        public WhenStep<Context, Input, int> AddNumbers => new LambdaWhenStep<Context, Input, int>()
             .Named("Add numbers")
             .Handle((c, _) => c.A + c.B)
             .Teardown(() => Console.WriteLine("I do cleanup"));
 
         // Step implemented as type full customization and reusability.
-        public class CheckResultStep : AssertStep<Context, Input, int>
+        public class CheckResultStep : ThenStep<Context, Input, int>
         {
-            public override void Assert(Context context, Input input, int result)
+            public override void Then(Context context, Input input, int result)
             {
                 Console.WriteLine($"{input.Expected} == {result}: {input.Expected == result}");
             }
