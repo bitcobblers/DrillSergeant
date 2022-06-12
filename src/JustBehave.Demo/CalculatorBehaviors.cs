@@ -1,7 +1,19 @@
 ﻿namespace JustBehave.Demo
 {
+    public class Calculator
+    {
+        public int Add(int a, int b) => a + b;
+    }
+
     public class CalculatorBehaviors
     {
+        private readonly Calculator calculator;
+
+        public CalculatorBehaviors(Calculator calculator)
+        {
+            this.calculator = calculator;
+        }
+
         public record Context(int A, int B, int Result);
         public record Input(int A, int B, int Expected);
 
@@ -32,7 +44,7 @@
         // Step implemented as a lambda for greater flexibility.
         public WhenStep<Context, Input, int> AddNumbers => new LambdaWhenStep<Context, Input, int>()
             .Named("Add numbers")
-            .Handle((c, _) => c.A + c.B)
+            .Handle((c, _) => this.calculator.Add(c.A, c.B))
             .Teardown(() => Console.WriteLine("I do cleanup"));
 
         // Step implemented as type full customization and reusability.
