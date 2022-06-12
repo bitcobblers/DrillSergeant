@@ -1,16 +1,9 @@
 ﻿namespace JustBehave.Demo
 {
-    // Aliases.
-    using SetterStep = ArrangeStep<CalculatorContext, CalculatorInput>;
-    using OperatorStep = ActStep<CalculatorContext, CalculatorInput, int>;
-    using CheckResultStep = AssertStep<CalculatorContext, CalculatorInput, int>;
-    using CalculatorBehaviorBuilder = BehaviorBuilder<CalculatorContext, CalculatorInput>;
-    using CalculatorBehavior = Behavior<CalculatorContext, CalculatorInput>;
-
     public class CalculatorBehaviors
     {
-        public CalculatorBehavior Addition =>
-            new CalculatorBehaviorBuilder(nameof(Addition))
+        public Behavior<CalculatorContext> Addition =>
+            new BehaviorBuilder<CalculatorContext>(nameof(Addition))
                 .WithInput(AdditionInputs)
                 .Arrange("Set first number", (c, i) => c with { A = i.A })
                 .Arrange(SetSecondNumber)
@@ -18,18 +11,14 @@
                 .Assert(CheckResult)
                 .Build();
 
-        public SetterStep SetSecondNumber =>
-            new LambdaArrangeStep<CalculatorContext, CalculatorInput>()
-                .Handle((c, i) => c with { B = i.B });
+        public CalculatorContext SetSecondNumber(CalculatorContext context, CalculatorInput input) => context with { B = input.B };
 
-        public OperatorStep AddNumbers => OperatorStep.Lamda().Handle((c, _) => c.A + c.B);
+        public int AddNumbers(CalculatorContext context, CalculatorInput input) => context.A + context.B;
 
-        public CheckResultStep CheckResult =>
-            new LambdaAssertStep<CalculatorContext, CalculatorInput, int>()
-                .Handle((_, input, result) =>
-                {
-                    Console.WriteLine($"{input.Expected} == {result}: {input.Expected == result}");
-                });
+        public void CheckResult(CalculatorContext context, CalculatorInput input, int result)
+        {
+            Console.WriteLine($"{input.Expected} == {result}: {input.Expected == result}");
+        }
 
         public IEnumerable<CalculatorInput> AdditionInputs
         {
