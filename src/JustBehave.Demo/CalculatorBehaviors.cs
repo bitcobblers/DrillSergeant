@@ -2,43 +2,46 @@
 {
     public class CalculatorBehaviors
     {
-        public Behavior<CalculatorContext> Addition =>
-            new BehaviorBuilder<CalculatorContext>(nameof(Addition))
+        public record Context(int A, int B, int Result);
+        public record Input(int A, int B, int Expected);
+
+        public Behavior<Context> Addition =>
+            new BehaviorBuilder<Context>(nameof(Addition))
                 .WithInput(AdditionInputs)
-                .Arrange("Set first number", (c, i) => c with { A = i.A })
+                .Arrange("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
                 .Arrange(SetSecondNumber)
                 .Act(AddNumbers)
                 .Assert<CheckResultStep>()
                 .Build();
 
-        public IEnumerable<CalculatorInput> AdditionInputs
+        public IEnumerable<Input> AdditionInputs
         {
             get
             {
-                yield return new CalculatorInput(A: 1, B: 2, Expected: 3);
-                yield return new CalculatorInput(A: 2, B: 3, Expected: 5);
-                yield return new CalculatorInput(A: 3, B: 4, Expected: 7);
-                yield return new CalculatorInput(A: 4, B: 5, Expected: 9);
-                yield return new CalculatorInput(A: 5, B: 6, Expected: 11);
+                yield return new Input(A: 1, B: 2, Expected: 3);
+                yield return new Input(A: 2, B: 3, Expected: 5);
+                yield return new Input(A: 3, B: 4, Expected: 7);
+                yield return new Input(A: 4, B: 5, Expected: 9);
+                yield return new Input(A: 5, B: 6, Expected: 11);
             }
         }
 
-        public CalculatorContext SetSecondNumber(CalculatorContext context, CalculatorInput input) => context with { B = input.B };
+        // Step implemented as a normal method.
+        public Context SetSecondNumber(Context context, Input input) => context with { B = input.B };
 
-        public ActStep<CalculatorContext, CalculatorInput, int> AddNumbers => ActStep<CalculatorContext, CalculatorInput, int>.Lamda()
+        // Step implemented as a lambda for greater flexibility.
+        public ActStep<Context, Input, int> AddNumbers => ActStep<Context, Input, int>.Lamda()
             .Named("Add numbers")
             .Handle((c, _) => c.A + c.B)
             .Teardown(() => Console.WriteLine("I do cleanup"));
 
-        public class CheckResultStep : AssertStep<CalculatorContext, CalculatorInput, int>
+        // Step implemented as type full customization and reusability.
+        public class CheckResultStep : AssertStep<Context, Input, int>
         {
-            public override void Assert(CalculatorContext context, CalculatorInput input, int result)
+            public override void Assert(Context context, Input input, int result)
             {
                 Console.WriteLine($"{input.Expected} == {result}: {input.Expected == result}");
             }
         }
     }
-
-    public record CalculatorContext(int A, int B, int Result);
-    public record CalculatorInput(int A, int B, int Expected);
 }
