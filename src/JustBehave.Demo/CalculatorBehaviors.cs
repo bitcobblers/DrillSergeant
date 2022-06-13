@@ -17,15 +17,6 @@
         public record Context(int A, int B, int Result);
         public record Input(int A, int B, int Expected);
 
-        public Behavior<Context> Addition =>
-            new BehaviorBuilder<Context>(nameof(Addition))
-                .WithInput(AdditionInputs)
-                .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
-                .Given(SetSecondNumber)
-                .When(AddNumbers)
-                .Then<CheckResultStep>()
-                .Build();
-
         public IEnumerable<Input> AdditionInputs
         {
             get
@@ -38,16 +29,25 @@
             }
         }
 
+        public Behavior<Context> Addition =>
+            new BehaviorBuilder<Context>(nameof(Addition))
+                .WithInput(AdditionInputs)
+                .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
+                .Given(SetSecondNumber)
+                .When(AddNumbers)
+                .Then<CheckResultStep>()
+                .Build();
+
         // Step implemented as a normal method.
         public Context SetSecondNumber(Context context, Input input) => context with { B = input.B };
 
-        // Step implemented as a lambda for greater flexibility.
+        // Step implemented as a lambda step for greater flexibility.
         public WhenStep<Context, Input, int> AddNumbers => new LambdaWhenStep<Context, Input, int>()
             .Named("Add numbers")
             .Handle((c, _) => this.calculator.Add(c.A, c.B))
             .Teardown(() => Console.WriteLine("I do cleanup"));
 
-        // Step implemented as type full customization and reusability.
+        // Step implemented as type for full customization and reusability.
         public class CheckResultStep : ThenStep<Context, Input, int>
         {
             public override void Then(Context context, Input input, int result)
