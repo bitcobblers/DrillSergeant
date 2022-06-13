@@ -120,7 +120,7 @@ Unlike traditional unit testing which is heavy on mocks/stubs, behavior testing 
 
 # Example
 
-Consider the simple (albeit contrived) example of a calculator found [here](https://github.com/bitcobblers/**JustBehave**/blob/main/src/**JustBehave**.Demo/CalculatorBehaviors.cs).
+Consider the simple (albeit contrived) example of a calculator found [here](https://github.com/bitcobblers/JustBehave/blob/main/src/JustBehave.Demo/CalculatorBehaviors.cs).
 
 ## System Under Test Injection
 
