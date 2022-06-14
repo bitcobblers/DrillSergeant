@@ -31,7 +31,7 @@
 
         public Behavior<Context> Addition =>
             new BehaviorBuilder<Context>(nameof(Addition))
-                .WithInput(AdditionInputs)
+                .WithInputs(AdditionInputs)
                 .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
                 .Given(SetSecondNumber)
                 .When(AddNumbers)

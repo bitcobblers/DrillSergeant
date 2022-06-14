@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace JustBehave
 {
-
     public class LambdaWhenStep<TContext, TInput, TResult> : WhenStep<TContext, TInput, TResult>
     {
         public delegate TResult WhenMethod(TContext context, TInput input);
+        public delegate Task<TResult> WhenAsyncMethod(TContext context, TInput input);
 
         private string? name;
-        private WhenMethod? whenHandler;
+        private WhenAsyncMethod? whenHandler;
         private Action? teardownHandler;
 
         public override string Name => this.name ?? this.whenHandler?.GetType().FullName ?? nameof(LambdaWhenStep<TContext, TInput, TResult>);
@@ -21,7 +22,22 @@ namespace JustBehave
 
         public LambdaWhenStep<TContext, TInput, TResult> Handle(WhenMethod? execute)
         {
-            this.whenHandler = execute;
+            this.whenHandler = new WhenAsyncMethod(async (c, i) =>
+            {
+                if (execute == null)
+                {
+                    return await Task.FromResult<TResult>(default!);
+                }
+
+                return execute(c, i);
+            });
+
+            return this;
+        }
+
+        public LambdaWhenStep<TContext, TInput, TResult> Handle(WhenAsyncMethod? execute)
+        {
+            this.whenHandler = execute ?? new WhenAsyncMethod((_, _) => Task.FromResult<TResult>(default!));
             return this;
         }
 
@@ -31,7 +47,7 @@ namespace JustBehave
             return this;
         }
 
-        public override TResult When(TContext context, TInput input)
+        public override Task<TResult> WhenAsync(TContext context, TInput input)
         {
             if (this.whenHandler != null)
             {

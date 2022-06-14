@@ -64,12 +64,27 @@ namespace JustBehave.Tests
         }
 
         [Fact]
-        public void SettingHandlerToNullReturnsDefaultOnAct()
+        public void SettingHandlerToNullReturnsDefaultOnAct_Sync()
         {
             // Arrange.
             var step = new TestLambdaActStep();
 
-            step.Handle(null!);
+            step.Handle((TestLambdaActStep.WhenMethod)null!);
+
+            // Act.
+            var result = step.When(0, 0);
+
+            // Assert.
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public void SettingHandlerToNullReturnsDefaultOnAct_Async()
+        {
+            // Arrange.
+            var step = new TestLambdaActStep();
+
+            step.Handle((TestLambdaActStep.WhenAsyncMethod)null!);
 
             // Act.
             var result = step.When(0, 0);
