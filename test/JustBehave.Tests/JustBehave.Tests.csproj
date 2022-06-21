@@ -23,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\JustBehave.Autofac\JustBehave.Autofac.csproj" />
 		<ProjectReference Include="..\..\src\JustBehave.TestAdapter\JustBehave.TestAdapter.csproj" />
 		<ProjectReference Include="..\..\src\JustBehave\JustBehave.csproj" />
 	</ItemGroup>

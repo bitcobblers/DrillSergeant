@@ -18,7 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustBehave.TestAdapter", "src\JustBehave.TestAdapter\JustBehave.TestAdapter.csproj", "{D0B52A54-D1C9-478F-8E5A-A5BEA46793E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustBehave.TestAdapter", "src\JustBehave.TestAdapter\JustBehave.TestAdapter.csproj", "{D0B52A54-D1C9-478F-8E5A-A5BEA46793E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustBehave.Autofac", "src\JustBehave.Autofac\JustBehave.Autofac.csproj", "{FB52B1AA-D50F-426A-8658-2587F121A4FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{D0B52A54-D1C9-478F-8E5A-A5BEA46793E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0B52A54-D1C9-478F-8E5A-A5BEA46793E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0B52A54-D1C9-478F-8E5A-A5BEA46793E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB52B1AA-D50F-426A-8658-2587F121A4FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB52B1AA-D50F-426A-8658-2587F121A4FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB52B1AA-D50F-426A-8658-2587F121A4FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB52B1AA-D50F-426A-8658-2587F121A4FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{92275E43-64BF-4E1E-9CC4-F4A7E5C4815E} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 		{C26AAB9E-D449-423A-B0FA-CE5B5CF9C1AF} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 		{D0B52A54-D1C9-478F-8E5A-A5BEA46793E4} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
+		{FB52B1AA-D50F-426A-8658-2587F121A4FA} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35E642DB-4DFA-4054-B035-03F437C3F8BD}
