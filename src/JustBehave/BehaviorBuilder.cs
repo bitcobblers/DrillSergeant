@@ -21,6 +21,12 @@ namespace JustBehave
     {
         public BehaviorBuilderWithInput(string name) : base(name) { }
 
+        // Experimental APIs.
+        //public BehaviorBuilderWithInput<TContext, TInput> AddDependency<TDep>(string name="") => this;
+        //public BehaviorBuilderWithInput<TContext, TInput> Given<TArg1>(string name, Func<TContext, TInput, TArg1, TContext> step) => this;
+        //public BehaviorBuilderWithInput<TContext, TInput> Given<TArg1, TArg2>(string name, Func<TContext, TInput, TArg1, TArg2, TContext> step) => this;
+        //public BehaviorBuilderWithResult<TContext, TInput, TResult> When<TArg1, TResult>(string name, Func<TContext, TInput, TArg1, TResult> step) => new(this.Name);
+        
         public BehaviorBuilderWithInput<TContext, TInput> Given(GivenStep<TContext, TInput> step) => this;
         public BehaviorBuilderWithInput<TContext, TInput> Given<TStep>() where TStep : GivenStep<TContext, TInput>, new() => this;
 
