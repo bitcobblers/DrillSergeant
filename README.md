@@ -3,7 +3,7 @@
 
 # Summary
 
-**JustBehave** is a behavior testing library that empowers developers to apply BDD practices with minimal amount of friction.  Simply import the package, write your behaviors in familiar C# syntax, and execute using your preferred test runner (e.g. xunit).
+**JustBehave** is a behavior testing library that empowers developers to apply BDD practices with minimal amount of friction.  Simply import the package and write your behaviors in familiar C# syntax.
 
 # Disclaimer
 
@@ -43,7 +43,7 @@ This isn't to besmirch SpecFlow.  It's a great product and works well.  I person
 
 ## Empower the Developers
 
-With **JustBehave** we want to create a full featured behavior testing library without any dependency on foreign DSLs.  **JustBehave** provides a clean syntax for writing behavior tests using the gherkin syntax championed by [cucumber](https://cucumber.io/) entirely in C# code.  By eschewing the use of custom DSLs the developer can focus on writing the tests themselves rather than layers of proxy code to act as a go-between for high level business specifications which are usually written by the developers anyway during the requirements gathering phase.  Since the library ties into existing testing frameworks (e.g. xunit) it can be integrated directly into an existing build pipeline automatically with little-to-no additional effort.  Finally, testing frameworks are already fully capable of generating their own reports and can be leveraged to turn a behavior test into a human-readable report.
+With **JustBehave** we want to create a full featured behavior testing library without any dependency on foreign DSLs.  **JustBehave** provides a clean syntax for writing behavior tests using the gherkin syntax championed by [cucumber](https://cucumber.io/) entirely in C# code.  By eschewing the use of custom DSLs the developer can focus on writing the tests themselves rather than layers of proxy code to act as a go-between for high level business specifications which are usually written by the developers anyway during the requirements gathering phase.  Since the library ties into existing the vstest testing platform it can be integrated directly into an existing build pipeline automatically with little-to-no additional effort.  Finally, testing frameworks are already fully capable of generating their own reports and can be leveraged to turn a behavior test into a human-readable report.
 
 **JustBehave** provides the canvas to write behavior tests with many features automatically built-in.  How the tests are actually written is up to the purview of the developers.  '
 
@@ -114,9 +114,6 @@ Features are simply classes that contain one or more properties of type `Behavio
 # First Class Support for DI
 
 Unlike traditional unit testing which is heavy on mocks/stubs, behavior testing is intended to test the behavior of a system as if a user were using it.  Because of this, support for dependency injection is built into the library itself.  Depenencies for behaviors and steps are injected automatically by the system.
-
-# Bring Your Own Testing Framework
-**JustBehave** is not tied to any particular testing framework.  There are already several well-established testing frameworks out there that are, quite frankly, awesome.  We don't have the time, expertise, or motivation to attempt to re-invent that wheel again.  The core **JustBehave** library is designed to be testing-framework-agnostic.  Support for the three biggest frameworks ([xunit](https://xunit.net/), [nunit](https://nunit.org/), and [mstest](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-mstest)) will be distributed seperately from **JustBehave**.
 
 # Example
 
