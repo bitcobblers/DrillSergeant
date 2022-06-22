@@ -59,23 +59,37 @@ namespace JustBehave
             return handler.Method.Invoke(this, parameters);
         }
 
-        internal VerbMethod PickHandler()
+        internal virtual VerbMethod PickHandler()
         {
             static int isAsync(Type t) => t.Name == typeof(Task).Name || t.Name == typeof(Task<>).Name ? 1 : 0;
 
-            var candidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                             where m.Name == this.Verb || m.Name == this.Verb + "Async"
-                             let numParameters = m.GetParameters().Length
-                             let returnsTask = isAsync(m.ReturnType)
-                             orderby numParameters descending, returnsTask descending
-                             select new VerbMethod(m, returnsTask == 1);
+            var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                                where m.Name == this.Verb || m.Name == this.Verb + "Async"
+                                let numParameters = m.GetParameters().Length
+                                let returnsTask = isAsync(m.ReturnType)
+                                orderby numParameters descending, returnsTask descending
+                                let verb = new VerbMethod(m, returnsTask == 1)
+                                group verb by numParameters into g
+                                select g;
 
-            if(candidates.Any() == false)
+
+            if (allCandidates.Any() == false)
             {
                 throw new MissingVerbException(this.Verb);
             }
 
-            return candidates.First();
+            var highestGroup = allCandidates.First().ToArray();
+            var numAsync = highestGroup.Count(x => x.IsAsync);
+
+            if (
+                (numAsync > 1) ||
+                (highestGroup.Length == 2 && numAsync == 0) ||
+                (highestGroup.Length > 2 && numAsync != 1))
+            {
+                throw new AmbiguousVerbException(this.Verb);
+            }
+
+            return highestGroup.First();
         }
 
         private object?[] ResolveParameters(IDependencyResolver resolver, ParameterInfo[] parameters)

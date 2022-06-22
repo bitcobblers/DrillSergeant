@@ -1,4 +1,5 @@
 ﻿using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -217,6 +218,17 @@ namespace JustBehave.Tests
                 Assert.Throws<MissingVerbException>(() => stub.PickHandler());
             }
 
+            [Theory]
+            [InlineData(typeof(StubWithTwoHandlersSameNumberOfParameters_NoAsync))]
+            [InlineData(typeof(StubWithTwoHandlers_SameNumberOfParameters_TwoAsync))]
+            public void ThrowsAmbiguousVerbException_Scenarios(Type type)
+            {
+                // Arrange.
+                var stub = (Step)Activator.CreateInstance(type)!;
+
+                // Assert.
+                Assert.Throws<AmbiguousVerbException>(() => stub.PickHandler());
+            }
 
             public class StubWithMultipleSyncVerbs : Step
             {
@@ -255,8 +267,32 @@ namespace JustBehave.Tests
             {
                 public StubWithNoVerb()
                     : base("ignored")
-                { 
+                {
                 }
+            }
+
+            public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : Step
+            {
+                public StubWithTwoHandlersSameNumberOfParameters_NoAsync()
+                    : base("Test")
+                {
+                }
+
+                public void Test(int arg) { }
+
+                public void Test(string arg) { }
+            }
+
+            public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : Step
+            {
+                public StubWithTwoHandlers_SameNumberOfParameters_TwoAsync()
+                    : base("Test")
+                {
+                }
+
+                public Task Test(string arg) => Task.CompletedTask;
+
+                public Task Test(long arg) => Task.CompletedTask;
             }
         }
     }
