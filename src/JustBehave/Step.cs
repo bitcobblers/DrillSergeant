@@ -7,7 +7,7 @@ namespace JustBehave
 {
     public class Step : IDisposable
     {
-        public record VerbMethod(MethodInfo Method, bool IsAsync);
+        public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
         private bool isDisposed;
 
@@ -44,7 +44,7 @@ namespace JustBehave
             if (handler.IsAsync)
             {
                 var taskType = handler.Method.ReturnType;
-                var task = handler.Method.Invoke(this, parameters)!;
+                var task = handler.Method.Invoke(handler.Target, parameters)!;
 
                 taskType.GetMethod("Wait", Array.Empty<Type>())?.Invoke(task, null);
                 
@@ -56,19 +56,21 @@ namespace JustBehave
                 return null;
             }
 
-            return handler.Method.Invoke(this, parameters);
+            return handler.Method.Invoke(handler.Target, parameters);
         }
+
+        public static bool IsAsync(Type t) => t.Name == typeof(Task).Name || t.Name == typeof(Task<>).Name;
 
         internal virtual VerbMethod PickHandler()
         {
-            static int isAsync(Type t) => t.Name == typeof(Task).Name || t.Name == typeof(Task<>).Name ? 1 : 0;
+            
 
             var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                                 where m.Name == this.Verb || m.Name == this.Verb + "Async"
                                 let numParameters = m.GetParameters().Length
-                                let returnsTask = isAsync(m.ReturnType)
+                                let returnsTask = IsAsync(m.ReturnType)
                                 orderby numParameters descending, returnsTask descending
-                                let verb = new VerbMethod(m, returnsTask == 1)
+                                let verb = new VerbMethod(m, this, returnsTask)
                                 group verb by numParameters into g
                                 select g;
 

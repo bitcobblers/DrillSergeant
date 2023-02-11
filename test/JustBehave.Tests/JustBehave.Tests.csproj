@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
@@ -24,7 +24,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\JustBehave.Autofac\JustBehave.Autofac.csproj" />
-		<ProjectReference Include="..\..\src\JustBehave.TestAdapter\JustBehave.TestAdapter.csproj" />
 		<ProjectReference Include="..\..\src\JustBehave\JustBehave.csproj" />
 	</ItemGroup>
 

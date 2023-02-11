@@ -4,120 +4,173 @@ using Xunit;
 
 namespace JustBehave.Tests
 {
-    using TestLambdaArrangeStep = LambdaGivenStep<int, int>;
-
     public class LambdaGivenStepTests
     {
-        [Fact]
-        public void DefaultNameIsNotNull()
-        {
-            // Arrange.
-            var step = new TestLambdaArrangeStep();
+        public record Context(int Value);
+        public record Input();
 
-            // Assert.
-            Assert.NotNull(step.Name);
+        public class Properties : LambdaGivenStepTests
+        {
+            [Fact]
+            public void DefaultNameIsNotNull()
+            {
+                // Arrange.
+                var step = new LambdaGivenStep<Context, Input>();
+
+                // Assert.
+                Assert.NotNull(step.Name);
+            }
+
+            [Fact]
+            public void SpecifyingNameSetsNameProperty()
+            {
+                // Arrange.
+                var step = new LambdaGivenStep<Context, Input>();
+
+                // Act.
+                step.Named("expected");
+
+                // Assert.
+                Assert.Equal("expected", step.Name);
+            }
         }
 
-        [Fact]
-        public void SpecifyingNameSetsNameProperty()
+        public class TeardownMethod : LambdaGivenStepTests
         {
-            // Arrange.
-            var step = new TestLambdaArrangeStep();
+            [Fact]
+            public void CallsTeardownHandlerOnDispose()
+            {
+                // Arrage.
+                var teardown = new Mock<Action>();
+                var step = new LambdaGivenStep<Context, Input>();
 
-            // Act.
-            step.Named("expected");
+                teardown.Setup(x => x()).Verifiable();
+                step.Teardown(teardown.Object);
 
-            // Assert.
-            Assert.Equal("expected", step.Name);
+                // Act.
+                step.Dispose();
+
+                // Assert.
+                teardown.VerifyAll();
+            }
         }
 
-        [Fact]
-        public void CallsTeardownHandlerOnDispose()
+        public class GivenMethod : LambdaGivenStepTests
         {
-            // Arrage.
-            var teardown = new Mock<Action>();
-            var step = new TestLambdaArrangeStep();
+            [Fact]
+            public void ArrangeCallsHandlerWithReturn()
+            {
+                // Arrange.
+                var step = new LambdaGivenStep<Context, Input>();
+                var given = new Mock<Func<Context>>();
+                var resolver = new Mock<IDependencyResolver>();
 
-            teardown.Setup(x => x()).Verifiable();
-            step.Teardown(teardown.Object);
+                given.Setup(x => x()).Returns(new Context(Value: 1));
+                step.Handle(given.Object);
 
-            // Act.
-            step.Dispose();
+                // Act.
+                var result = step.Execute(resolver.Object);
 
-            // Assert.
-            teardown.VerifyAll();
+                // Assert.
+                given.VerifyAll();
+            }
+
+            [Fact]
+            public void ArrangeCallsHandlerWithNoReturn()
+            {
+                // Arrange.
+                var step = new LambdaGivenStep<Context, Input>();
+                var given = new Mock<Action>();
+                var resolver = new Mock<IDependencyResolver>();
+
+                given.Setup(x => x()).Verifiable();
+                step.Handle(given.Object);
+
+                // Act.
+                var result = step.Execute(resolver.Object);
+
+                // Assert.
+                given.VerifyAll();
+            }
+
+            [Fact]
+            public void ArrangeCallsLastConfiguredHandler_NoReturn()
+            {
+                // Arrange.
+                var step = new LambdaGivenStep<Context, Input>();
+                var givenWithReturn = new Mock<Func<Context>>();
+                var givenNoReturn = new Mock<Action>();
+                var resolver = new Mock<IDependencyResolver>();
+
+                step.Handle(givenWithReturn.Object);
+                step.Handle(givenNoReturn.Object);
+
+                // Act.
+                var result = step.Execute(resolver.Object);
+
+                // Assert.
+                givenWithReturn.Verify(x => x(), Times.Never());
+                givenNoReturn.Verify(x => x(), Times.Once());
+            }
+
+            [Fact]
+            public void ArrangeCallsLastConfiguredHandler_WithReturn()
+            {
+                // Arrange.
+                var step = new LambdaGivenStep<Context, Input>();
+                var givenNoReturn = new Mock<Action>();
+                var givenWithReturn = new Mock<Func<Context>>();
+                var resolver = new Mock<IDependencyResolver>();
+
+                step.Handle(givenNoReturn.Object);
+                step.Handle(givenWithReturn.Object);
+
+                // Act.
+                var result = step.Execute(resolver.Object);
+
+                // Assert.
+                givenNoReturn.Verify(x => x(), Times.Never());
+                givenWithReturn.Verify(x => x(), Times.Once());
+            }
         }
 
-        [Fact]
-        public void ArrangeCallsHandlerWithReturn()
+        public class ExecuteMethod : LambdaGivenStepTests
         {
-            // Arrange.
-            var step = new TestLambdaArrangeStep();
-            var arrange = new Mock<TestLambdaArrangeStep.GivenWithReturnMethod>();
+            [Fact]
+            public void ExecuteCallsConfiguredHandler()
+            {
+                // Arrange.
+                var resolver = new Mock<IDependencyResolver>();
+                var step = new LambdaGivenStep<Context, Input>();
+                var handler = new Mock<Action>();
 
-            arrange.Setup(x => x(It.IsAny<int>(), It.IsAny<int>())).Verifiable();
-            step.Handle(arrange.Object);
+                step.Handle(handler.Object);
 
-            // Act.
-            var result = step.Given(0, 0);
+                // Act.
+                step.Execute(resolver.Object);
 
-            // Assert.
-            arrange.VerifyAll();
-        }
+                // Assert.
+                handler.Verify(x => x(), Times.Once());
+            }
 
-        [Fact]
-        public void ArrangeCallsHandlerWithNoReturn()
-        {
-            // Arrange.
-            var step = new TestLambdaArrangeStep();
-            var arrange = new Mock<TestLambdaArrangeStep.GivenNoReturnMethod>();
+            [Fact]
+            public void ExecuteCallsConfiguredHandlerWithDependency()
+            {
+                // Arrange.
+                var resolver = new Mock<IDependencyResolver>();
+                var step = new LambdaGivenStep<Context, Input>();
+                var handler = new Mock<Action<Context, Input, IStubInjectable>>();
 
-            arrange.Setup(x => x(It.IsAny<int>(), It.IsAny<int>())).Verifiable();
-            step.Handle(arrange.Object);
+                step.Handle(handler.Object);
 
-            // Act.
-            var result = step.Given(0, 0);
+                // Act.
+                step.Execute(resolver.Object);
 
-            // Assert.
-            arrange.VerifyAll();
-        }
+                // Assert.
+                handler.Verify(x => x(It.IsAny<Context>(), It.IsAny<Input>(), It.IsAny<IStubInjectable>()), Times.Once());
+            }
 
-        [Fact]
-        public void ArrangeCallsLastConfiguredHandler_NoReturn()
-        {
-            // Arrange.
-            var step = new TestLambdaArrangeStep();
-            var arrangeWithReturn = new Mock<TestLambdaArrangeStep.GivenWithReturnMethod>();
-            var arrangeNoReturn = new Mock<TestLambdaArrangeStep.GivenNoReturnMethod>();
-
-            step.Handle(arrangeWithReturn.Object);
-            step.Handle(arrangeNoReturn.Object);
-
-            // Act.
-            var result = step.Given(0, 0);
-
-            // Assert.
-            arrangeWithReturn.Verify(x => x(It.IsAny<int>(), It.IsAny<int>()), Times.Never());
-            arrangeNoReturn.Verify(x => x(It.IsAny<int>(), It.IsAny<int>()), Times.Once());
-        }
-
-        [Fact]
-        public void ArrangeCallsLastConfiguredHandler_WithReturn()
-        {
-            // Arrange.
-            var step = new TestLambdaArrangeStep();
-            var arrangeNoReturn = new Mock<TestLambdaArrangeStep.GivenNoReturnMethod>();
-            var arrangeWithReturn = new Mock<TestLambdaArrangeStep.GivenWithReturnMethod>();
-
-            step.Handle(arrangeNoReturn.Object);
-            step.Handle(arrangeWithReturn.Object);
-
-            // Act.
-            var result = step.Given(0, 0);
-
-            // Assert.
-            arrangeNoReturn.Verify(x => x(It.IsAny<int>(), It.IsAny<int>()), Times.Never());
-            arrangeWithReturn.Verify(x => x(It.IsAny<int>(), It.IsAny<int>()), Times.Once());
+            public interface IStubInjectable { }
         }
     }
 }

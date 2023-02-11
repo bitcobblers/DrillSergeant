@@ -3,20 +3,18 @@ using System.Threading.Tasks;
 
 namespace JustBehave
 {
-    public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
+    public class LambdaGivenStep<TContext, TInput> : Step
     {
-        public delegate TContext GivenWithReturnMethod(TContext context, TInput input);
-        public delegate Task<TContext> GivenWithReturnAsyncMethod(TContext context, TInput input);
-
-        public delegate void GivenNoReturnMethod(TContext context, TInput input);
-        public delegate Task GivenNoReturnAsyncMethod(TContext context, TInput input);
-
         private string? name;
-        private GivenWithReturnAsyncMethod? givenWithReturnHandler;
-        private GivenNoReturnAsyncMethod? givenNoReturnHandler;
+        private Delegate? handler;
         private Action? teardownHandler;
 
-        public override string Name => this.name ?? this.givenWithReturnHandler?.GetType().FullName ?? this.givenNoReturnHandler?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
+        public LambdaGivenStep()
+            : base("Given")
+        {
+        }
+
+        public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
 
         public LambdaGivenStep<TContext, TInput> Named(string name)
         {
@@ -24,54 +22,70 @@ namespace JustBehave
             return this;
         }
 
-        public LambdaGivenStep<TContext, TInput> Handle(GivenNoReturnMethod? execute)
+        private LambdaGivenStep<TContext,TInput> SetHandler(Delegate? handler)
         {
-            if (execute != null)
+            if(handler != null)
             {
-                this.givenNoReturnHandler = new GivenNoReturnAsyncMethod(async (c, i) =>
-                {
-                    execute(c, i);
-                    await Task.CompletedTask;
-                });
-
-                this.givenWithReturnHandler = null;
+                this.handler = handler;
             }
-
+            
             return this;
         }
 
-        public LambdaGivenStep<TContext, TInput> Handle(GivenNoReturnAsyncMethod? execute)
-        {
-            this.givenNoReturnHandler = execute ?? new GivenNoReturnAsyncMethod((_, _) => Task.CompletedTask);
-            this.givenWithReturnHandler = null;
-            return this;
-        }
+        public LambdaGivenStep<TContext, TInput> Handle(Action? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle(Action<TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle(Action<TContext, TInput>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1>(Action<TContext, TInput, TArg1>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2>(Action<TContext, TInput, TArg1, TArg2>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Action<TContext, TInput, TArg1, TArg2, TArg3>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>? handler) => this.SetHandler(handler);
 
-        public LambdaGivenStep<TContext, TInput> Handle(GivenWithReturnMethod? execute)
-        {
-            if (execute != null)
-            {
-                this.givenWithReturnHandler = new GivenWithReturnAsyncMethod((c, i) =>
-                {
-                    return Task.FromResult(execute(c, i));
-                });
+        public LambdaGivenStep<TContext, TInput> Handle(Func<TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, TInput, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TContext>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TContext>? handler) => this.SetHandler(handler);
 
-                this.givenNoReturnHandler = null;
-            }
+        public LambdaGivenStep<TContext, TInput> Handle(Func<Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, TInput, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, Task>? handler) => this.SetHandler(handler);
+        public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, Task>? handler) => this.SetHandler(handler);
 
-            return this;
-        }
-
-        public LambdaGivenStep<TContext, TInput> Handle(GivenWithReturnAsyncMethod? execute)
-        {
-            this.givenNoReturnHandler = null;
-            this.givenWithReturnHandler = execute ?? new GivenWithReturnAsyncMethod((c, _) =>
-            {
-                return Task.FromResult(c);
-            });
-
-            return this;
-        }
 
         public LambdaGivenStep<TContext, TInput> Teardown(Action teardown)
         {
@@ -79,20 +93,22 @@ namespace JustBehave
             return this;
         }
 
-        public override async Task<TContext> GivenAsync(TContext context, TInput input)
-        {
-            if (this.givenWithReturnHandler != null)
-            {
-                return await this.givenWithReturnHandler(context, input);
-            }
-
-            this.givenNoReturnHandler?.Invoke(context, input);
-            return context;
-        }
-
         protected override void Teardown()
         {
             this.teardownHandler?.Invoke();
+        }
+
+        internal override VerbMethod PickHandler()
+        {
+            var emptyMethod = new Action(() => { });
+            var method = this.handler?.Method;
+
+            if(method == null)
+            {
+                return new(emptyMethod.Method, emptyMethod, IsAsync: false);
+            }
+
+            return new(method, this.handler?.Target!, IsAsync(method.ReturnType));
         }
     }
 }
