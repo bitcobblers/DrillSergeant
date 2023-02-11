@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace JustBehave
-{
-    public interface IDependencyResolver
-    {
-        T Resolve<T>();
+namespace JustBehave;
 
-        object Resolve(Type type);
-    }
+public interface IDependencyResolver
+{
+    T Resolve<T>();
+
+    object Resolve(Type type);
 }

@@ -2,95 +2,94 @@
 using System;
 using Xunit;
 
-namespace JustBehave.Tests
+namespace JustBehave.Tests;
+
+using TestLambdaActStep = LambdaWhenStep<int, int, int>;
+
+public class LambdaWhenStepTests
 {
-    using TestLambdaActStep = LambdaWhenStep<int, int, int>;
-
-    public class LambdaWhenStepTests
+    [Fact]
+    public void DefaultNameIsNotNull()
     {
-        [Fact]
-        public void DefaultNameIsNotNull()
-        {
-            // Arrange.
-            var step = new TestLambdaActStep();
+        // Arrange.
+        var step = new TestLambdaActStep();
 
-            // Assert.
-            Assert.NotNull(step.Name);
-        }
+        // Assert.
+        Assert.NotNull(step.Name);
+    }
 
-        [Fact]
-        public void SpecifyingNameSetsNameProperty()
-        {
-            // Arrange.
-            var step = new TestLambdaActStep();
+    [Fact]
+    public void SpecifyingNameSetsNameProperty()
+    {
+        // Arrange.
+        var step = new TestLambdaActStep();
 
-            // Act.
-            step.Named("expected");
+        // Act.
+        step.Named("expected");
 
-            // Assert.
-            Assert.Equal("expected", step.Name);
-        }
+        // Assert.
+        Assert.Equal("expected", step.Name);
+    }
 
-        [Fact]
-        public void CallsTeardownHandlerOnDispose()
-        {
-            // Arrage.
-            var teardown = new Mock<Action>();
-            var step = new TestLambdaActStep();
+    [Fact]
+    public void CallsTeardownHandlerOnDispose()
+    {
+        // Arrage.
+        var teardown = new Mock<Action>();
+        var step = new TestLambdaActStep();
 
-            teardown.Setup(x => x()).Verifiable();
-            step.Teardown(teardown.Object);
+        teardown.Setup(x => x()).Verifiable();
+        step.Teardown(teardown.Object);
 
-            // Act.
-            step.Dispose();
+        // Act.
+        step.Dispose();
 
-            // Assert.
-            teardown.VerifyAll();
-        }
+        // Assert.
+        teardown.VerifyAll();
+    }
 
-        [Fact]
-        public void ActCallsHandler()
-        {
-            // Arrange.
-            var step = new TestLambdaActStep();
+    [Fact]
+    public void ActCallsHandler()
+    {
+        // Arrange.
+        var step = new TestLambdaActStep();
 
-            step.Handle((_, _) => 1);
+        step.Handle((_, _) => 1);
 
-            // Act.
-            var result = step.When(0, 0);
+        // Act.
+        var result = step.When(0, 0);
 
-            // Assert.
-            Assert.Equal(1, result);
-        }
+        // Assert.
+        Assert.Equal(1, result);
+    }
 
-        [Fact]
-        public void SettingHandlerToNullReturnsDefaultOnAct_Sync()
-        {
-            // Arrange.
-            var step = new TestLambdaActStep();
+    [Fact]
+    public void SettingHandlerToNullReturnsDefaultOnAct_Sync()
+    {
+        // Arrange.
+        var step = new TestLambdaActStep();
 
-            step.Handle((TestLambdaActStep.WhenMethod)null!);
+        step.Handle((TestLambdaActStep.WhenMethod)null!);
 
-            // Act.
-            var result = step.When(0, 0);
+        // Act.
+        var result = step.When(0, 0);
 
-            // Assert.
-            Assert.Equal(0, result);
-        }
+        // Assert.
+        Assert.Equal(0, result);
+    }
 
-        [Fact]
-        public void SettingHandlerToNullReturnsDefaultOnAct_Async()
-        {
-            // Arrange.
-            var step = new TestLambdaActStep();
+    [Fact]
+    public void SettingHandlerToNullReturnsDefaultOnAct_Async()
+    {
+        // Arrange.
+        var step = new TestLambdaActStep();
 
-            step.Handle((TestLambdaActStep.WhenAsyncMethod)null!);
+        step.Handle((TestLambdaActStep.WhenAsyncMethod)null!);
 
-            // Act.
-            var result = step.When(0, 0);
+        // Act.
+        var result = step.When(0, 0);
 
-            // Assert.
-            Assert.Equal(0, result);
-        }
+        // Assert.
+        Assert.Equal(0, result);
     }
 }

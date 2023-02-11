@@ -1,6 +1,5 @@
-﻿namespace JustBehave
+﻿namespace JustBehave;
+
+public class Behavior<TContext>
 {
-    public class Behavior<TContext>
-    {
-    }
 }
