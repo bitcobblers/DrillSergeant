@@ -7,10 +7,10 @@ using Xunit.Sdk;
 
 namespace JustBehave.Core;
 
-public class BehaviorTestCaseRunner : XunitTestCaseRunner
+public class BehaviorTheoryTestCaseRunner : XunitTheoryTestCaseRunner
 {
-    public BehaviorTestCaseRunner(IXunitTestCase testCase, string displayName, string skipReason, object[] constructorArguments, object[] testMethodArguments, IMessageBus messageBus, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource)
-        : base(testCase, displayName, skipReason, constructorArguments, testMethodArguments, messageBus, aggregator, cancellationTokenSource)
+    public BehaviorTheoryTestCaseRunner(IXunitTestCase testCase, string displayName, string skipReason, object[] constructorArguments, IMessageSink diagnosticMessageSink, IMessageBus messageBus, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource) 
+        : base(testCase, displayName, skipReason, constructorArguments, diagnosticMessageSink, messageBus, aggregator, cancellationTokenSource)
     {
     }
 

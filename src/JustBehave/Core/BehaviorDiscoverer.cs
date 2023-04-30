@@ -28,7 +28,6 @@ public class BehaviorDiscoverer : TheoryDiscoverer
 
     protected override IEnumerable<IXunitTestCase> CreateTestCasesForTheory(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute)
     {
-        //return base.CreateTestCasesForTheory(discoveryOptions, testMethod, theoryAttribute);
         return new[]
         {
             new BehaviorTheoryTestCase(
