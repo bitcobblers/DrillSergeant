@@ -63,5 +63,5 @@ public class BehaviorResultBuilder<TContext, TInput, TResult>
     public BehaviorResultBuilder<TContext, TInput, TResult> Then(Func<TContext, TInput, TResult, Task> step) => this;
     public BehaviorResultBuilder<TContext, TInput, TResult> Then(string name, Func<TContext, TInput, TResult, Task> step) => this;
 
-    public Behavior<TContext> Build() => new();
+    public Behavior Build() => new();
 }

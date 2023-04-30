@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,14 +22,14 @@ public class BehaviorTestRunner : XunitTestRunner
         System.Diagnostics.Debugger.Launch();
 
         var invoker = new BehaviorTestInvoker(
-            Test, 
-            MessageBus, 
-            TestClass, 
-            ConstructorArguments, 
-            TestMethod, 
-            TestMethodArguments, 
-            BeforeAfterAttributes, 
-            aggregator, 
+            Test,
+            MessageBus,
+            TestClass,
+            ConstructorArguments,
+            TestMethod,
+            TestMethodArguments,
+            BeforeAfterAttributes,
+            aggregator,
             CancellationTokenSource);
 
         return invoker.RunAsync();

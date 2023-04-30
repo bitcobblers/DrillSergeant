@@ -43,7 +43,7 @@ public class CalculatorBehaviors
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Behavior<Context> AdditionBehavior([Inject]Calculator calculator)
+    public Behavior AdditionBehavior(Calculator calculator)
     {
         this.output.WriteLine("Invoking AdditionBehavior()");
 

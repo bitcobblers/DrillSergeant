@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Threading;
@@ -43,7 +44,42 @@ public class BehaviorTestInvoker : XunitTestInvoker
         return baseTask.Result;
     }
 
-    protected virtual async Task<decimal> InternalInvokeTestMethodAsync(object testClassInstance)
+    private async Task<decimal> InternalInvokeTestMethodAsync(object testClassInstance)
+    {
+        var oldSyncContext = SynchronizationContext.Current!;
+
+        try
+        {
+            var asyncSyncContext = new AsyncTestSyncContext(oldSyncContext);
+            SetSynchronizationContext(asyncSyncContext);
+
+            await Aggregator.RunAsync(
+                () => Timer.AggregateAsync(
+                    async () =>
+                    {
+                        var parameters = TestMethod.GetParameters().Select(x => (object?)null).ToArray();
+                        var behavior = TestMethod.Invoke(testClassInstance, parameters) as Behavior;
+
+                        if(behavior==null)
+                        {
+                            var behaviorType = typeof(Behavior);
+                            Aggregator.Add(new InvalidOperationException($"Behavior tests must return an instance of type {behaviorType.FullName}"));
+                        }
+
+                        await Task.CompletedTask;
+                    }
+                )
+            );
+        }
+        finally
+        {
+            SetSynchronizationContext(oldSyncContext);
+        }
+
+        return Timer.Total;
+    }
+
+    protected virtual async Task<decimal> InternalInvokeTestMethodAsync_Old(object testClassInstance)
     {
         var oldSyncContext = SynchronizationContext.Current!;
 
@@ -105,5 +141,5 @@ public class BehaviorTestInvoker : XunitTestInvoker
 
     [SecuritySafeCritical]
     static void SetSynchronizationContext(SynchronizationContext context)
-    => SynchronizationContext.SetSynchronizationContext(context);
+        => SynchronizationContext.SetSynchronizationContext(context);
 }
