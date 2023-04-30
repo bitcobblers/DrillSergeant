@@ -7,6 +7,6 @@ namespace JustBehave.Core;
 
 [ExcludeFromCodeCoverage, AttributeUsage(AttributeTargets.Method)]
 [XunitTestCaseDiscoverer("JustBehave.Core.BehaviorDiscoverer", "JustBehave")]
-public class BehaviorAttribute : FactAttribute
+public sealed class BehaviorAttribute : TheoryAttribute
 {
 }

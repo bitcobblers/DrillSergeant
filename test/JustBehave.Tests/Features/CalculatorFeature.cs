@@ -1,6 +1,9 @@
 ﻿using JustBehave.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace JustBehave.Tests.Features;
 
@@ -9,30 +12,58 @@ public class Calculator
     public int Add(int a, int b) => a + b;
 }
 
+public static class Extensions
+{
+    public static IEnumerable<object[]> ToObjectArray<T>(this IEnumerable<T> items) 
+        => from i in items select new object[] { i };
+}
+
 public class CalculatorBehaviors
 {
-    public record Context(int A, int B, int Result);
-    public record Input(int A, int B, int Expected);
+    private readonly ITestOutputHelper output;
 
-    public IEnumerable<Input> AdditionInputs
+    public record Context(int A, int B, int Result);
+
+    public record struct Input(int A, int B, int Expected) : IXunitSerializable
     {
-        get
+        public void Deserialize(IXunitSerializationInfo info)
         {
-            yield return new Input(A: 1, B: 2, Expected: 3);
-            yield return new Input(A: 2, B: 3, Expected: 5);
-            yield return new Input(A: 3, B: 4, Expected: 7);
-            yield return new Input(A: 4, B: 5, Expected: 9);
-            yield return new Input(A: 5, B: 6, Expected: 11);
+            A = info.GetValue<int>(nameof(A));
+            B = info.GetValue<int>(nameof(B));
+            Expected = info.GetValue<int>(nameof(Expected));
+        }
+
+        public void Serialize(IXunitSerializationInfo info)
+        {
+            info.AddValue(nameof(A), A);
+            info.AddValue(nameof(B), B);
+            info.AddValue(nameof(Expected), Expected);
         }
     }
 
+    public CalculatorBehaviors(ITestOutputHelper output)
+    {
+        this.output = output;
+    }
+
+    public static IEnumerable<object[]> AdditionInputs
+    {
+        get => new[] {
+            new Input(1, 2, 3),
+            new Input(2, 3, 5)
+        }.ToObjectArray();
+    }
+
     [Behavior]
-    public Behavior<Context> AdditionBehavior()
+    [MemberData(nameof(AdditionInputs))]
+    public Behavior<Context> AdditionBehavior(Input input)
     {
         var calculator = new Calculator();
 
+        this.output.WriteLine("Invoking AdditionBehavior()");
+
         return new BehaviorBuilder<Context>("")
-            .WithInputs(AdditionInputs)
+            .WithInput<Input>()
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))

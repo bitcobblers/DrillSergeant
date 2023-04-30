@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -7,15 +6,38 @@ namespace JustBehave.Core;
 
 public class BehaviorDiscoverer : TheoryDiscoverer
 {
-    public BehaviorDiscoverer(IMessageSink diagnosticMessageSink) 
+    public BehaviorDiscoverer(IMessageSink diagnosticMessageSink)
         : base(diagnosticMessageSink)
     {
         // Uncomment this line to debug behavior discovery.
-        // System.Diagnostics.Debugger.Launch();
+        System.Diagnostics.Debugger.Launch();
+
+        int x = 5;
     }
 
-    public override IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute)
+    protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute, object[] dataRow)
     {
-        return Array.Empty<IXunitTestCase>();
+        return new[] 
+        { 
+            new BehaviorTestCase(
+                DiagnosticMessageSink,
+                discoveryOptions.MethodDisplayOrDefault(),
+                discoveryOptions.MethodDisplayOptionsOrDefault(),
+                testMethod,
+                dataRow)
+        };
+    }
+
+    protected override IEnumerable<IXunitTestCase> CreateTestCasesForTheory(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute)
+    {
+        //return base.CreateTestCasesForTheory(discoveryOptions, testMethod, theoryAttribute);
+        return new[]
+        {
+            new BehaviorTheoryTestCase(
+                DiagnosticMessageSink,
+                discoveryOptions.MethodDisplayOrDefault(),
+                discoveryOptions.MethodDisplayOptionsOrDefault(),
+                testMethod)
+        };
     }
 }
