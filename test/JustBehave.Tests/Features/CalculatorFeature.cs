@@ -1,22 +1,10 @@
 ﻿using JustBehave.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace JustBehave.Tests.Features;
-
-public class Calculator
-{
-    public int Add(int a, int b) => a + b;
-}
-
-public static class Extensions
-{
-    public static IEnumerable<object[]> ToObjectArray<T>(this IEnumerable<T> items) 
-        => from i in items select new object[] { i };
-}
 
 public class CalculatorBehaviors
 {
@@ -54,16 +42,14 @@ public class CalculatorBehaviors
         }.ToObjectArray();
     }
 
-    [Behavior]
-    [MemberData(nameof(AdditionInputs))]
-    public Behavior<Context> AdditionBehavior(Input input)
+    [Behavior, MemberData(nameof(AdditionInputs))]
+    public Behavior<Context> AdditionBehavior([Inject]Calculator calculator)
     {
-        var calculator = new Calculator();
-
         this.output.WriteLine("Invoking AdditionBehavior()");
 
         return new BehaviorBuilder<Context>("")
             .WithInput<Input>()
+            //.WithInput(() => new { })
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))

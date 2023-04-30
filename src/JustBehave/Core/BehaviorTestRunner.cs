@@ -17,6 +17,9 @@ public class BehaviorTestRunner : XunitTestRunner
 
     protected override Task<decimal> InvokeTestMethodAsync(ExceptionAggregator aggregator)
     {
+        // Uncomment the following line to debug individual behavior tests.
+        System.Diagnostics.Debugger.Launch();
+
         var invoker = new BehaviorTestInvoker(
             Test, 
             MessageBus, 

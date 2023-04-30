@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace JustBehave;
@@ -13,10 +12,8 @@ public class BehaviorBuilder<TContext>
         this.Name = name;
     }
 
-    public BehaviorBuilder<TContext, TInput> WithInput<TInput>(TInput input) => new(this.Name);
     public BehaviorBuilder<TContext, TInput> WithInput<TInput>() => new(this.Name);
-
-    public BehaviorBuilder<TContext, TInput> WithInputs<TInput>(IEnumerable<TInput> collection) => new(this.Name);
+    public BehaviorBuilder<TContext, TInput> WithInput<TInput>(Func<TInput> map) => new(this.Name);
 }
 
 public class BehaviorBuilder<TContext, TInput> : BehaviorBuilder<TContext>
@@ -38,28 +35,33 @@ public class BehaviorBuilder<TContext, TInput> : BehaviorBuilder<TContext>
     public BehaviorBuilder<TContext, TInput> Given(Func<TContext, TInput, Task<TContext>> step) => this;
     public BehaviorBuilder<TContext, TInput> Given(string name, Func<TContext, TInput, Task<TContext>> step) => this;
 
-    public BehaviorBuilder<TContext, TInput, TResult> When<TResult>(WhenStep<TContext, TInput, TResult> step) => new(this.Name);
-    public BehaviorBuilder<TContext, TInput, TResult> When<TStep, TResult>() where TStep : WhenStep<TContext, TInput, TResult>, new() => new(this.Name);
+    public BehaviorResultBuilder<TContext, TInput, TResult> When<TResult>(WhenStep<TContext, TInput, TResult> step) => new(this.Name);
+    public BehaviorResultBuilder<TContext, TInput, TResult> When<TStep, TResult>() where TStep : WhenStep<TContext, TInput, TResult>, new() => new(this.Name);
 
-    public BehaviorBuilder<TContext, TInput, TResult> When<TResult>(Func<TContext, TInput, TResult> step) => new(this.Name);
-    public BehaviorBuilder<TContext, TInput, TResult> When<TResult>(string name, Func<TContext, TInput, TResult> step) => new(this.Name);
+    public BehaviorResultBuilder<TContext, TInput, TResult> When<TResult>(Func<TContext, TInput, TResult> step) => new(this.Name);
+    public BehaviorResultBuilder<TContext, TInput, TResult> When<TResult>(string name, Func<TContext, TInput, TResult> step) => new(this.Name);
 
-    public BehaviorBuilder<TContext, TInput, TResult> When<TResult>(Func<TContext, TInput, Task<TResult>> step) => new(this.Name);
-    public BehaviorBuilder<TContext, TInput, TResult> When<TResult>(string name, Func<TContext, TInput, Task<TResult>> step) => new(this.Name);
+    public BehaviorResultBuilder<TContext, TInput, TResult> When<TResult>(Func<TContext, TInput, Task<TResult>> step) => new(this.Name);
+    public BehaviorResultBuilder<TContext, TInput, TResult> When<TResult>(string name, Func<TContext, TInput, Task<TResult>> step) => new(this.Name);
 }
 
-public class BehaviorBuilder<TContext, TInput, TResult> : BehaviorBuilder<TContext, TInput>
+public class BehaviorResultBuilder<TContext, TInput, TResult>
 {
-    public BehaviorBuilder(string name) : base(name) { }
+    public string Name { get; }
 
-    public BehaviorBuilder<TContext, TInput, TResult> Then(ThenStep<TContext, TInput, TResult> step) => this;
-    public BehaviorBuilder<TContext, TInput, TResult> Then<TStep>() where TStep : ThenStep<TContext, TInput, TResult>, new() => this;
+    public BehaviorResultBuilder(string name)
+    {
+        Name = name;
+    }
 
-    public BehaviorBuilder<TContext, TInput, TResult> Then(Action<TContext, TInput, TResult> step) => this;
-    public BehaviorBuilder<TContext, TInput, TResult> Then(string name, Action<TContext, TInput, TResult> step) => this;
+    public BehaviorResultBuilder<TContext, TInput, TResult> Then(ThenStep<TContext, TInput, TResult> step) => this;
+    public BehaviorResultBuilder<TContext, TInput, TResult> Then<TStep>() where TStep : ThenStep<TContext, TInput, TResult>, new() => this;
 
-    public BehaviorBuilder<TContext, TInput, TResult> Then(Func<TContext, TInput, TResult, Task> step) => this;
-    public BehaviorBuilder<TContext, TInput, TResult> Then(string name, Func<TContext, TInput, TResult, Task> step) => this;
+    public BehaviorResultBuilder<TContext, TInput, TResult> Then(Action<TContext, TInput, TResult> step) => this;
+    public BehaviorResultBuilder<TContext, TInput, TResult> Then(string name, Action<TContext, TInput, TResult> step) => this;
+
+    public BehaviorResultBuilder<TContext, TInput, TResult> Then(Func<TContext, TInput, TResult, Task> step) => this;
+    public BehaviorResultBuilder<TContext, TInput, TResult> Then(string name, Func<TContext, TInput, TResult, Task> step) => this;
 
     public Behavior<TContext> Build() => new();
 }

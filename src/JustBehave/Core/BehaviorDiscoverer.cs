@@ -11,8 +11,6 @@ public class BehaviorDiscoverer : TheoryDiscoverer
     {
         // Uncomment this line to debug behavior discovery.
         System.Diagnostics.Debugger.Launch();
-
-        int x = 5;
     }
 
     protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute, object[] dataRow)
