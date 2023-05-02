@@ -63,14 +63,20 @@ public class BehaviorTestInvoker : XunitTestInvoker
 
                         if (TestMethod.Invoke(testClassInstance, parameters) is not Behavior behavior)
                         {
-                            var behaviorType = typeof(Behavior);
-                            Aggregator.Add(new InvalidOperationException($"Behavior tests must return an instance of type {behaviorType.FullName}"));
+                            Aggregator.Add(new InvalidOperationException($"Behavior tests must return an instance of type {typeof(Behavior).FullName}"));
                             return;
                         }
 
                         foreach (var step in behavior.Steps)
                         {
-                            _outputHelper.WriteLine($"Executing step: {step.Name}");
+                            var stepTimer = new ExecutionTimer();
+                            
+                            await stepTimer.AggregateAsync(async () =>
+                            {
+                                await Task.Delay(Random.Shared.Next(100, 500));
+                            });
+
+                            _outputHelper.WriteLine($"Step: {step.Name} took {stepTimer.Total:N2}s");
                         }
 
                         await Task.CompletedTask;
