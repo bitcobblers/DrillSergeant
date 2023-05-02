@@ -3,16 +3,11 @@ using System.Threading.Tasks;
 
 namespace JustBehave;
 
-public class LambdaGivenStep<TContext, TInput> : Step
+public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
 {
     private string? name;
     private Delegate? handler;
     private Action? teardownHandler;
-
-    public LambdaGivenStep()
-        : base("Given")
-    {
-    }
 
     public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
 
