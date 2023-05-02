@@ -12,10 +12,11 @@ namespace JustBehave.Core;
 
 public class BehaviorTestInvoker : XunitTestInvoker
 {
-    public BehaviorTestInvoker(ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource) 
-        : base(test, messageBus, testClass, constructorArguments, testMethod, testMethodArguments, beforeAfterAttributes, aggregator, cancellationTokenSource)
-    {
-    }
+    private readonly ITestOutputHelper _outputHelper;
+
+    public BehaviorTestInvoker(ITestOutputHelper outputHelper, ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource)
+        : base(test, messageBus, testClass, constructorArguments, testMethod, testMethodArguments, beforeAfterAttributes, aggregator, cancellationTokenSource) 
+        => _outputHelper = outputHelper;
 
     protected override Task<decimal> InvokeTestMethodAsync(object testClassInstance)
     {
@@ -51,6 +52,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
         try
         {
             var asyncSyncContext = new AsyncTestSyncContext(oldSyncContext);
+            
             SetSynchronizationContext(asyncSyncContext);
 
             await Aggregator.RunAsync(
@@ -58,12 +60,17 @@ public class BehaviorTestInvoker : XunitTestInvoker
                     async () =>
                     {
                         var parameters = TestMethod.GetParameters().Select(x => (object?)null).ToArray();
-                        var behavior = TestMethod.Invoke(testClassInstance, parameters) as Behavior;
 
-                        if(behavior==null)
+                        if (TestMethod.Invoke(testClassInstance, parameters) is not Behavior behavior)
                         {
                             var behaviorType = typeof(Behavior);
                             Aggregator.Add(new InvalidOperationException($"Behavior tests must return an instance of type {behaviorType.FullName}"));
+                            return;
+                        }
+
+                        foreach (var step in behavior.Steps)
+                        {
+                            _outputHelper.WriteLine($"Executing step: {step.Name}");
                         }
 
                         await Task.CompletedTask;

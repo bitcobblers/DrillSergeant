@@ -15,12 +15,24 @@ public class BehaviorTestRunner : XunitTestRunner
     {
     }
 
-    protected override Task<decimal> InvokeTestMethodAsync(ExceptionAggregator aggregator)
+    protected override async Task<Tuple<decimal, string>> InvokeTestAsync(ExceptionAggregator aggregator)
+    {
+        var testOutputHelper = GetOutputHelper();
+        var executionTime = await InvokeTestMethodAsync(aggregator, testOutputHelper);
+        var output = testOutputHelper.Output;
+        
+        testOutputHelper.Uninitialize();
+
+        return Tuple.Create(executionTime, output);
+    }
+
+    private Task<decimal> InvokeTestMethodAsync(ExceptionAggregator aggregator, ITestOutputHelper outputHelper)
     {
         // Uncomment the following line to debug individual behavior tests.
-        System.Diagnostics.Debugger.Launch();
+        // System.Diagnostics.Debugger.Launch();
 
         var invoker = new BehaviorTestInvoker(
+            outputHelper,
             Test,
             MessageBus,
             TestClass,
@@ -32,5 +44,24 @@ public class BehaviorTestRunner : XunitTestRunner
             CancellationTokenSource);
 
         return invoker.RunAsync();
+    }
+
+    private TestOutputHelper GetOutputHelper()
+    {
+        TestOutputHelper? result = null;
+
+        foreach (object obj in ConstructorArguments)
+        {
+            if (obj is TestOutputHelper testOutputHelper)
+            {
+                result = testOutputHelper;
+                break;
+            }
+        }
+
+        result ??= new TestOutputHelper();
+        result.Initialize(MessageBus, Test);
+
+        return result;
     }
 }

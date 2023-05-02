@@ -8,7 +8,7 @@ namespace JustBehave.Tests.Features;
 
 public class CalculatorBehaviors
 {
-    private readonly ITestOutputHelper output;
+    public ITestOutputHelper output;
 
     public record Context(int A, int B, int Result);
 
@@ -45,11 +45,9 @@ public class CalculatorBehaviors
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(Calculator calculator)
     {
-        this.output.WriteLine("Invoking AdditionBehavior()");
+        this.output.WriteLine("Invoking AdditionBehavior()!");
 
-        return new BehaviorBuilder<Context>("")
-            .WithInput<Input>()
-            //.WithInput(() => new { })
+        return new BehaviorBuilder<Context, Input>()
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))
