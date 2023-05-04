@@ -35,21 +35,4 @@ public class LambdaWhenStepTests
         // Assert.
         Assert.Equal("expected", step.Name);
     }
-
-    [Fact]
-    public void CallsTeardownHandlerOnDispose()
-    {
-        // Arrage.
-        var teardown = new Mock<Action>();
-        var step = new TestLambdaWhenStep();
-
-        teardown.Setup(x => x()).Verifiable();
-        step.Teardown(teardown.Object);
-
-        // Act.
-        step.Dispose();
-
-        // Assert.
-        teardown.VerifyAll();
-    }
 }

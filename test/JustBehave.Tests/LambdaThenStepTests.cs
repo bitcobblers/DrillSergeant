@@ -37,23 +37,6 @@ public class LambdaThenStepTests
     }
 
     [Fact]
-    public void CallsTeardownHandlerOnDispose()
-    {
-        // Arrage.
-        var teardown = new Mock<Action>();
-        var step = new TestLambdaThenStep();
-
-        teardown.Setup(x => x()).Verifiable();
-        step.Teardown(teardown.Object);
-
-        // Act.
-        step.Dispose();
-
-        // Assert.
-        teardown.VerifyAll();
-    }
-
-    [Fact]
     public void ActCallsHandler()
     {
         // Arrange.

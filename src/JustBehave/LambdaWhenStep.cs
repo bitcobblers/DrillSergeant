@@ -10,7 +10,6 @@ public class LambdaWhenStep<TContext, TInput> : WhenStep<TContext, TInput>
 
     private string? name;
     private WhenAsyncMethod? whenHandler;
-    private Action? teardownHandler;
 
     public override string Name => this.name ?? this.whenHandler?.GetType().FullName ?? nameof(LambdaWhenStep<TContext, TInput>);
 
@@ -41,12 +40,6 @@ public class LambdaWhenStep<TContext, TInput> : WhenStep<TContext, TInput>
         return this;
     }
 
-    public LambdaWhenStep<TContext, TInput> Teardown(Action teardown)
-    {
-        this.teardownHandler = teardown ?? new Action(() => { });
-        return this;
-    }
-
     public override async Task WhenAsync(TContext context, TInput input)
     {
         if (this.whenHandler != null)
@@ -54,6 +47,4 @@ public class LambdaWhenStep<TContext, TInput> : WhenStep<TContext, TInput>
             await this.whenHandler(context, input);
         }
     }
-
-    protected override void Teardown() => this.teardownHandler?.Invoke();
 }

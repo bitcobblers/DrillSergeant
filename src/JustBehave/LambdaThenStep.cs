@@ -10,7 +10,6 @@ public class LambdaThenStep<TContext, TInput> : ThenStep<TContext, TInput>
 
     private string? name;
     private ThenAsyncMethod? thenHandler;
-    private Action? teardownHandler;
 
     public override string Name => this.name ?? this.thenHandler?.GetType().FullName ?? nameof(LambdaThenStep<TContext, TInput>);
 
@@ -37,12 +36,6 @@ public class LambdaThenStep<TContext, TInput> : ThenStep<TContext, TInput>
         return this;
     }
 
-    public LambdaThenStep<TContext, TInput> Teardown(Action teardown)
-    {
-        this.teardownHandler = teardown ?? new Action(() => { });
-        return this;
-    }
-
     public override async Task ThenAsync(TContext context, TInput input)
     {
         if (this.thenHandler != null)
@@ -50,6 +43,4 @@ public class LambdaThenStep<TContext, TInput> : ThenStep<TContext, TInput>
             await this.thenHandler(context, input);
         }
     }
-
-    protected override void Teardown() => this.teardownHandler?.Invoke();
 }

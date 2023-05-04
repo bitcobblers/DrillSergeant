@@ -27,19 +27,6 @@ public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
         return this;
     }
 
-    public LambdaGivenStep<TContext, TInput> Handle(Action? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle(Action<TContext>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle(Action<TContext, TInput>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1>(Action<TContext, TInput, TArg1>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2>(Action<TContext, TInput, TArg1, TArg2>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Action<TContext, TInput, TArg1, TArg2, TArg3>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>? handler) => this.SetHandler(handler);
-
-
     public LambdaGivenStep<TContext, TInput> Handle(Func<TContext>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, TContext>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, TInput, TContext>? handler) => this.SetHandler(handler);
@@ -68,11 +55,6 @@ public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
     {
         this.teardownHandler = teardown ?? new Action(() => { });
         return this;
-    }
-
-    protected override void Teardown()
-    {
-        this.teardownHandler?.Invoke();
     }
 
     internal override VerbMethod PickHandler()

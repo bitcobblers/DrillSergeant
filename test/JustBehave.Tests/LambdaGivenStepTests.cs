@@ -35,26 +35,6 @@ public class LambdaGivenStepTests
         }
     }
 
-    public class TeardownMethod : LambdaGivenStepTests
-    {
-        [Fact]
-        public void CallsTeardownHandlerOnDispose()
-        {
-            // Arrage.
-            var teardown = new Mock<Action>();
-            var step = new LambdaGivenStep<Context, Input>();
-
-            teardown.Setup(x => x()).Verifiable();
-            step.Teardown(teardown.Object);
-
-            // Act.
-            step.Dispose();
-
-            // Assert.
-            teardown.VerifyAll();
-        }
-    }
-
     public class GivenMethod : LambdaGivenStepTests
     {
         [Fact]
@@ -74,64 +54,6 @@ public class LambdaGivenStepTests
             // Assert.
             given.VerifyAll();
         }
-
-        [Fact]
-        public void ArrangeCallsHandlerWithNoReturn()
-        {
-            // Arrange.
-            var step = new LambdaGivenStep<Context, Input>();
-            var given = new Mock<Action>();
-            var resolver = new Mock<IDependencyResolver>();
-
-            given.Setup(x => x()).Verifiable();
-            step.Handle(given.Object);
-
-            // Act.
-            var result = step.Execute(resolver.Object);
-
-            // Assert.
-            given.VerifyAll();
-        }
-
-        [Fact]
-        public void ArrangeCallsLastConfiguredHandler_NoReturn()
-        {
-            // Arrange.
-            var step = new LambdaGivenStep<Context, Input>();
-            var givenWithReturn = new Mock<Func<Context>>();
-            var givenNoReturn = new Mock<Action>();
-            var resolver = new Mock<IDependencyResolver>();
-
-            step.Handle(givenWithReturn.Object);
-            step.Handle(givenNoReturn.Object);
-
-            // Act.
-            var result = step.Execute(resolver.Object);
-
-            // Assert.
-            givenWithReturn.Verify(x => x(), Times.Never());
-            givenNoReturn.Verify(x => x(), Times.Once());
-        }
-
-        [Fact]
-        public void ArrangeCallsLastConfiguredHandler_WithReturn()
-        {
-            // Arrange.
-            var step = new LambdaGivenStep<Context, Input>();
-            var givenNoReturn = new Mock<Action>();
-            var givenWithReturn = new Mock<Func<Context>>();
-            var resolver = new Mock<IDependencyResolver>();
-
-            step.Handle(givenNoReturn.Object);
-            step.Handle(givenWithReturn.Object);
-
-            // Act.
-            var result = step.Execute(resolver.Object);
-
-            // Assert.
-            givenNoReturn.Verify(x => x(), Times.Never());
-            givenWithReturn.Verify(x => x(), Times.Once());
-        }
     }
 
     public class ExecuteMethod : LambdaGivenStepTests
@@ -142,7 +64,7 @@ public class LambdaGivenStepTests
             // Arrange.
             var resolver = new Mock<IDependencyResolver>();
             var step = new LambdaGivenStep<Context, Input>();
-            var handler = new Mock<Action>();
+            var handler = new Mock<Func<Context, Input, Context>>();
 
             step.Handle(handler.Object);
 
@@ -150,7 +72,7 @@ public class LambdaGivenStepTests
             step.Execute(resolver.Object);
 
             // Assert.
-            handler.Verify(x => x(), Times.Once());
+            handler.Verify(x => x(It.IsAny<Context>(), It.IsAny<Input>()), Times.Once());
         }
 
         [Fact]
@@ -159,7 +81,7 @@ public class LambdaGivenStepTests
             // Arrange.
             var resolver = new Mock<IDependencyResolver>();
             var step = new LambdaGivenStep<Context, Input>();
-            var handler = new Mock<Action<Context, Input, IStubInjectable>>();
+            var handler = new Mock<Func<Context, Input, IStubInjectable, Context>>();
 
             step.Handle(handler.Object);
 

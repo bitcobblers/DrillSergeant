@@ -62,8 +62,7 @@ public class CalculatorBehaviors
     // Step implemented as a lambda step for greater flexibility.
     public WhenStep<Context, Input> AddNumbers(Calculator calculator) => new LambdaWhenStep<Context, Input>()
         .Named("Add numbers")
-        .Handle((c, _) => c with { Result = calculator.Add(c.A, c.B) })
-        .Teardown(() => Console.WriteLine("I do cleanup"));
+        .Handle((c, _) => c with { Result = calculator.Add(c.A, c.B) });
 
     // Step implemented as type for full customization and reusability.
     public class CheckResultStep : ThenStep<Context, Input>

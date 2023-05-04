@@ -9,8 +9,6 @@ public class Step : IDisposable
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
-    private bool isDisposed;
-
     protected Step(string verb)
         : this(verb, null)
     {
@@ -92,23 +90,13 @@ public class Step : IDisposable
         return highestGroup.First();
     }
 
-    private object?[] ResolveParameters(IDependencyResolver resolver, ParameterInfo[] parameters)
+    protected object?[] ResolveParameters(IDependencyResolver resolver, ParameterInfo[] parameters)
     {
         return (from p in parameters
                 select resolver.Resolve(p.ParameterType)).ToArray();
     }
 
     protected virtual void Dispose(bool disposing)
-    {
-        if (disposing && !this.isDisposed)
-        {
-            this.Teardown();
-        }
-
-        this.isDisposed = true;
-    }
-
-    protected virtual void Teardown()
     {
     }
 }
