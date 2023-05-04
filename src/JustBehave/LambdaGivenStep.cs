@@ -6,8 +6,7 @@ namespace JustBehave;
 public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
 {
     private string? name;
-    private Delegate? handler;
-    private Action? teardownHandler;
+    private Delegate handler = () => { };
 
     public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
 
@@ -50,12 +49,6 @@ public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, Task>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, Task>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, Task>? handler) => this.SetHandler(handler);
-
-    public LambdaGivenStep<TContext, TInput> Teardown(Action teardown)
-    {
-        this.teardownHandler = teardown ?? new Action(() => { });
-        return this;
-    }
 
     internal override VerbMethod PickHandler()
     {
