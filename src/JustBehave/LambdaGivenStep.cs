@@ -38,12 +38,7 @@ public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>? handler) => this.SetHandler(handler);
+
 
     public LambdaGivenStep<TContext, TInput> Handle(Func<TContext>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, TContext>? handler) => this.SetHandler(handler);
@@ -56,12 +51,6 @@ public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TContext>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TContext>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TContext>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TContext>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TContext>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TContext>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TContext>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TContext>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TContext>? handler) => this.SetHandler(handler);
 
     public LambdaGivenStep<TContext, TInput> Handle(Func<Task>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle(Func<TContext, Task>? handler) => this.SetHandler(handler);
@@ -74,13 +63,6 @@ public class LambdaGivenStep<TContext, TInput> : GivenStep<TContext, TInput>
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, Task>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, Task>? handler) => this.SetHandler(handler);
     public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, Task>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, Task>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, Task>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, Task>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, Task>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, Task>? handler) => this.SetHandler(handler);
-    public LambdaGivenStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, Task>? handler) => this.SetHandler(handler);
-
 
     public LambdaGivenStep<TContext, TInput> Teardown(Action teardown)
     {
