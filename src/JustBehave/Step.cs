@@ -63,8 +63,6 @@ public class Step : IDisposable
 
     internal virtual VerbMethod PickHandler()
     {
-        
-
         var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                             where m.Name == this.Verb || m.Name == this.Verb + "Async"
                             let numParameters = m.GetParameters().Length

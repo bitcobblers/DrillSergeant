@@ -3,51 +3,51 @@ using System.Threading.Tasks;
 
 namespace JustBehave;
 
-public class LambdaThenStep<TContext, TInput, TResult> : ThenStep<TContext, TInput, TResult>
+public class LambdaThenStep<TContext, TInput> : ThenStep<TContext, TInput>
 {
-    public delegate void ThenMethod(TContext context, TInput input, TResult result);
-    public delegate Task ThenAsyncMethod(TContext context, TInput input, TResult result);
+    public delegate void ThenMethod(TContext context, TInput input);
+    public delegate Task ThenAsyncMethod(TContext context, TInput input);
 
     private string? name;
     private ThenAsyncMethod? thenHandler;
     private Action? teardownHandler;
 
-    public override string Name => this.name ?? this.thenHandler?.GetType().FullName ?? nameof(LambdaThenStep<TContext, TInput, TResult>);
+    public override string Name => this.name ?? this.thenHandler?.GetType().FullName ?? nameof(LambdaThenStep<TContext, TInput>);
 
-    public LambdaThenStep<TContext, TInput, TResult> Named(string name)
+    public LambdaThenStep<TContext, TInput> Named(string name)
     {
         this.name = name?.Trim();
         return this;
     }
 
-    public LambdaThenStep<TContext, TInput, TResult> Handle(ThenMethod? execute)
+    public LambdaThenStep<TContext, TInput> Handle(ThenMethod? execute)
     {
-        this.thenHandler = new ThenAsyncMethod(async (c, i, r) =>
+        this.thenHandler = new ThenAsyncMethod((c, i) =>
         {
-            execute?.Invoke(c, i, r);
-            await Task.CompletedTask;
+            execute?.Invoke(c, i);
+            return Task.CompletedTask;
         });
 
         return this;
     }
 
-    public LambdaThenStep<TContext, TInput, TResult> HandleAsync(ThenAsyncMethod? execute)
+    public LambdaThenStep<TContext, TInput> HandleAsync(ThenAsyncMethod? execute)
     {
-        this.thenHandler = execute ?? new ThenAsyncMethod((_, _, _) => Task.CompletedTask);
+        this.thenHandler = execute ?? new ThenAsyncMethod((_, _) => Task.CompletedTask);
         return this;
     }
 
-    public LambdaThenStep<TContext, TInput, TResult> Teardown(Action teardown)
+    public LambdaThenStep<TContext, TInput> Teardown(Action teardown)
     {
         this.teardownHandler = teardown ?? new Action(() => { });
         return this;
     }
 
-    public override async Task ThenAsync(TContext context, TInput input, TResult result)
+    public override async Task ThenAsync(TContext context, TInput input)
     {
         if (this.thenHandler != null)
         {
-            await this.thenHandler(context, input, result);
+            await this.thenHandler(context, input);
         }
     }
 

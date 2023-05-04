@@ -2,14 +2,17 @@
 
 namespace JustBehave;
 
-public class WhenStep<TContext, TInput, TResult> : Step
+public class WhenStep<TContext, TInput> : Step
 {
     public WhenStep()
         : base("When")
     {
     }
 
-    public virtual TResult When(TContext context, TInput input) => this.WhenAsync(context, input).Result;
+    public virtual void When(TContext context, TInput input)
+    {
+        WhenAsync(context, input).Wait();
+    }
 
-    public virtual Task<TResult> WhenAsync(TContext context, TInput input) => Task.FromResult<TResult>(default!);
+    public virtual Task WhenAsync(TContext context, TInput input) => Task.CompletedTask;
 }

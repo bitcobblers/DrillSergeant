@@ -4,15 +4,20 @@ using Xunit;
 
 namespace JustBehave.Tests;
 
-using TestLambdaAssertStep = LambdaThenStep<int, int, int>;
-
 public class LambdaThenStepTests
 {
+    public record Context();
+    public record Input();
+
+    public class TestLambdaThenStep : LambdaThenStep<Context, Input>
+    {
+    }
+
     [Fact]
     public void DefaultNameIsNotNull()
     {
         // Arrange.
-        var step = new TestLambdaAssertStep();
+        var step = new TestLambdaThenStep();
 
         // Assert.
         Assert.NotNull(step.Name);
@@ -22,7 +27,7 @@ public class LambdaThenStepTests
     public void SpecifyingNameSetsNameProperty()
     {
         // Arrange.
-        var step = new TestLambdaAssertStep();
+        var step = new TestLambdaThenStep();
 
         // Act.
         step.Named("expected");
@@ -36,7 +41,7 @@ public class LambdaThenStepTests
     {
         // Arrage.
         var teardown = new Mock<Action>();
-        var step = new TestLambdaAssertStep();
+        var step = new TestLambdaThenStep();
 
         teardown.Setup(x => x()).Verifiable();
         step.Teardown(teardown.Object);
@@ -49,17 +54,17 @@ public class LambdaThenStepTests
     }
 
     [Fact]
-    public void AssertCallsHandler()
+    public void ActCallsHandler()
     {
         // Arrange.
-        var assert = new Mock<TestLambdaAssertStep.ThenMethod>();
-        var step = new TestLambdaAssertStep();
+        var assert = new Mock<TestLambdaThenStep.ThenMethod>();
+        var step = new TestLambdaThenStep();
 
-        assert.Setup(x => x(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Verifiable();
+        assert.Setup(x => x(It.IsAny<Context>(), It.IsAny<Input>())).Verifiable();
         step.Handle(assert.Object);
 
         // Act.
-        step.Then(0, 0, 0);
+        step.Then(new Context(), new Input());
 
         // Assert.
         assert.VerifyAll();

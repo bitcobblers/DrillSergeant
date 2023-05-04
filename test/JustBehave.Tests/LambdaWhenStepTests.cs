@@ -4,15 +4,20 @@ using Xunit;
 
 namespace JustBehave.Tests;
 
-using TestLambdaActStep = LambdaWhenStep<int, int, int>;
-
 public class LambdaWhenStepTests
 {
+    public record Context();
+    public record Input();
+
+    public class TestLambdaWhenStep : LambdaWhenStep<Context,Input>
+    {
+    }
+
     [Fact]
     public void DefaultNameIsNotNull()
     {
         // Arrange.
-        var step = new TestLambdaActStep();
+        var step = new TestLambdaWhenStep();
 
         // Assert.
         Assert.NotNull(step.Name);
@@ -22,7 +27,7 @@ public class LambdaWhenStepTests
     public void SpecifyingNameSetsNameProperty()
     {
         // Arrange.
-        var step = new TestLambdaActStep();
+        var step = new TestLambdaWhenStep();
 
         // Act.
         step.Named("expected");
@@ -36,7 +41,7 @@ public class LambdaWhenStepTests
     {
         // Arrage.
         var teardown = new Mock<Action>();
-        var step = new TestLambdaActStep();
+        var step = new TestLambdaWhenStep();
 
         teardown.Setup(x => x()).Verifiable();
         step.Teardown(teardown.Object);
@@ -46,50 +51,5 @@ public class LambdaWhenStepTests
 
         // Assert.
         teardown.VerifyAll();
-    }
-
-    [Fact]
-    public void ActCallsHandler()
-    {
-        // Arrange.
-        var step = new TestLambdaActStep();
-
-        step.Handle((_, _) => 1);
-
-        // Act.
-        var result = step.When(0, 0);
-
-        // Assert.
-        Assert.Equal(1, result);
-    }
-
-    [Fact]
-    public void SettingHandlerToNullReturnsDefaultOnAct_Sync()
-    {
-        // Arrange.
-        var step = new TestLambdaActStep();
-
-        step.Handle((TestLambdaActStep.WhenMethod)null!);
-
-        // Act.
-        var result = step.When(0, 0);
-
-        // Assert.
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
-    public void SettingHandlerToNullReturnsDefaultOnAct_Async()
-    {
-        // Arrange.
-        var step = new TestLambdaActStep();
-
-        step.Handle((TestLambdaActStep.WhenAsyncMethod)null!);
-
-        // Act.
-        var result = step.When(0, 0);
-
-        // Assert.
-        Assert.Equal(0, result);
     }
 }
