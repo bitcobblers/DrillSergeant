@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="BehaviorBuilder.cs" />
+	  <Compile Remove="Core\MessageBusExtensions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="..\..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>
 

@@ -11,23 +11,7 @@ public class CalculatorBehaviors
     public ITestOutputHelper output;
 
     public record Context(int A, int B, int Result);
-
-    public record struct Input(int A, int B, int Expected) : IXunitSerializable
-    {
-        public void Deserialize(IXunitSerializationInfo info)
-        {
-            A = info.GetValue<int>(nameof(A));
-            B = info.GetValue<int>(nameof(B));
-            Expected = info.GetValue<int>(nameof(Expected));
-        }
-
-        public void Serialize(IXunitSerializationInfo info)
-        {
-            info.AddValue(nameof(A), A);
-            info.AddValue(nameof(B), B);
-            info.AddValue(nameof(Expected), Expected);
-        }
-    }
+    public record struct Input(int A, int B, int Expected);
 
     public CalculatorBehaviors(ITestOutputHelper output)
     {
@@ -36,19 +20,20 @@ public class CalculatorBehaviors
 
     public static IEnumerable<object[]> AdditionInputs
     {
-        get => new[] {
-            new Input(1, 2, 3),
-            new Input(2, 3, 5),
-            new Input(1,2,1)
-        }.ToObjectArray();
+        get => new[]
+        {
+            new object[] { 1, 2, 3 },
+            new object[] { 2, 3, 5 }
+        };
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Behavior AdditionBehavior(Calculator calculator)
+    public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
         this.output.WriteLine("Invoking AdditionBehavior()");
 
         return new Behavior<Context, Input>()
+            .WithInput(() => new Input(a, b, expected))
             .WithContext(() => new Context(0, 0, 0))
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)

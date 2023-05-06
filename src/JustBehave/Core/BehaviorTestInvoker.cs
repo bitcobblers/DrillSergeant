@@ -59,7 +59,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
                 () => Timer.AggregateAsync(
                     async () =>
                     {
-                        var parameters = TestMethod.GetParameters().Select(x => Activator.CreateInstance(x.ParameterType)).ToArray();
+                        var parameters = ParseParameters(TestMethod, TestMethodArguments);
 
                         if (TestMethod.Invoke(testClassInstance, parameters) is not Behavior behavior)
                         {
@@ -69,10 +69,11 @@ public class BehaviorTestInvoker : XunitTestInvoker
 
                         var resolver = new DefaultResolver();
                         var context = behavior.InitContext();
+                        var input = behavior.MapInput();
                         bool stepFailed;
 
                         resolver.Register(context.GetType(), context);
-                        resolver.Register(behavior.InputType, TestMethodArguments.First());
+                        resolver.Register(input.GetType(), input);
 
                         foreach (var step in behavior.Steps)
                         {
@@ -120,6 +121,37 @@ public class BehaviorTestInvoker : XunitTestInvoker
         }
 
         return Timer.Total;
+    }
+
+    internal static object?[] ParseParameters(MethodInfo method, object[] passedArguments)
+    {
+        var methodParams = method.GetParameters();
+        var resultParams = new object[methodParams.Length];
+        int passedArgumentsOffset = 0;
+        int numInjectedParams = methodParams.Count(x => x.GetCustomAttribute<InjectAttribute>() != null);
+
+        if( resultParams.Length - numInjectedParams != passedArguments.Length)
+        {
+            throw new InvalidOperationException("The number of non-injected parameters must match the number of input parameters.");
+        }
+
+        for (int i = 0; i < methodParams.Length; i++)
+        {
+            var param = methodParams[i];
+
+            if (param.GetCustomAttribute<InjectAttribute>() != null)
+            {
+#pragma warning disable CS8601 // Possible null reference assignment.
+                resultParams[i] = Activator.CreateInstance(param.ParameterType);
+#pragma warning restore CS8601 // Possible null reference assignment.
+            }
+            else
+            {
+                resultParams[i] = passedArguments[passedArgumentsOffset++];
+            }
+        }
+
+        return resultParams;
     }
 
     [SecuritySafeCritical]

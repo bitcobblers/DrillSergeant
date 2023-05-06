@@ -8,8 +8,8 @@ public abstract class Behavior
     protected readonly List<IStep> steps = new();
 
     public IEnumerable<IStep> Steps => this.steps;
-    public Func<object> InitContext { get; protected set; } = () => null!;
-    public Func<object>? MapInput { get; protected set; }
+    public Func<object> InitContext { get; protected set; } = () => throw new InvalidOperationException("A context init must be declared first.");
+    public Func<object> MapInput { get; protected set; } = () => throw new InvalidOperationException("The input must be mapped.");
     public abstract Type InputType { get; }
 }
 
