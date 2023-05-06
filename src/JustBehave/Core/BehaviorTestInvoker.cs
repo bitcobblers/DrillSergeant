@@ -68,86 +68,48 @@ public class BehaviorTestInvoker : XunitTestInvoker
                         }
 
                         var resolver = new DefaultResolver();
+                        var context = behavior.InitContext();
+                        bool stepFailed;
 
-                        resolver.Register(Activator.CreateInstance(behavior.ContextType)!);
+                        resolver.Register(context.GetType(), context);
                         resolver.Register(behavior.InputType, TestMethodArguments.First());
 
                         foreach (var step in behavior.Steps)
                         {
                             var stepTimer = new ExecutionTimer();
+                            stepFailed = false;
                             
-                            await stepTimer.AggregateAsync(async () =>
+                            await stepTimer.AggregateAsync(() =>
                             {
-                                // await Task.Delay(Random.Shared.Next(100, 500));
-                                var result = step.Execute(resolver);
-
-                                resolver.Register(behavior.ContextType, result);
-                            });
-
-                            _outputHelper.WriteLine($"Step: {step.Name} took {stepTimer.Total:N2}s");
-                        }
-
-                        await Task.CompletedTask;
-                    }
-                )
-            );
-        }
-        finally
-        {
-            SetSynchronizationContext(oldSyncContext);
-        }
-
-        return Timer.Total;
-    }
-
-    protected virtual async Task<decimal> InternalInvokeTestMethodAsync_Old(object testClassInstance)
-    {
-        var oldSyncContext = SynchronizationContext.Current!;
-
-        try
-        {
-            var asyncSyncContext = new AsyncTestSyncContext(oldSyncContext);
-            SetSynchronizationContext(asyncSyncContext);
-
-            await Aggregator.RunAsync(
-                () => Timer.AggregateAsync(
-                    async () =>
-                    {
-                        var parameterCount = TestMethod.GetParameters().Length;
-                        var valueCount = TestMethodArguments == null ? 0 : TestMethodArguments.Length;
-                        
-                        if (parameterCount != valueCount)
-                        {
-                            Aggregator.Add(
-                                new InvalidOperationException(
-                                    $"The test method expected {parameterCount} parameter value{(parameterCount == 1 ? "" : "s")}, but {valueCount} parameter value{(valueCount == 1 ? "" : "s")} {(valueCount == 1 ? "was" : "were")} provided."
-                                )
-                            );
-                        }
-                        else
-                        {
-                            var result = CallTestMethod(testClassInstance);
-                            var task = GetTaskFromResult(result);
-                            
-                            if (task != null)
-                            {
-                                if (task.Status == TaskStatus.Created)
+                                try
                                 {
-                                    throw new InvalidOperationException("Test method returned a non-started Task (tasks must be started before being returned)");
+                                    var result = step.Execute(resolver);
+
+                                    if (result != null)
+                                    {
+                                        resolver.Register(result.GetType(), result);
+                                    }
+                                }
+                                catch(Exception ex)
+                                {
+                                    Aggregator.Add(ex);
+                                    stepFailed = true;
                                 }
 
-                                await task;
+                                return Task.CompletedTask;
+                            });
+
+                            if(stepFailed)
+                            {
+                                _outputHelper.WriteLine($"Step (failed): {step.Name} took {stepTimer.Total:N2}s");
                             }
                             else
                             {
-                                var ex = await asyncSyncContext.WaitForCompletionAsync();
-
-                                if (ex != null)
-                                {
-                                    Aggregator.Add(ex);
-                                }
+                                _outputHelper.WriteLine($"Step: {step.Name} took {stepTimer.Total:N2}s");
                             }
                         }
+
+                        await Task.CompletedTask;
                     }
                 )
             );

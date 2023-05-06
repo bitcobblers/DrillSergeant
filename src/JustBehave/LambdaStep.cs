@@ -7,8 +7,6 @@ namespace JustBehave;
 
 public class LambdaStep<TContext, TInput> : IStep
 {
-    public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
-
     private string? name;
     private Delegate handler = () => { };
 
@@ -64,7 +62,7 @@ public class LambdaStep<TContext, TInput> : IStep
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task>? handler) => this.SetHandler(handler);
 
-    public virtual object Execute(IDependencyResolver resolver)
+    public virtual object? Execute(IDependencyResolver resolver)
     {
         var parameters = ResolveParameters(resolver, this.handler.Method.GetParameters());
 

@@ -8,5 +8,5 @@ public interface IStep : IDisposable
     
     string Name { get; }
 
-    object Execute(IDependencyResolver resolver);
+    object? Execute(IDependencyResolver resolver);
 }

@@ -10,12 +10,7 @@ public class CalculatorBehaviors
 {
     public ITestOutputHelper output;
 
-    public record Context
-    {
-        public int A { get; init; }
-        public int B { get; init; }
-        public int Result { get; init; }
-    }
+    public record Context(int A, int B, int Result);
 
     public record struct Input(int A, int B, int Expected) : IXunitSerializable
     {
@@ -53,21 +48,21 @@ public class CalculatorBehaviors
     {
         this.output.WriteLine("Invoking AdditionBehavior()");
 
-        return new BehaviorBuilder<Context, Input>()
+        return new Behavior<Context, Input>()
+            .WithContext(() => new Context(0, 0, 0))
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
             //.When(AddNumbers(calculator))
             .When("Add the numbers", (c, i) => c with { Result = c.A + c.B })
             // .When(AddNumbers(calculator))
-            .Then<CheckResultStep>()
-            .Build();
+            .Then<CheckResultStep>();
     }
 
     // Step implemented as a normal method.
     public Context SetSecondNumber(Context context, Input input) => context with { B = input.B };
 
     // Step implemented as a lambda step for greater flexibility.
-    public LambdaStep<Context, Input> AddNumbers(Calculator calculator) => 
+    public LambdaStep<Context, Input> AddNumbers(Calculator calculator) =>
         new LambdaWhenStep<Context, Input>()
             .Named("Add numbers")
             .Handle((c, _) => c with { Result = calculator.Add(c.A, c.B) });

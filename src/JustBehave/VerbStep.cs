@@ -8,11 +8,9 @@ public abstract class VerbStep<TContext, TInput> : IStep
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
-
     public VerbStep(string verb)
         : this(verb, string.Empty)
     {
-        
     }
 
     public VerbStep(string verb, string? name)
@@ -36,7 +34,7 @@ public abstract class VerbStep<TContext, TInput> : IStep
         GC.SuppressFinalize(this);
     }
 
-    public virtual object Execute(IDependencyResolver resolver)
+    public virtual object? Execute(IDependencyResolver resolver)
     {
         var handler = this.PickHandler();
         var parameters = this.ResolveParameters(resolver, handler.Method.GetParameters());
