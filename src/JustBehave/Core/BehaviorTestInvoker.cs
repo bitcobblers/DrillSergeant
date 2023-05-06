@@ -59,7 +59,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
                 () => Timer.AggregateAsync(
                     async () =>
                     {
-                        var parameters = TestMethod.GetParameters().Select(x => (object?)null).ToArray();
+                        var parameters = TestMethod.GetParameters().Select(x => Activator.CreateInstance(x.ParameterType)).ToArray();
 
                         if (TestMethod.Invoke(testClassInstance, parameters) is not Behavior behavior)
                         {

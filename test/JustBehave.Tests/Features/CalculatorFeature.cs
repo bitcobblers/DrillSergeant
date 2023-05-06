@@ -53,8 +53,8 @@ public class CalculatorBehaviors
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
             //.When(AddNumbers(calculator))
-            .When("Add the numbers", (c, i) => c with { Result = c.A + c.B })
-            // .When(AddNumbers(calculator))
+            //.When("Add the numbers", (c, i) => c with { Result = c.A + c.B })
+            .When(AddNumbers(calculator))
             .Then<CheckResultStep>();
     }
 
