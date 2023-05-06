@@ -5,6 +5,14 @@ using System.Threading.Tasks;
 
 namespace JustBehave;
 
+public class Step<TContext, TInput> : Step
+{
+    public Step(string verb)
+        : base(verb)
+    {
+    }
+}
+
 public class Step : IDisposable
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);

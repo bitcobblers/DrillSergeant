@@ -67,13 +67,21 @@ public class BehaviorTestInvoker : XunitTestInvoker
                             return;
                         }
 
+                        var resolver = new DefaultResolver();
+
+                        resolver.Register(Activator.CreateInstance(behavior.ContextType)!);
+                        resolver.Register(behavior.InputType, TestMethodArguments.First());
+
                         foreach (var step in behavior.Steps)
                         {
                             var stepTimer = new ExecutionTimer();
                             
                             await stepTimer.AggregateAsync(async () =>
                             {
-                                await Task.Delay(Random.Shared.Next(100, 500));
+                                // await Task.Delay(Random.Shared.Next(100, 500));
+                                var result = step.Execute(resolver);
+
+                                resolver.Register(behavior.ContextType, result);
                             });
 
                             _outputHelper.WriteLine($"Step: {step.Name} took {stepTimer.Total:N2}s");

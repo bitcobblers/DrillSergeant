@@ -1,50 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace JustBehave;
 
-namespace JustBehave;
-
-public class LambdaWhenStep<TContext, TInput> : WhenStep<TContext, TInput>
+public class LambdaWhenStep<TContext, TInput> : LambdaStep<TContext, TInput>
 {
-    public delegate TContext WhenMethod(TContext context, TInput input);
-    public delegate Task<TContext> WhenAsyncMethod(TContext context, TInput input);
-
-    private string? name;
-    private WhenAsyncMethod? whenHandler;
-
-    public override string Name => this.name ?? this.whenHandler?.GetType().FullName ?? nameof(LambdaWhenStep<TContext, TInput>);
-
-    public LambdaWhenStep<TContext, TInput> Named(string name)
+    public LambdaWhenStep()
+        : base("When")
     {
-        this.name = name?.Trim();
-        return this;
-    }
-
-    public LambdaWhenStep<TContext, TInput> Handle(Func<TContext, TInput, TContext>? execute)
-    {
-        this.whenHandler = new WhenAsyncMethod((c, i) =>
-        {
-            if (execute == null)
-            {
-                return Task.FromResult(c);
-            }
-
-            return Task.FromResult(execute.Invoke(c, i));
-        });
-
-        return this;
-    }
-
-    public LambdaWhenStep<TContext, TInput> Handle(WhenAsyncMethod? execute)
-    {
-        this.whenHandler = execute ?? new WhenAsyncMethod((c, _) => Task.FromResult(c));
-        return this;
-    }
-
-    public override async Task WhenAsync(TContext context, TInput input)
-    {
-        if (this.whenHandler != null)
-        {
-            await this.whenHandler(context, input);
-        }
     }
 }

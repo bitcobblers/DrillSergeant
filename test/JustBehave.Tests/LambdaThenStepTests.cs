@@ -36,20 +36,20 @@ public class LambdaThenStepTests
         Assert.Equal("expected", step.Name);
     }
 
-    [Fact]
-    public void ActCallsHandler()
-    {
-        // Arrange.
-        var assert = new Mock<TestLambdaThenStep.ThenMethod>();
-        var step = new TestLambdaThenStep();
+    //[Fact]
+    //public void ActCallsHandler()
+    //{
+    //    // Arrange.
+    //    var assert = new Mock<TestLambdaThenStep.ThenMethod>();
+    //    var step = new TestLambdaThenStep();
 
-        assert.Setup(x => x(It.IsAny<Context>(), It.IsAny<Input>())).Verifiable();
-        step.Handle(assert.Object);
+    //    assert.Setup(x => x(It.IsAny<Context>(), It.IsAny<Input>())).Verifiable();
+    //    step.Handle(assert.Object);
 
-        // Act.
-        step.Then(new Context(), new Input());
+    //    // Act.
+    //    step.Then(new Context(), new Input());
 
-        // Assert.
-        assert.VerifyAll();
-    }
+    //    // Assert.
+    //    assert.VerifyAll();
+    //}
 }

@@ -2,7 +2,7 @@
 
 namespace JustBehave;
 
-public class GivenStep<TContext, TInput> : Step
+public class GivenStep<TContext, TInput> : Step<TContext, TInput>
 {
     public GivenStep()
         : base("Given")

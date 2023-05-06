@@ -1,6 +1,6 @@
 ﻿using JustBehave.Core;
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,7 +10,12 @@ public class CalculatorBehaviors
 {
     public ITestOutputHelper output;
 
-    public record Context(int A, int B, int Result);
+    public record Context
+    {
+        public int A { get; init; }
+        public int B { get; init; }
+        public int Result { get; init; }
+    }
 
     public record struct Input(int A, int B, int Expected) : IXunitSerializable
     {
@@ -38,7 +43,8 @@ public class CalculatorBehaviors
     {
         get => new[] {
             new Input(1, 2, 3),
-            new Input(2, 3, 5)
+            new Input(2, 3, 5),
+            new Input(1,2,1)
         }.ToObjectArray();
     }
 
@@ -50,6 +56,7 @@ public class CalculatorBehaviors
         return new BehaviorBuilder<Context, Input>()
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
+            //.When(AddNumbers(calculator))
             .When("Add the numbers", (c, i) => c with { Result = c.A + c.B })
             // .When(AddNumbers(calculator))
             .Then<CheckResultStep>()
@@ -60,16 +67,19 @@ public class CalculatorBehaviors
     public Context SetSecondNumber(Context context, Input input) => context with { B = input.B };
 
     // Step implemented as a lambda step for greater flexibility.
-    public WhenStep<Context, Input> AddNumbers(Calculator calculator) => new LambdaWhenStep<Context, Input>()
-        .Named("Add numbers")
-        .Handle((c, _) => c with { Result = calculator.Add(c.A, c.B) });
+    public Step<Context, Input> AddNumbers(Calculator calculator) => 
+        new LambdaWhenStep<Context, Input>()
+            .Named("Add numbers")
+            .Handle((c, _) => c with { Result = calculator.Add(c.A, c.B) });
 
     // Step implemented as type for full customization and reusability.
     public class CheckResultStep : ThenStep<Context, Input>
     {
-        public override void Then(Context context, Input input)
+
+        public override Task ThenAsync(Context context, Input input)
         {
-            Console.WriteLine($"{input.Expected} == {context.Result}");
+            Assert.Equal(input.Expected, context.Result);
+            return Task.CompletedTask;
         }
     }
 }

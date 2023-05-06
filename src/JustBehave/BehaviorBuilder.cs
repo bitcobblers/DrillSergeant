@@ -43,7 +43,7 @@ public class BehaviorBuilder<TContext, TInput>
 
     // ---
 
-    public BehaviorThenBuilder<TContext, TInput> When<TResult>(WhenStep<TContext, TInput> step)
+    public BehaviorThenBuilder<TContext, TInput> When(Step<TContext, TInput> step)
     {
         _steps.Add(step);
         return new BehaviorThenBuilder<TContext, TInput>(_steps);
@@ -69,7 +69,11 @@ public class BehaviorThenBuilder<TContext, TInput>
     public BehaviorThenBuilder(IEnumerable<Step> steps) => _steps.AddRange(steps);
 
     public BehaviorThenBuilder<TContext, TInput> Then(ThenStep<TContext, TInput> step) => this;
-    public BehaviorThenBuilder<TContext, TInput> Then<TStep>() where TStep : ThenStep<TContext, TInput>, new() => this;
+    public BehaviorThenBuilder<TContext, TInput> Then<TStep>() where TStep : ThenStep<TContext, TInput>, new()
+    {
+        _steps.Add(new TStep());
+        return this;
+    }
 
     public BehaviorThenBuilder<TContext, TInput> Then(Action<TContext, TInput> step) => this;
     public BehaviorThenBuilder<TContext, TInput> Then(string name, Action<TContext, TInput> step) => this;
@@ -77,5 +81,5 @@ public class BehaviorThenBuilder<TContext, TInput>
     public BehaviorThenBuilder<TContext, TInput> Then(Func<TContext, TInput, Task> step) => this;
     public BehaviorThenBuilder<TContext, TInput> Then(string name, Func<TContext, TInput, Task> step) => this;
 
-    public Behavior Build() => new (_steps);
+    public Behavior Build() => new (_steps, typeof(TContext), typeof(TInput));
 }
