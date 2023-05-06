@@ -5,25 +5,25 @@ using Xunit;
 
 namespace JustBehave.Tests;
 
-public class StepTests
+public class VerbStepTests
 {
-    public class ConstructorMethod : StepTests
+    public class ConstructorMethod : VerbStepTests
     {
         [Fact]
         public void VerbIsSetCorrectly()
         {
             // Act.
-            var step = new StubStep(null);
+            var step = new StubStep("test");
 
             // Assert.
-            Assert.Equal("Stub", step.Verb);
+            Assert.Equal("test", step.Verb);
         }
 
         [Fact]
         public void NameIsSetCorrectly()
         {
             // Act.
-            var step = new StubStep("expected");
+            var step = new StubStep("ignored", "expected");
 
             // Assert.
             Assert.Equal("expected", step.Name);
@@ -36,19 +36,26 @@ public class StepTests
         public void NullOrEmptyNameDefaultsToTypeName(string name)
         {
             // Act.
-            var step = new StubStep(name);
+            var step = new StubStep("ignored", name);
 
             // Assert.
             Assert.Equal(typeof(StubStep).Name, step.Name);
         }
 
-        public class StubStep : Step
+        public class StubStep : VerbStep<object,object>
         {
-            public StubStep(string? name) : base("Stub", name) { }
+            public StubStep(string verb) : base(verb)
+            {
+            }
+
+            public StubStep(string verb, string name)
+                : base(verb, name)
+            {
+            }
         }
     }
 
-    public class ExecuteMethod : StepTests
+    public class ExecuteMethod : VerbStepTests
     {
         [Fact]
         public void CanExecuteMethodWithNoParameters()
@@ -114,7 +121,7 @@ public class StepTests
             void DoSomething();
         }
 
-        public class StubWithNoParameters : Step
+        public class StubWithNoParameters : VerbStep<object,object>
         {
             public StubWithNoParameters()
                 : base("Test")
@@ -129,7 +136,7 @@ public class StepTests
             }
         }
 
-        public class StubWithInjectableParameter : Step
+        public class StubWithInjectableParameter : VerbStep<object, object>
         {
             public StubWithInjectableParameter()
                 : base("Test")
@@ -142,7 +149,7 @@ public class StepTests
             }
         }
 
-        public class StubThatReturnsValue_Sync : Step
+        public class StubThatReturnsValue_Sync : VerbStep<object, object>
         {
             public StubThatReturnsValue_Sync()
                 : base("Test")
@@ -152,7 +159,7 @@ public class StepTests
             public string Test() => "expected";
         }
 
-        public class StubThatReturnsValue_Async : Step
+        public class StubThatReturnsValue_Async : VerbStep<object, object>
         {
             public StubThatReturnsValue_Async()
                 : base("Test")
@@ -163,7 +170,7 @@ public class StepTests
         }
     }
 
-    public class PickHandlerMethod : StepTests
+    public class PickHandlerMethod : VerbStepTests
     {
         [Fact]
         public void PicksVerbWithMostParameters()
@@ -173,7 +180,7 @@ public class StepTests
             var expected = stub.GetType().GetMethod("Test", new[] { typeof(int) });
 
             // Act.
-            Step.VerbMethod verbMethod = stub.PickHandler();
+            var verbMethod = stub.PickHandler();
             var handler = verbMethod;
 
             // Assert.
@@ -224,13 +231,13 @@ public class StepTests
         public void ThrowsAmbiguousVerbException_Scenarios(Type type)
         {
             // Arrange.
-            var stub = (Step)Activator.CreateInstance(type)!;
+            var stub = (VerbStep<object, object>)Activator.CreateInstance(type)!;
 
             // Assert.
             Assert.Throws<AmbiguousVerbException>(() => stub.PickHandler());
         }
 
-        public class StubWithMultipleSyncVerbs : Step
+        public class StubWithMultipleSyncVerbs : VerbStep<object, object>
         {
             public StubWithMultipleSyncVerbs()
                 : base("Test")
@@ -241,7 +248,7 @@ public class StepTests
             public void Test(int arg1) { }
         }
 
-        public class StubWithSyncAndAsync_SameName : Step
+        public class StubWithSyncAndAsync_SameName : VerbStep<object, object>
         {
             public StubWithSyncAndAsync_SameName()
                 : base("Test")
@@ -252,7 +259,7 @@ public class StepTests
             public Task Test(string arg) => Task.CompletedTask;
         }
 
-        public class StubWithSyncAndAsync_DifferentName : Step
+        public class StubWithSyncAndAsync_DifferentName : VerbStep<object, object>
         {
             public StubWithSyncAndAsync_DifferentName()
                 : base("Test")
@@ -263,7 +270,7 @@ public class StepTests
             public Task TestAsync(int arg) => Task.CompletedTask;
         }
 
-        public class StubWithNoVerb : Step
+        public class StubWithNoVerb : VerbStep<object, object>
         {
             public StubWithNoVerb()
                 : base("ignored")
@@ -271,7 +278,7 @@ public class StepTests
             }
         }
 
-        public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : Step
+        public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : VerbStep<object, object>
         {
             public StubWithTwoHandlersSameNumberOfParameters_NoAsync()
                 : base("Test")
@@ -283,7 +290,7 @@ public class StepTests
             public void Test(string arg) { }
         }
 
-        public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : Step
+        public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : VerbStep<object, object>
         {
             public StubWithTwoHandlers_SameNumberOfParameters_TwoAsync()
                 : base("Test")

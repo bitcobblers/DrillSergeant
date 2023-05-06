@@ -1,25 +1,41 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace JustBehave;
 
-public class LambdaStep<TContext, TInput> : Step<TContext, TInput>
+public class LambdaStep<TContext, TInput> : IStep
 {
+    public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
+
     private string? name;
     private Delegate handler = () => { };
 
-    public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
-
-    public LambdaStep(string verb)
-        : base(verb)
+    protected LambdaStep(string verb)
     {
-
+        this.Verb = verb;
     }
+
+    ~LambdaStep()
+    {
+        this.Dispose(disposing: false);
+    }
+
+    public virtual string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
+
+    public string Verb { get; }
 
     public LambdaStep<TContext, TInput> Named(string name)
     {
         this.name = name?.Trim();
         return this;
+    }
+
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 
     private LambdaStep<TContext, TInput> SetHandler(Delegate? handler)
@@ -48,24 +64,22 @@ public class LambdaStep<TContext, TInput> : Step<TContext, TInput>
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task>? handler) => this.SetHandler(handler);
 
-    public override object? Execute(IDependencyResolver resolver)
+    public virtual object Execute(IDependencyResolver resolver)
     {
-        var handlerInfo = PickHandler();
-        var parameters = ResolveParameters(resolver, handlerInfo.Method.GetParameters());
+        var parameters = ResolveParameters(resolver, this.handler.Method.GetParameters());
 
-        dynamic? r = this.handler.DynamicInvoke(parameters);
+        dynamic r = this.handler.DynamicInvoke(parameters)!;
 
-        if (r == null)
-        {
-            return null;
-        }
-
-        return handlerInfo.IsAsync ? r.Result : r;
+        return this.handler.Method.IsAsync() ? r.Result : r;
     }
 
-    internal override VerbMethod PickHandler()
+    protected object?[] ResolveParameters(IDependencyResolver resolver, ParameterInfo[] parameters)
     {
-        var method = this.handler.Method;
-        return new(method, this.handler.Target!, IsAsync(method.ReturnType));
+        return (from p in parameters
+                select resolver.Resolve(p.ParameterType)).ToArray();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
     }
 }

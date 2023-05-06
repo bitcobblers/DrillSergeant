@@ -2,7 +2,7 @@
 
 namespace JustBehave;
 
-public class ThenStep<TContext, TInput> : Step
+public class ThenStep<TContext, TInput> : VerbStep<TContext, TInput>
 {
     public ThenStep()
         : base("Then")

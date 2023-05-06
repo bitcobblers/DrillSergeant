@@ -1,39 +1,33 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace JustBehave;
 
-public class Step<TContext, TInput> : Step
-{
-    public Step(string verb)
-        : base(verb)
-    {
-    }
-}
-
-public class Step : IDisposable
+public abstract class VerbStep<TContext, TInput> : IStep
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
-    protected Step(string verb)
-        : this(verb, null)
+
+    public VerbStep(string verb)
+        : this(verb, string.Empty)
     {
+        
     }
 
-    protected Step(string verb, string? name)
+    public VerbStep(string verb, string? name)
     {
         this.Verb = verb;
-        this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name! : name.Trim();
+        this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 
-    ~Step()
+    ~VerbStep()
     {
         this.Dispose(disposing: false);
     }
 
-    public string Verb { get; }
+    public virtual string Verb { get; }
+    
     public virtual string Name { get; set; }
 
     public void Dispose()
@@ -42,7 +36,7 @@ public class Step : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public virtual object? Execute(IDependencyResolver resolver)
+    public virtual object Execute(IDependencyResolver resolver)
     {
         var handler = this.PickHandler();
         var parameters = this.ResolveParameters(resolver, handler.Method.GetParameters());
@@ -65,14 +59,12 @@ public class Step : IDisposable
         return handler.Method.Invoke(handler.Target, parameters);
     }
 
-    public static bool IsAsync(Type t) => t.Name == typeof(Task).Name || t.Name == typeof(Task<>).Name;
-
     internal virtual VerbMethod PickHandler()
     {
         var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                             where m.Name == this.Verb || m.Name == this.Verb + "Async"
                             let numParameters = m.GetParameters().Length
-                            let returnsTask = IsAsync(m.ReturnType)
+                            let returnsTask = m.IsAsync()
                             orderby numParameters descending, returnsTask descending
                             let verb = new VerbMethod(m, this, returnsTask)
                             group verb by numParameters into g

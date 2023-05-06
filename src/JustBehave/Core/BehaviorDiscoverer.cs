@@ -10,7 +10,7 @@ public class BehaviorDiscoverer : TheoryDiscoverer
         : base(diagnosticMessageSink)
     {
         // Uncomment this line to debug behavior discovery.
-        System.Diagnostics.Debugger.Launch();
+        // System.Diagnostics.Debugger.Launch();
     }
 
     protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute, object[] dataRow)

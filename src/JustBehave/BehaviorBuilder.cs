@@ -6,7 +6,7 @@ namespace JustBehave;
 
 public class BehaviorBuilder<TContext, TInput>
 {
-    private readonly List<Step> _steps = new();
+    private readonly List<IStep> _steps = new();
 
     // Experimental APIs.
     //public BehaviorBuilderWithInput<TContext, TInput> AddDependency<TDep>(string name="") => this;
@@ -43,7 +43,7 @@ public class BehaviorBuilder<TContext, TInput>
 
     // ---
 
-    public BehaviorThenBuilder<TContext, TInput> When(Step<TContext, TInput> step)
+    public BehaviorThenBuilder<TContext, TInput> When(VerbStep<TContext, TInput> step)
     {
         _steps.Add(step);
         return new BehaviorThenBuilder<TContext, TInput>(_steps);
@@ -64,9 +64,9 @@ public class BehaviorBuilder<TContext, TInput>
 
 public class BehaviorThenBuilder<TContext, TInput>
 {
-    private readonly List<Step> _steps = new();
+    private readonly List<IStep> _steps = new();
 
-    public BehaviorThenBuilder(IEnumerable<Step> steps) => _steps.AddRange(steps);
+    public BehaviorThenBuilder(IEnumerable<IStep> steps) => _steps.AddRange(steps);
 
     public BehaviorThenBuilder<TContext, TInput> Then(ThenStep<TContext, TInput> step) => this;
     public BehaviorThenBuilder<TContext, TInput> Then<TStep>() where TStep : ThenStep<TContext, TInput>, new()

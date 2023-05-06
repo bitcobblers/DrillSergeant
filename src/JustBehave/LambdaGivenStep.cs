@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace JustBehave;
+﻿namespace JustBehave;
 
 public class LambdaGivenStep<TContext, TInput> : LambdaStep<TContext, TInput>
 {

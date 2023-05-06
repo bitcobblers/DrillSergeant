@@ -2,7 +2,7 @@
 
 namespace JustBehave;
 
-public class WhenStep<TContext, TInput> : Step<TContext, TInput>
+public class WhenStep<TContext, TInput> : VerbStep<TContext, TInput>
 {
     public WhenStep()
         : base("When")
