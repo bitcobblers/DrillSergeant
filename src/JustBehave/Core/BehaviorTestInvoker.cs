@@ -52,7 +52,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
         try
         {
             var asyncSyncContext = new AsyncTestSyncContext(oldSyncContext);
-            
+
             SetSynchronizationContext(asyncSyncContext);
 
             await Aggregator.RunAsync(
@@ -60,26 +60,26 @@ public class BehaviorTestInvoker : XunitTestInvoker
                     async () =>
                     {
                         var parameters = ParseParameters(TestMethod, TestMethodArguments);
-
-                        if (TestMethod.Invoke(testClassInstance, parameters) is not Behavior behavior)
-                        {
-                            Aggregator.Add(new InvalidOperationException($"Behavior tests must return an instance of type {typeof(Behavior).FullName}"));
-                            return;
-                        }
-
+                        var behavior = (Behavior?)TestMethod.Invoke(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
                         var resolver = new DefaultResolver();
                         var context = behavior.InitContext();
                         var input = behavior.MapInput();
-                        bool stepFailed;
+                        bool previousStepFailed=false;
 
                         resolver.Register(context.GetType(), context);
                         resolver.Register(input.GetType(), input);
 
                         foreach (var step in behavior.Steps)
                         {
+                            if(previousStepFailed)
+                            {
+                                _outputHelper.WriteLine($"Step (skipped due to previous failure): {step.Name}");
+                                continue;
+                            }
+
                             var stepTimer = new ExecutionTimer();
-                            stepFailed = false;
-                            
+                            previousStepFailed = false;
+
                             await stepTimer.AggregateAsync(() =>
                             {
                                 try
@@ -91,16 +91,16 @@ public class BehaviorTestInvoker : XunitTestInvoker
                                         resolver.Register(result.GetType(), result);
                                     }
                                 }
-                                catch(Exception ex)
+                                catch (Exception ex)
                                 {
                                     Aggregator.Add(ex);
-                                    stepFailed = true;
+                                    previousStepFailed = true;
                                 }
 
                                 return Task.CompletedTask;
                             });
 
-                            if(stepFailed)
+                            if (previousStepFailed)
                             {
                                 _outputHelper.WriteLine($"Step (failed): {step.Name} took {stepTimer.Total:N2}s");
                             }
