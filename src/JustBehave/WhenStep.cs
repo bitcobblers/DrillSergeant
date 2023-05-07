@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace JustBehave;
+﻿namespace JustBehave;
 
 public class WhenStep<TContext, TInput> : VerbStep<TContext, TInput>
 {
@@ -9,10 +7,5 @@ public class WhenStep<TContext, TInput> : VerbStep<TContext, TInput>
     {
     }
 
-    public virtual void When(TContext context, TInput input)
-    {
-        WhenAsync(context, input).Wait();
-    }
-
-    public virtual Task WhenAsync(TContext context, TInput input) => Task.CompletedTask;
+    public virtual TContext When(TContext context, TInput input) => context;
 }
