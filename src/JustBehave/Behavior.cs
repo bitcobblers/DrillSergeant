@@ -32,7 +32,7 @@ public class Behavior<TContext, TInput> : Behavior
     // ---
 
     public Behavior<TContext, TInput> Given(Func<TContext, TInput, TContext> step) =>
-        this.Given("<untitled step>", step);
+        this.Given(step.Method.Name, step);
 
     public Behavior<TContext, TInput> Given(string name, Func<TContext, TInput, TContext> step)
     {
@@ -59,7 +59,7 @@ public class Behavior<TContext, TInput> : Behavior
     // ---
 
     public Behavior<TContext, TInput> When(Func<TContext, TInput, TContext> step) =>
-    this.When("<untitled step>", step);
+    this.When(step.Method.Name, step);
 
     public Behavior<TContext, TInput> When(string name, Func<TContext, TInput, TContext> step)
     {
@@ -86,7 +86,7 @@ public class Behavior<TContext, TInput> : Behavior
     // ---
 
     public Behavior<TContext, TInput> Then(Func<TContext, TInput, TContext> step) =>
-    this.Then("<untitled step>", step);
+    this.Then(step.Method.Name, step);
 
     public Behavior<TContext, TInput> Then(string name, Func<TContext, TInput, TContext> step)
     {
