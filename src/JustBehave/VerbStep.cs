@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace JustBehave;
 
@@ -62,7 +63,7 @@ public abstract class VerbStep<TContext, TInput> : IStep
         var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                             where m.Name == this.Verb || m.Name == this.Verb + "Async"
                             let numParameters = m.GetParameters().Length
-                            let returnsTask = m.IsAsync()
+                            let returnsTask = IsAsync(m)
                             orderby numParameters descending, returnsTask descending
                             let verb = new VerbMethod(m, this, returnsTask)
                             group verb by numParameters into g
@@ -88,7 +89,7 @@ public abstract class VerbStep<TContext, TInput> : IStep
         return highestGroup.First();
     }
 
-    protected object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
+    protected virtual object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
     {
         object resolve(ParameterInfo parameter)
         {
@@ -111,4 +112,7 @@ public abstract class VerbStep<TContext, TInput> : IStep
     protected virtual void Dispose(bool disposing)
     {
     }
+
+    internal static bool IsAsync(MethodInfo method) =>
+        method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
 }

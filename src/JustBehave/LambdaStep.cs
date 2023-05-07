@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace JustBehave;
 
-public class LambdaStep<TContext, TInput> : IStep
+public class LambdaStep<TContext, TInput> : VerbStep<TContext, TInput> //, IStep
 {
     private string? name;
     private Delegate handler = () => { };
 
     protected LambdaStep(string verb)
+        : base(verb)
     {
-        this.Verb = verb;
     }
 
     ~LambdaStep()
@@ -20,20 +18,12 @@ public class LambdaStep<TContext, TInput> : IStep
         this.Dispose(disposing: false);
     }
 
-    public virtual string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
-
-    public string Verb { get; }
+    public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
 
     public LambdaStep<TContext, TInput> Named(string name)
     {
         this.name = name?.Trim();
         return this;
-    }
-
-    public void Dispose()
-    {
-        this.Dispose(disposing: true);
-        GC.SuppressFinalize(this);
     }
 
     private LambdaStep<TContext, TInput> SetHandler(Delegate? handler)
@@ -62,36 +52,12 @@ public class LambdaStep<TContext, TInput> : IStep
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task>? handler) => this.SetHandler(handler);
 
-    public virtual object? Execute(object context, object input, IDependencyResolver resolver)
+    public override object? Execute(object context, object input, IDependencyResolver resolver)
     {
         var parameters = ResolveParameters(resolver, context, input, this.handler.Method.GetParameters());
 
         dynamic r = this.handler.DynamicInvoke(parameters)!;
 
-        return this.handler.Method.IsAsync() ? r.Result : r;
-    }
-
-    protected object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
-    {
-        object resolve(ParameterInfo parameter)
-        {
-            if(parameter.ParameterType == context.GetType())
-            {
-                return context;
-            }
-            else if(parameter.ParameterType == input.GetType())
-            {
-                return input;
-            }
-
-            return resolver.Resolve(parameter.ParameterType);
-        }
-
-        return (from p in parameters
-                select resolve(p)).ToArray();
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
+        return IsAsync(this.handler.Method) ? r.Result : r;
     }
 }
