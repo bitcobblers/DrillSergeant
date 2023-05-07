@@ -49,7 +49,7 @@ public class LambdaGivenStepTests
             step.Handle(given.Object);
 
             // Act.
-            var result = step.Execute(resolver.Object);
+            var result = step.Execute(new Context(0), new Input(), resolver.Object);
 
             // Assert.
             given.VerifyAll();
@@ -69,7 +69,7 @@ public class LambdaGivenStepTests
             step.Handle(handler.Object);
 
             // Act.
-            step.Execute(resolver.Object);
+            step.Execute(new Context(0), new Input(), resolver.Object);
 
             // Assert.
             handler.Verify(x => x(It.IsAny<Context>(), It.IsAny<Input>()), Times.Once());
@@ -86,7 +86,7 @@ public class LambdaGivenStepTests
             step.Handle(handler.Object);
 
             // Act.
-            step.Execute(resolver.Object);
+            step.Execute(new Context(0), new Input(), resolver.Object);
 
             // Assert.
             handler.Verify(x => x(It.IsAny<Context>(), It.IsAny<Input>(), It.IsAny<IStubInjectable>()), Times.Once());

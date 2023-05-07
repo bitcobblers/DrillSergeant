@@ -34,10 +34,10 @@ public abstract class VerbStep<TContext, TInput> : IStep
         GC.SuppressFinalize(this);
     }
 
-    public virtual object? Execute(IDependencyResolver resolver)
+    public virtual object? Execute(object context, object input, IDependencyResolver resolver)
     {
         var handler = this.PickHandler();
-        var parameters = this.ResolveParameters(resolver, handler.Method.GetParameters());
+        var parameters = this.ResolveParameters(resolver, context, input, handler.Method.GetParameters());
 
         if (handler.IsAsync)
         {
@@ -88,10 +88,24 @@ public abstract class VerbStep<TContext, TInput> : IStep
         return highestGroup.First();
     }
 
-    protected object?[] ResolveParameters(IDependencyResolver resolver, ParameterInfo[] parameters)
+    protected object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
     {
+        object resolve(ParameterInfo parameter)
+        {
+            if (parameter.ParameterType == context.GetType())
+            {
+                return context;
+            }
+            else if (parameter.ParameterType == input.GetType())
+            {
+                return input;
+            }
+
+            return resolver.Resolve(parameter.ParameterType);
+        }
+
         return (from p in parameters
-                select resolver.Resolve(p.ParameterType)).ToArray();
+                select resolve(p)).ToArray();
     }
 
     protected virtual void Dispose(bool disposing)

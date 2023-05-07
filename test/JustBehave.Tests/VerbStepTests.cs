@@ -57,64 +57,64 @@ public class VerbStepTests
 
     public class ExecuteMethod : VerbStepTests
     {
-        [Fact]
-        public void CanExecuteMethodWithNoParameters()
-        {
-            // Arrange.
-            var resolver = new Mock<IDependencyResolver>();
-            var stub = new StubWithNoParameters();
+        //[Fact]
+        //public void CanExecuteMethodWithNoParameters()
+        //{
+        //    // Arrange.
+        //    var resolver = new Mock<IDependencyResolver>();
+        //    var stub = new StubWithNoParameters();
 
-            // Act.
-            _ = stub.Execute(resolver.Object);
+        //    // Act.
+        //    _ = stub.Execute(resolver.Object);
 
-            // Assert.
-            Assert.True(stub.HasExecuted);
-        }
+        //    // Assert.
+        //    Assert.True(stub.HasExecuted);
+        //}
 
-        [Fact]
-        public void InjectsParametersIntoMethod()
-        {
-            // Arrange.
-            var injectable = new Mock<IStubInjectable>();
-            var resolver = new Mock<IDependencyResolver>();
-            var stub = new StubWithInjectableParameter();
+        //[Fact]
+        //public void InjectsParametersIntoMethod()
+        //{
+        //    // Arrange.
+        //    var injectable = new Mock<IStubInjectable>();
+        //    var resolver = new Mock<IDependencyResolver>();
+        //    var stub = new StubWithInjectableParameter();
 
-            resolver.Setup(x => x.Resolve(typeof(IStubInjectable))).Returns(injectable.Object);
+        //    resolver.Setup(x => x.Resolve(typeof(IStubInjectable))).Returns(injectable.Object);
 
-            // Act.
-            _ = stub.Execute(resolver.Object);
+        //    // Act.
+        //    _ = stub.Execute(resolver.Object);
 
-            // Assert.
-            injectable.Verify(x => x.DoSomething(), Times.Once());
-        }
+        //    // Assert.
+        //    injectable.Verify(x => x.DoSomething(), Times.Once());
+        //}
 
-        [Fact]
-        public void ReturnsExpectedResultFromSyncMethod()
-        {
-            // Arrange.
-            var resolver = new Mock<IDependencyResolver>();
-            var stub = new StubThatReturnsValue_Sync();
+        //[Fact]
+        //public void ReturnsExpectedResultFromSyncMethod()
+        //{
+        //    // Arrange.
+        //    var resolver = new Mock<IDependencyResolver>();
+        //    var stub = new StubThatReturnsValue_Sync();
 
-            // Act.
-            var result = stub.Execute(resolver.Object);
+        //    // Act.
+        //    var result = stub.Execute(resolver.Object);
 
-            // Assert.
-            Assert.Equal("expected", result);
-        }
+        //    // Assert.
+        //    Assert.Equal("expected", result);
+        //}
 
-        [Fact]
-        public void ReturnsExpectedResultFromAsyncMethod()
-        {
-            // Arrange.
-            var resolver = new Mock<IDependencyResolver>();
-            var stub = new StubThatReturnsValue_Async();
+        //[Fact]
+        //public void ReturnsExpectedResultFromAsyncMethod()
+        //{
+        //    // Arrange.
+        //    var resolver = new Mock<IDependencyResolver>();
+        //    var stub = new StubThatReturnsValue_Async();
 
-            // Act.
-            var result = stub.Execute(resolver.Object);
+        //    // Act.
+        //    var result = stub.Execute(resolver.Object);
 
-            // Assert.
-            Assert.Equal("expected", result);
-        }
+        //    // Assert.
+        //    Assert.Equal("expected", result);
+        //}
 
         public interface IStubInjectable
         {

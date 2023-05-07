@@ -57,61 +57,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
 
             await Aggregator.RunAsync(
                 () => Timer.AggregateAsync(
-                    async () =>
-                    {
-                        var parameters = ParseParameters(TestMethod, TestMethodArguments);
-                        var behavior = (Behavior?)TestMethod.Invoke(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
-                        var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
-                        var context = behavior.InitContext();
-                        var input = behavior.MapInput();
-                        bool previousStepFailed = false;
-
-                        resolver.Register(context.GetType(), context);
-                        resolver.Register(input.GetType(), input);
-
-                        foreach (var step in behavior.Steps)
-                        {
-                            if (previousStepFailed)
-                            {
-                                _outputHelper.WriteLine($"Step (skipped due to previous failure): {step.Name}");
-                                continue;
-                            }
-
-                            var stepTimer = new ExecutionTimer();
-                            previousStepFailed = false;
-
-                            await stepTimer.AggregateAsync(() =>
-                            {
-                                try
-                                {
-                                    var result = step.Execute(resolver);
-
-                                    if (result != null)
-                                    {
-                                        resolver.Register(result.GetType(), result);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Aggregator.Add(ex);
-                                    previousStepFailed = true;
-                                }
-
-                                return Task.CompletedTask;
-                            });
-
-                            if (previousStepFailed)
-                            {
-                                _outputHelper.WriteLine($"Step (failed): {step.Name} took {stepTimer.Total:N2}s");
-                            }
-                            else
-                            {
-                                _outputHelper.WriteLine($"Step: {step.Name} took {stepTimer.Total:N2}s");
-                            }
-                        }
-
-                        await Task.CompletedTask;
-                    }
+                    () => InvokeBehavior(testClassInstance)
                 )
             );
         }
@@ -121,6 +67,64 @@ public class BehaviorTestInvoker : XunitTestInvoker
         }
 
         return Timer.Total;
+    }
+
+    private async Task InvokeBehavior(object testClassInstance)
+    {
+        var parameters = ParseParameters(TestMethod, TestMethodArguments);
+        var behavior = (Behavior?)TestMethod.Invoke(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
+        var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
+        var context = behavior.InitContext();
+        var input = behavior.MapInput();
+        bool previousStepFailed = false;
+
+        foreach (var step in behavior.Steps)
+        {
+            if (previousStepFailed)
+            {
+                FormatStepSkippedMessage(step.Name);
+                continue;
+            }
+
+            var stepTimer = new ExecutionTimer();
+            previousStepFailed = false;
+
+            await stepTimer.AggregateAsync(() =>
+            {
+                try
+                {
+                    context = step.Execute(context, input, resolver) ?? context;
+                }
+                catch (Exception ex)
+                {
+                    Aggregator.Add(ex);
+                    previousStepFailed = true;
+                }
+
+                return Task.CompletedTask;
+            });
+
+            FormatStepCompletedMessage(previousStepFailed, step.Name, stepTimer.Total);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private void FormatStepSkippedMessage(string name)
+    {
+        _outputHelper.WriteLine($"Step (skipped due to previous failure): {name}");
+    }
+
+    private void FormatStepCompletedMessage(bool failed, string name, decimal elapsed)
+    {
+        if (failed)
+        {
+            _outputHelper.WriteLine($"Step (failed): {name} took {elapsed:N2}s");
+        }
+        else
+        {
+            _outputHelper.WriteLine($"Step: {name} took {elapsed:N2}s");
+        }
     }
 
     internal static IDependencyResolver? GetDependencyResolver(Type testClass, object instance)

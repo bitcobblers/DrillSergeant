@@ -62,19 +62,33 @@ public class LambdaStep<TContext, TInput> : IStep
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task>? handler) => this.SetHandler(handler);
 
-    public virtual object? Execute(IDependencyResolver resolver)
+    public virtual object? Execute(object context, object input, IDependencyResolver resolver)
     {
-        var parameters = ResolveParameters(resolver, this.handler.Method.GetParameters());
+        var parameters = ResolveParameters(resolver, context, input, this.handler.Method.GetParameters());
 
         dynamic r = this.handler.DynamicInvoke(parameters)!;
 
         return this.handler.Method.IsAsync() ? r.Result : r;
     }
 
-    protected object?[] ResolveParameters(IDependencyResolver resolver, ParameterInfo[] parameters)
+    protected object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
     {
+        object resolve(ParameterInfo parameter)
+        {
+            if(parameter.ParameterType == context.GetType())
+            {
+                return context;
+            }
+            else if(parameter.ParameterType == input.GetType())
+            {
+                return input;
+            }
+
+            return resolver.Resolve(parameter.ParameterType);
+        }
+
         return (from p in parameters
-                select resolver.Resolve(p.ParameterType)).ToArray();
+                select resolve(p)).ToArray();
     }
 
     protected virtual void Dispose(bool disposing)
