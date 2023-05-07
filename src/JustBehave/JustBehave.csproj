@@ -8,6 +8,8 @@
 
 	<ItemGroup>
 	  <Compile Remove="BehaviorBuilder.cs" />
+	  <Compile Remove="Core\BehaviorTheoryTestCase.cs" />
+	  <Compile Remove="Core\BehaviorTheoryTestCaseRunner.cs" />
 	  <Compile Remove="Core\MessageBusExtensions.cs" />
 	</ItemGroup>
 
