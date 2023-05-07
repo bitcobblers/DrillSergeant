@@ -11,7 +11,7 @@ public class CalculatorBehaviors
     public ITestOutputHelper output;
 
     public record Context(int A, int B, int Result);
-    public record struct Input(int A, int B, int Expected);
+    public record Input(int A, int B, int Expected);
 
     public CalculatorBehaviors(ITestOutputHelper output)
     {
@@ -30,21 +30,19 @@ public class CalculatorBehaviors
     //[BehaviorResolverSetup]
     //public IDependencyResolver ConfigureResolver()
     //{
-    //    return new DefaultResolver();
+    //    var resolver = A.Fake<IDependencyResolver>();
+    //    A.CallTo(() => resolver.Resolve(typeof(Calculator))).Returns(new Calculator());
+    //    return resolver;
     //}
 
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
-        this.output.WriteLine("Invoking AdditionBehavior()");
-
         return new Behavior<Context, Input>()
             .WithInput(() => new Input(a, b, expected))
             .WithContext(() => new Context(0, 0, 0))
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
-            //.When(AddNumbers(calculator))
-            //.When("Add the numbers", (c, i) => c with { Result = c.A + c.B })
             .When(AddNumbers(calculator))
             .Then<CheckResultStep>();
     }
@@ -61,8 +59,7 @@ public class CalculatorBehaviors
     // Step implemented as type for full customization and reusability.
     public class CheckResultStep : ThenStep<Context, Input>
     {
-
-        public override Task ThenAsync(Context context, Input input)
+        public Task ThenAsync(Context context, Input input)
         {
             Assert.Equal(input.Expected, context.Result);
             return Task.CompletedTask;
