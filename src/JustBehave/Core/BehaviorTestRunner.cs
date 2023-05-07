@@ -28,9 +28,6 @@ public class BehaviorTestRunner : XunitTestRunner
 
     private Task<decimal> InvokeTestMethodAsync(ExceptionAggregator aggregator, ITestOutputHelper outputHelper)
     {
-        // Uncomment the following line to debug individual behavior tests.
-        // System.Diagnostics.Debugger.Launch();
-
         var invoker = new BehaviorTestInvoker(
             outputHelper,
             Test,
