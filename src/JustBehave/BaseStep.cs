@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -11,11 +12,13 @@ public abstract class BaseStep<TContext, TInput> : IStep
 
     public virtual string Name { get; protected set; } = "<untitled step>";
 
+    [ExcludeFromCodeCoverage]
     ~BaseStep()
     {
         this.Dispose(disposing: false);
     }
 
+    [ExcludeFromCodeCoverage]
     public void Dispose()
     {
         this.Dispose(disposing: true);
@@ -24,7 +27,7 @@ public abstract class BaseStep<TContext, TInput> : IStep
 
     public abstract object? Execute(object context, object input, IDependencyResolver resolver);
 
-    protected virtual object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
+    internal virtual object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
     {
         object resolve(ParameterInfo parameter)
         {
@@ -40,10 +43,10 @@ public abstract class BaseStep<TContext, TInput> : IStep
             return resolver.Resolve(parameter.ParameterType);
         }
 
-        return (from p in parameters
-                select resolve(p)).ToArray();
+        return parameters.Select(resolve).ToArray();
     }
 
+    [ExcludeFromCodeCoverage]
     protected virtual void Dispose(bool disposing)
     {
     }

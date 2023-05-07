@@ -8,7 +8,7 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
     private string? name;
     private Delegate handler = () => { };
 
-    protected LambdaStep(string verb)
+    public LambdaStep(string verb)
     {
         this.Verb = verb;
     }
@@ -17,6 +17,11 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
 
     public LambdaStep<TContext, TInput> Named(string name)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return this;
+        }
+
         this.name = name?.Trim();
         return this;
     }
@@ -31,16 +36,24 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
         return this;
     }
 
-    public LambdaStep<TContext, TInput> Handle(Func<TContext>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle(Func<TContext, TContext>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle(Func<TContext, TInput, TContext>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, TContext>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, TContext>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, TContext>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TContext>? handler) => this.SetHandler(handler);
 
-    public LambdaStep<TContext, TInput> Handle(Func<Task>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle(Func<TContext, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle(Func<TContext, TInput, Task<TContext>>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, Task<TContext>>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, Task<TContext>>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task<TContext>>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task<TContext>>? handler) => this.SetHandler(handler);
+
+    public LambdaStep<TContext, TInput> Handle(Action<TContext, TInput>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1>(Action<TContext, TInput, TArg1>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Action<TContext, TInput, TArg1, TArg2>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Action<TContext, TInput, TArg1, TArg2, TArg3>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4>? handler) => this.SetHandler(handler);
+
     public LambdaStep<TContext, TInput> Handle(Func<TContext, TInput, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, Task>? handler) => this.SetHandler(handler);
@@ -50,9 +63,24 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
     public override object? Execute(object context, object input, IDependencyResolver resolver)
     {
         var parameters = ResolveParameters(resolver, context, input, this.handler.Method.GetParameters());
-
+        var isAsync = IsAsync(this.handler.Method);
         dynamic r = this.handler.DynamicInvoke(parameters)!;
 
-        return IsAsync(this.handler.Method) ? r.Result : r;
+        if (isAsync)
+        {
+            if (this.handler.Method.ReturnType.IsGenericType)
+            {
+                return r.Result;
+            }
+            else
+            {
+                r.Wait();
+                return null;
+            }
+        }
+        else
+        {
+            return r;
+        }
     }
 }

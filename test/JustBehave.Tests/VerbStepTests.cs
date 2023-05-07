@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FakeItEasy;
+using Shouldly;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -56,71 +58,115 @@ public class VerbStepTests
 
     public class ExecuteMethod : VerbStepTests
     {
-        //[Fact]
-        //public void CanExecuteMethodWithNoParameters()
-        //{
-        //    // Arrange.
-        //    var resolver = new Mock<IDependencyResolver>();
-        //    var stub = new StubWithNoParameters();
+        public record Context();
+        public record Input();
 
-        //    // Act.
-        //    _ = stub.Execute(resolver.Object);
+        [Fact]
+        public void NonAsyncMethodWithNoReturnReturnsNull()
+        {
+            // Arrange.
+            var step = new StubStep_NonAsync_NoReturn();
+            var resolver = A.Fake<IDependencyResolver>();
+            var context = new Context();
+            var input = new Input();
 
-        //    // Assert.
-        //    Assert.True(stub.HasExecuted);
-        //}
+            // Act.
+            var result = step.Execute(context, input, resolver);
 
-        //[Fact]
-        //public void InjectsParametersIntoMethod()
-        //{
-        //    // Arrange.
-        //    var injectable = new Mock<IStubInjectable>();
-        //    var resolver = new Mock<IDependencyResolver>();
-        //    var stub = new StubWithInjectableParameter();
+            // Assert.
+            result.ShouldBeNull();
+        }
 
-        //    resolver.Setup(x => x.Resolve(typeof(IStubInjectable))).Returns(injectable.Object);
+        [Fact]
+        public void AsyncMethodWithNoReturnReturnsNull()
+        {
+            // Arrange.
+            var step = new StubStep_Async_NoReturn();
+            var resolver = A.Fake<IDependencyResolver>();
+            var context = new Context();
+            var input = new Input();
 
-        //    // Act.
-        //    _ = stub.Execute(resolver.Object);
+            // Act.
+            var result = step.Execute(context, input, resolver);
 
-        //    // Assert.
-        //    injectable.Verify(x => x.DoSomething(), Times.Once());
-        //}
+            // Assert.
+            result.ShouldBeNull();
+        }
 
-        //[Fact]
-        //public void ReturnsExpectedResultFromSyncMethod()
-        //{
-        //    // Arrange.
-        //    var resolver = new Mock<IDependencyResolver>();
-        //    var stub = new StubThatReturnsValue_Sync();
+        [Fact]
+        public void NonAsyncMethodWithReturnReturnsExpectedValue()
+        {
+            // Arrange.
+            var step = new StubStep_NonAsync_ReturnsValue();
+            var resolver = A.Fake<IDependencyResolver>();
+            var context = new Context();
+            var input = new Input();
 
-        //    // Act.
-        //    var result = stub.Execute(resolver.Object);
+            // Act.
+            var result = step.Execute(context, input, resolver);
 
-        //    // Assert.
-        //    Assert.Equal("expected", result);
-        //}
+            // Assert.
+            result.ShouldBe(1);
+        }
 
-        //[Fact]
-        //public void ReturnsExpectedResultFromAsyncMethod()
-        //{
-        //    // Arrange.
-        //    var resolver = new Mock<IDependencyResolver>();
-        //    var stub = new StubThatReturnsValue_Async();
+        [Fact]
+        public void AsyncMethodWithReturnReturnsExpectedValue()
+        {
+            // Arrange.
+            var step = new StubStep_Async_ReturnsValue();
+            var resolver = A.Fake<IDependencyResolver>();
+            var context = new Context();
+            var input = new Input();
 
-        //    // Act.
-        //    var result = stub.Execute(resolver.Object);
+            // Act.
+            var result = step.Execute(context, input, resolver);
 
-        //    // Assert.
-        //    Assert.Equal("expected", result);
-        //}
+            // Assert.
+            result.ShouldBe(1);
+        }
+
+        public class StubStep_NonAsync_NoReturn : VerbStep<Context, Input>
+        {
+            public StubStep_NonAsync_NoReturn() : base("Test")
+            {
+            }
+
+            public void Test(Context context, Input input) { }
+        }
+
+        public class StubStep_Async_NoReturn : VerbStep<Context, Input>
+        {
+            public StubStep_Async_NoReturn() : base("Test")
+            {
+            }
+
+            public Task Test(Context context, Input input) => Task.CompletedTask;
+        }
+
+        public class StubStep_NonAsync_ReturnsValue : VerbStep<Context, Input>
+        {
+            public StubStep_NonAsync_ReturnsValue() : base("Test")
+            {
+            }
+
+            public int Test(Context context, Input input) => 1;
+        }
+
+        public class StubStep_Async_ReturnsValue : VerbStep<Context, Input>
+        {
+            public StubStep_Async_ReturnsValue() : base("Test")
+            {
+            }
+
+            public Task<int> Test(Context context, Input input) => Task.FromResult(1);
+        }
 
         public interface IStubInjectable
         {
             void DoSomething();
         }
 
-        public class StubWithNoParameters : VerbStep<object,object>
+        public class StubWithNoParameters : VerbStep<Context,Input>
         {
             public StubWithNoParameters()
                 : base("Test")
@@ -135,7 +181,7 @@ public class VerbStepTests
             }
         }
 
-        public class StubWithInjectableParameter : VerbStep<object, object>
+        public class StubWithInjectableParameter : VerbStep<Context, Input>
         {
             public StubWithInjectableParameter()
                 : base("Test")
@@ -148,7 +194,7 @@ public class VerbStepTests
             }
         }
 
-        public class StubThatReturnsValue_Sync : VerbStep<object, object>
+        public class StubThatReturnsValue_Sync : VerbStep<Context, Input>
         {
             public StubThatReturnsValue_Sync()
                 : base("Test")
@@ -158,7 +204,7 @@ public class VerbStepTests
             public string Test() => "expected";
         }
 
-        public class StubThatReturnsValue_Async : VerbStep<object, object>
+        public class StubThatReturnsValue_Async : VerbStep<Context, Input>
         {
             public StubThatReturnsValue_Async()
                 : base("Test")

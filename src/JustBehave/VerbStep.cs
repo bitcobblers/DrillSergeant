@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace JustBehave;
 
-public abstract class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
+public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
