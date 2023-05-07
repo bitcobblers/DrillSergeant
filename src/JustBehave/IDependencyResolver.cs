@@ -4,7 +4,9 @@ namespace JustBehave;
 
 public interface IDependencyResolver
 {
-    T Resolve<T>();
+    void Register(object instance);
+    void Register(Type type, object instance);
 
+    T Resolve<T>();
     object Resolve(Type type);
 }

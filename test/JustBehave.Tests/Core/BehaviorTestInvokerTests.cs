@@ -7,6 +7,81 @@ namespace JustBehave.Tests.Core;
 
 public class BehaviorTestInvokerTests
 {
+    public class GetDependencyResolverTests : BehaviorTestInvokerTests
+    {
+        [Fact]
+        public void SetupMethodReturnsResolver()
+        {
+            // Arrange.
+            var instance = new StubWithSetupMethod();
+
+            // Act.
+            var result = BehaviorTestInvoker.GetDependencyResolver(typeof(StubWithSetupMethod), instance);
+
+            // Assert.
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void NoSetupMethodReturnsNull()
+        {
+            // Arrange.
+            var instance = new StubWithNoSetupMethod();
+
+            // Act.
+            var result = BehaviorTestInvoker.GetDependencyResolver(typeof(StubWithNoSetupMethod), instance);
+
+            // Assert.
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void SetupWithWrongReturnTypeReturnsNull()
+        {
+            // Arrange.
+            var instance = new StubWithSetupMethod_WrongReturn();
+
+            // Act.
+            var result = BehaviorTestInvoker.GetDependencyResolver(typeof(StubWithSetupMethod_WrongReturn), instance);
+
+            // Assert.
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void SetupWithParametersReturnsNull()
+        {
+            // Arrange.
+            var instance = new StubWithSetupMethod_InvalidArgs();
+
+            // Act.
+            var result = BehaviorTestInvoker.GetDependencyResolver(typeof(StubWithSetupMethod_InvalidArgs), instance);
+
+            // Assert.
+            Assert.Null(result);
+        }
+
+        public class StubWithNoSetupMethod { }
+        
+        public class StubWithSetupMethod
+        {
+            [BehaviorResolverSetup]
+            public IDependencyResolver Setup() => new DefaultResolver();
+        }
+
+        public class StubWithSetupMethod_WrongReturn
+        {
+            [BehaviorResolverSetup]
+            public bool Setup() => false;
+        }
+
+        public class StubWithSetupMethod_InvalidArgs
+        {
+            [BehaviorResolverSetup]
+            public IDependencyResolver Setup(int invalid) => new DefaultResolver();
+        }
+    }
+
     public class ParseParametersMethod : BehaviorTestInvokerTests
     {
         [Fact]

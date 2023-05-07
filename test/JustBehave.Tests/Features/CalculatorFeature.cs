@@ -27,6 +27,12 @@ public class CalculatorBehaviors
         };
     }
 
+    //[BehaviorResolverSetup]
+    //public IDependencyResolver ConfigureResolver()
+    //{
+    //    return new DefaultResolver();
+    //}
+
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {

@@ -15,7 +15,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
     private readonly ITestOutputHelper _outputHelper;
 
     public BehaviorTestInvoker(ITestOutputHelper outputHelper, ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource)
-        : base(test, messageBus, testClass, constructorArguments, testMethod, testMethodArguments, beforeAfterAttributes, aggregator, cancellationTokenSource) 
+        : base(test, messageBus, testClass, constructorArguments, testMethod, testMethodArguments, beforeAfterAttributes, aggregator, cancellationTokenSource)
         => _outputHelper = outputHelper;
 
     protected override Task<decimal> InvokeTestMethodAsync(object testClassInstance)
@@ -61,17 +61,17 @@ public class BehaviorTestInvoker : XunitTestInvoker
                     {
                         var parameters = ParseParameters(TestMethod, TestMethodArguments);
                         var behavior = (Behavior?)TestMethod.Invoke(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
-                        var resolver = new DefaultResolver();
+                        var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
                         var context = behavior.InitContext();
                         var input = behavior.MapInput();
-                        bool previousStepFailed=false;
+                        bool previousStepFailed = false;
 
                         resolver.Register(context.GetType(), context);
                         resolver.Register(input.GetType(), input);
 
                         foreach (var step in behavior.Steps)
                         {
-                            if(previousStepFailed)
+                            if (previousStepFailed)
                             {
                                 _outputHelper.WriteLine($"Step (skipped due to previous failure): {step.Name}");
                                 continue;
@@ -123,6 +123,24 @@ public class BehaviorTestInvoker : XunitTestInvoker
         return Timer.Total;
     }
 
+    internal static IDependencyResolver? GetDependencyResolver(Type testClass, object instance)
+    {
+        var flags = BindingFlags.Public | BindingFlags.Instance;
+        var setupMethod = (from method in testClass.GetMethods(flags)
+                           let attr = method.GetCustomAttribute<BehaviorResolverSetupAttribute>()
+                           where attr != null
+                           where method.GetParameters().Length == 0
+                           where method.ReturnType == typeof(IDependencyResolver)
+                           select method).FirstOrDefault();
+
+        if (setupMethod != null)
+        {
+            return (IDependencyResolver?)setupMethod.Invoke(instance, Array.Empty<object>());
+        }
+
+        return null;
+    }
+
     internal static object?[] ParseParameters(MethodInfo method, object[] passedArguments)
     {
         var methodParams = method.GetParameters();
@@ -130,7 +148,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
         int passedArgumentsOffset = 0;
         int numInjectedParams = methodParams.Count(x => x.GetCustomAttribute<InjectAttribute>() != null);
 
-        if( resultParams.Length - numInjectedParams != passedArguments.Length)
+        if (resultParams.Length - numInjectedParams != passedArguments.Length)
         {
             throw new InvalidOperationException("The number of non-injected parameters must match the number of input parameters.");
         }
