@@ -3,19 +3,14 @@ using System.Threading.Tasks;
 
 namespace JustBehave;
 
-public class LambdaStep<TContext, TInput> : VerbStep<TContext, TInput> //, IStep
+public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
 {
     private string? name;
     private Delegate handler = () => { };
 
     protected LambdaStep(string verb)
-        : base(verb)
     {
-    }
-
-    ~LambdaStep()
-    {
-        this.Dispose(disposing: false);
+        this.Verb = verb;
     }
 
     public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace JustBehave;
 
-public abstract class VerbStep<TContext, TInput> : IStep
+public abstract class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
@@ -20,22 +19,7 @@ public abstract class VerbStep<TContext, TInput> : IStep
         this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 
-    ~VerbStep()
-    {
-        this.Dispose(disposing: false);
-    }
-
-    public virtual string Verb { get; }
-    
-    public virtual string Name { get; set; }
-
-    public void Dispose()
-    {
-        this.Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    public virtual object? Execute(object context, object input, IDependencyResolver resolver)
+    public override object? Execute(object context, object input, IDependencyResolver resolver)
     {
         var handler = this.PickHandler();
         var parameters = this.ResolveParameters(resolver, context, input, handler.Method.GetParameters());
@@ -46,8 +30,8 @@ public abstract class VerbStep<TContext, TInput> : IStep
             var task = handler.Method.Invoke(handler.Target, parameters)!;
 
             taskType.GetMethod("Wait", Array.Empty<Type>())?.Invoke(task, null);
-            
-            if(taskType.GenericTypeArguments.Length>0)
+
+            if (taskType.GenericTypeArguments.Length > 0)
             {
                 return taskType.GetProperty("Result")?.GetValue(task, null);
             }
@@ -88,31 +72,4 @@ public abstract class VerbStep<TContext, TInput> : IStep
 
         return highestGroup.First();
     }
-
-    protected virtual object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
-    {
-        object resolve(ParameterInfo parameter)
-        {
-            if (parameter.ParameterType == context.GetType())
-            {
-                return context;
-            }
-            else if (parameter.ParameterType == input.GetType())
-            {
-                return input;
-            }
-
-            return resolver.Resolve(parameter.ParameterType);
-        }
-
-        return (from p in parameters
-                select resolve(p)).ToArray();
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-    }
-
-    internal static bool IsAsync(MethodInfo method) =>
-        method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
 }
