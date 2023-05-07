@@ -25,7 +25,7 @@ public class Behavior<TContext, TInput> : Behavior
 
     public Behavior<TContext, TInput> WithInput(Func<TInput> mapInput)
     {
-        this.MapInput = () => mapInput;
+        this.MapInput = () => mapInput()!;
         return this;
     }
 
