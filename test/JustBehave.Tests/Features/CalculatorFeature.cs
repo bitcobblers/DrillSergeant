@@ -1,10 +1,10 @@
-﻿using JustBehave.Core;
+﻿using DrillSergeant.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace JustBehave.Tests.Features;
+namespace DrillSergeant.Tests.Features;
 
 public class CalculatorBehaviors
 {
@@ -36,8 +36,12 @@ public class CalculatorBehaviors
     //}
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
+    public Behavior AdditionBehavior(int a, int b, int expected)
     {
+        Calculator calculator = new();
+
+        // [Inject] Calculator calculator
+
         return new Behavior<Context, Input>()
             .WithInput(() => new Input(a, b, expected))
             .WithContext(() => new Context(0, 0, 0))

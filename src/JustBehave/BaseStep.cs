@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace JustBehave;
+namespace DrillSergeant;
 
 public abstract class BaseStep<TContext, TInput> : IStep
 {

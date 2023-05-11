@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace JustBehave;
+namespace DrillSergeant;
 
 public static class Extensions
 {

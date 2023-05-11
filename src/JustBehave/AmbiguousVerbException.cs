@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
-namespace JustBehave;
+namespace DrillSergeant;
 
 [Serializable, ExcludeFromCodeCoverage]
 public class AmbiguousVerbException : Exception, ISerializable

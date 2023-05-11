@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace JustBehave;
+namespace DrillSergeant;
 
 public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
 {

@@ -1,4 +1,4 @@
-﻿namespace JustBehave.Tests.Features;
+﻿namespace DrillSergeant.Tests.Features;
 
 public class Calculator
 {

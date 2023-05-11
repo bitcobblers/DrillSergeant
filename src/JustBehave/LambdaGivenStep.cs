@@ -1,4 +1,4 @@
-﻿namespace JustBehave;
+﻿namespace DrillSergeant;
 
 public class LambdaGivenStep<TContext, TInput> : LambdaStep<TContext, TInput>
 {

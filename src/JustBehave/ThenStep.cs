@@ -1,4 +1,4 @@
-﻿namespace JustBehave;
+﻿namespace DrillSergeant;
 
 public class ThenStep<TContext, TInput> : VerbStep<TContext, TInput>
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace JustBehave;
+namespace DrillSergeant;
 
 public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
 {

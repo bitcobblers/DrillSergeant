@@ -1,9 +1,9 @@
-﻿using JustBehave.Core;
+﻿using DrillSergeant.Core;
 using System;
 using System.Reflection;
 using Xunit;
 
-namespace JustBehave.Tests.Core;
+namespace DrillSergeant.Tests.Core;
 
 public class BehaviorTestInvokerTests
 {

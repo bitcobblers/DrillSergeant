@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JustBehave;
+namespace DrillSergeant;
 
 public class DefaultResolver : IDependencyResolver
 {

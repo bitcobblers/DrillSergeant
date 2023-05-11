@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JustBehave;
+namespace DrillSergeant;
 
 public abstract class Behavior
 {

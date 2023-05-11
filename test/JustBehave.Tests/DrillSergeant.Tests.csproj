@@ -31,8 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\JustBehave.Autofac\JustBehave.Autofac.csproj" />
-		<ProjectReference Include="..\..\src\JustBehave\JustBehave.csproj" />
+		<ProjectReference Include="..\..\src\JustBehave\DrillSergeant.csproj" />
 	</ItemGroup>
 
 </Project>

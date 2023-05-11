@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace JustBehave.Core;
+namespace DrillSergeant.Core;
 
 public class BehaviorTestCase : XunitTestCase
 {

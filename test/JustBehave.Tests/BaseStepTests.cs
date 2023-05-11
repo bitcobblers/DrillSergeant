@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace JustBehave.Tests;
+namespace DrillSergeant.Tests;
 
 public class BaseStepTests
 {

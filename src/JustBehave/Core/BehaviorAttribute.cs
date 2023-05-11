@@ -3,10 +3,10 @@ using System.Diagnostics.CodeAnalysis;
 using Xunit;
 using Xunit.Sdk;
 
-namespace JustBehave.Core;
+namespace DrillSergeant.Core;
 
 [ExcludeFromCodeCoverage, AttributeUsage(AttributeTargets.Method)]
-[XunitTestCaseDiscoverer("JustBehave.Core.BehaviorDiscoverer", "JustBehave")]
+[XunitTestCaseDiscoverer("DrillSergeant.Core.BehaviorDiscoverer", "DrillSergeant")]
 public sealed class BehaviorAttribute : TheoryAttribute
 {
 }
