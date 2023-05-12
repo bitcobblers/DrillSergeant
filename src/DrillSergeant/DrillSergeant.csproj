@@ -1,40 +1,36 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<AssemblyName>DrillSergeant</AssemblyName>
-		<Company>BitCobblers</Company>
-		<Authors>Michael Vastarelli</Authors>
-		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<Version>0.0.1</Version>
-		<PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
-		<PackageTags>xunit;unit testing; behavior testing; acceptance testing</PackageTags>
-		<RepositoryType>git</RepositoryType>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Title>Drill Sergeant</Title>
-		<Description>Write acceptance tests in pure C#.</Description>
-	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="BehaviorBuilder.cs" />
-	  <Compile Remove="Core\BehaviorTheoryTestCase.cs" />
-	  <Compile Remove="Core\BehaviorTheoryTestCaseRunner.cs" />
-	  <Compile Remove="Core\MessageBusExtensions.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\..\.editorconfig" Link=".editorconfig" />
-	  <None Include="..\..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="xunit.extensibility.execution" Version="2.4.2" />
-	</ItemGroup>
-
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>DrillSergeant</AssemblyName>
+    <Company>BitCobblers</Company>
+    <Authors>Michael Vastarelli</Authors>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>0.0.2</Version>
+    <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
+    <PackageTags>xunit;unit testing; behavior testing; acceptance testing</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Title>Drill Sergeant</Title>
+    <Description>Write acceptance tests in pure C#.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="BehaviorBuilder.cs" />
+    <Compile Remove="Core\BehaviorTheoryTestCase.cs" />
+    <Compile Remove="Core\BehaviorTheoryTestCaseRunner.cs" />
+    <Compile Remove="Core\MessageBusExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.extensibility.execution" Version="2.4.2" />
+  </ItemGroup>
 </Project>
