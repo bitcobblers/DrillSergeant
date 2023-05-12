@@ -13,9 +13,9 @@ on:
           - major
 
 jobs:
-  build-and-test:
+  bump:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
