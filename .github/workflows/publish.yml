@@ -1,4 +1,4 @@
-name: Push
+name: Publish to Nuget
 
 on: workflow_dispatch
 
@@ -22,7 +22,8 @@ jobs:
       - name: Build
         run: dotnet build -c Release --no-restore
       
-      - name: Pack and Push
-        run: |
-          dotnet pack -c Release
-          dotnet nuget push src/DrillSergeant/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
+      - name: Pack
+        run: dotnet pack -c Release
+        
+      - name: Publish to Nuget
+        run: dotnet nuget push src/DrillSergeant/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
