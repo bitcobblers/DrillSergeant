@@ -1,4 +1,4 @@
-﻿namespace DrillSergeant;
+﻿namespace DrillSergeant.GWT;
 
 public class LambdaThenStep<TContext, TInput> : LambdaStep<TContext, TInput>
 {

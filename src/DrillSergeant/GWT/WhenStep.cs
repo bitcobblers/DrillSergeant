@@ -1,4 +1,4 @@
-﻿namespace DrillSergeant;
+﻿namespace DrillSergeant.GWT;
 
 public class WhenStep<TContext, TInput> : VerbStep<TContext, TInput>
 {
