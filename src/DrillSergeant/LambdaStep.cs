@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DrillSergeant.GWT;
 
 namespace DrillSergeant;
 
@@ -14,7 +13,7 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
         this.Verb = verb;
     }
 
-    public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaGivenStep<TContext, TInput>);
+    public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaStep<TContext, TInput>);
 
     public LambdaStep<TContext, TInput> Named(string name)
     {
