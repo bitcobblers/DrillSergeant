@@ -1,4 +1,5 @@
 ﻿using DrillSergeant.Core;
+using FakeItEasy;
 using System;
 using System.Reflection;
 using Xunit;
@@ -90,9 +91,10 @@ public class BehaviorTestInvokerTests
             // Arrange.
             var method = GetMethod(nameof(StubWithNoParameters));
             var args = Array.Empty<object>();
+            var resolver = A.Fake<IDependencyResolver>();
 
             // Act.
-            var result = BehaviorTestInvoker.ParseParameters(method, args);
+            var result = BehaviorTestInvoker.ParseParameters(method, args, resolver);
 
             // Assert.
             Assert.Empty(result);
@@ -102,15 +104,20 @@ public class BehaviorTestInvokerTests
         public void EmptyParametersWithSingleInjectReturnsInstantiatedDependency()
         {
             // Arrange.
+            var injected = new object();
             var method = GetMethod(nameof(StubWithSingleInjectable));
             var args = Array.Empty<object>();
+            var resolver = A.Fake<IDependencyResolver>();
+
+            A.CallTo(() => resolver.Resolve(typeof(object))).Returns(injected);
 
             // Act.
-            var result = BehaviorTestInvoker.ParseParameters(method, args);
+            var result = BehaviorTestInvoker.ParseParameters(method, args, resolver);
 
             // Assert.
             Assert.NotEmpty(result);
             Assert.NotNull(result[0]);
+            Assert.Same(injected, result[0]);
         }
 
         [Fact]
@@ -119,9 +126,10 @@ public class BehaviorTestInvokerTests
             // Arrange.
             var method = GetMethod(nameof(StubWithOneInputAndOneInjectable));
             var args = Array.Empty<object>();
+            var resolver = A.Fake<IDependencyResolver>();
 
             // Assert.
-            Assert.Throws<InvalidOperationException>(() => BehaviorTestInvoker.ParseParameters(method, args));
+            Assert.Throws<InvalidOperationException>(() => BehaviorTestInvoker.ParseParameters(method, args, resolver));
         }
 
         [Fact]
@@ -130,16 +138,17 @@ public class BehaviorTestInvokerTests
             // Arrange.
             var method = GetMethod(nameof(StubWithOneInputAndOneInjectable));
             var args = new object[] { 1, 2 };
+            var resolver = A.Fake<IDependencyResolver>();
 
             // Assert.
-            Assert.Throws<InvalidOperationException>(() => BehaviorTestInvoker.ParseParameters(method, args));
+            Assert.Throws<InvalidOperationException>(() => BehaviorTestInvoker.ParseParameters(method, args, resolver));
         }
 
         private MethodInfo GetMethod(string name) => 
             typeof(ParseParametersMethod).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance)!;
 
         private void StubWithNoParameters() { }
-        private void StubWithSingleInjectable([Inject] DateTime _) { }
+        private void StubWithSingleInjectable([Inject] object _) { }
         private void StubWithOneInputAndOneInjectable(int _, [Inject] DateTime ignored) { }
     }
 }

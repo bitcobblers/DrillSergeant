@@ -71,9 +71,9 @@ public class BehaviorTestInvoker : XunitTestInvoker
 
     private async Task InvokeBehavior(object testClassInstance)
     {
-        var parameters = ParseParameters(TestMethod, TestMethodArguments);
-        var behavior = (Behavior?)TestMethod.Invoke(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
         var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
+        var parameters = ParseParameters(TestMethod, TestMethodArguments, resolver);
+        var behavior = (Behavior?)TestMethod.Invoke(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
         var context = behavior.InitContext();
         var input = behavior.MapInput();
         bool previousStepFailed = false;
@@ -145,7 +145,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
         return null;
     }
 
-    internal static object?[] ParseParameters(MethodInfo method, object[] passedArguments)
+    internal static object?[] ParseParameters(MethodInfo method, object[] passedArguments, IDependencyResolver resolver)
     {
         var methodParams = method.GetParameters();
         var resultParams = new object[methodParams.Length];
@@ -163,9 +163,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
 
             if (param.GetCustomAttribute<InjectAttribute>() != null)
             {
-#pragma warning disable CS8601 // Possible null reference assignment.
-                resultParams[i] = Activator.CreateInstance(param.ParameterType);
-#pragma warning restore CS8601 // Possible null reference assignment.
+                resultParams[i] = resolver.Resolve(param.ParameterType);
             }
             else
             {
