@@ -11,13 +11,10 @@ public abstract class Behavior
     public IEnumerable<IStep> Steps => this.steps;
     public Func<object> InitContext { get; protected set; } = () => throw new InvalidOperationException("A context init must be declared first.");
     public Func<object> MapInput { get; protected set; } = () => throw new InvalidOperationException("The input must be mapped.");
-    public abstract Type InputType { get; }
 }
 
 public class Behavior<TContext, TInput> : Behavior
 {
-    public override Type InputType => typeof(TInput);
-
     public Behavior<TContext, TInput> WithContext(Func<TContext> initContext)
     {
         this.InitContext = () => initContext()!;
