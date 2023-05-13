@@ -35,8 +35,4 @@ public class Behavior<TContext, TInput> : Behavior
         this.steps.Add(step);
         return this;
     }
-
-    // ---
-
-    
 }
