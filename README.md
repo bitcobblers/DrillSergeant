@@ -17,10 +17,10 @@ Creating a behavior is very simple:
 [Behavior, Theory, InputData(1,1)]
 public Behavior MyBehaviorTest(int value1, int value2)
 {
-  var behavior = new Behavior<Context,Input>()
+    var behavior = new Behavior<Context,Input>()
     // Configure behavior here...
     
-  return behavior;
+    return behavior;
 }
 ```
 
@@ -47,8 +47,8 @@ Use the `WithInput()` and `WithContext()` methods to configure the behavior:
 
 ```
 var behavior = new Behavior<Context,Input>()
-  .WithInput(() => new Input())
-  .WithContext(() => new Context());
+    .WithInput(() => new Input())
+    .WithContext(() => new Context());
 ```
 
 The `WithInput()` method is used to map the arguments passed to the test method to the `Input` type used by the test.  Likewise, the `WithContext()` method is used to establish the initial context for the first step.
@@ -86,11 +86,11 @@ Lambda steps are ideal for situations where a step needs to be reused for multip
 ```
 public LambdaStep<Context,Input> MyStep =>
     new GivenLambdaStep<Context,Input>()
-		.Named("My step")
-	    .Handle( (c,i) => {
+        .Named("My step")
+        .Handle( (c,i) => {
 		    // Perform some action.
-			return c with { /* changes */ };
-		});
+            return c with { /* changes */ };
+    });
 ```
 
 As you can see, the syntax is nearly identical to an inline step.
@@ -102,11 +102,11 @@ Class steps are the most flexible type of step and best used when a particular s
 ```
 public class MyStep<Context,Input> : GivenStep<Context,Input>
 {
-  public override Context Given(Context context, Input input)
-  {
-      // Perform some action.
-	  return context with { /* changes */ };
-  }
+    public override Context Given(Context context, Input input)
+    {
+        // Perform some action.
+        return context with { /* changes */ };
+    }
 }
 ```
 
@@ -119,14 +119,14 @@ public class MyStep<Context,Input> : GivenStep<Context,Input>
     public override Context Given(Context context, Input input)
     {
         // Perform some action.
-	    return context with { /* changes */ };
+        return context with { /* changes */ };
     }
   
     // DrillSergeant will execute this.
     public override Context Given(Context context, Input input, MyDependency dependency)
     {
         // Perform some action.
-	    return context with { /* changes */ };
+        return context with { /* changes */ };
     }
 }
 ```
@@ -150,9 +150,9 @@ Dependency resolution is handled with the `IDependencyResolver` interface, which
 [BehaviorResolverSetup]
 public IDependencyResolver SetupResolver()
 {
-  var resolver = A.Fake<IDependencyResolver>();
+    var resolver = A.Fake<IDependencyResolver>();
   
-  A.CallTo(() => resolver.Resove(typeof(MyDependency))).Returns(new MyDependency);
+    A.CallTo(() => resolver.Resove(typeof(MyDependency))).Returns(new MyDependency);
 }
 ```
 
