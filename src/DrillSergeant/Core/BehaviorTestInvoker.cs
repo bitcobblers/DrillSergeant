@@ -78,7 +78,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
         var input = behavior.MapInput();
         bool previousStepFailed = false;
 
-        foreach (var step in behavior.Steps)
+        foreach (var step in behavior)
         {
             if (previousStepFailed)
             {
