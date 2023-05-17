@@ -69,11 +69,39 @@ public class BehaviorTestInvoker : XunitTestInvoker
         return Timer.Total;
     }
 
+    internal static bool IsAsync(MethodInfo method) =>
+        method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
+
+    private async Task<Behavior?> GetBehavior(object testClassInstance, object?[] parameters)
+    {
+        if(IsAsync(TestMethod))
+        {
+            dynamic asyncResult = TestMethod.Invoke(testClassInstance, parameters)!;
+            object asyncBehavior = await asyncResult;
+
+            if(asyncBehavior is Behavior behavior)
+            {
+                return behavior;
+            }
+        }
+        else
+        {
+            var syncResult = TestMethod.Invoke(testClassInstance, parameters);
+
+            if (syncResult is Behavior behavior)
+            {
+                return behavior;
+            }
+        }
+
+        throw new InvalidOperationException("Test method did not return a behavior.");
+    }
+
     private async Task InvokeBehavior(object testClassInstance)
     {
         var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
         var parameters = ParseParameters(TestMethod, TestMethodArguments, resolver);
-        var behavior = (Behavior?)TestMethod.Invoke(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
+        var behavior = await GetBehavior(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
         var context = behavior.InitContext();
         var input = behavior.MapInput();
         bool previousStepFailed = false;

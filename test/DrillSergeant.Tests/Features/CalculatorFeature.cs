@@ -37,6 +37,20 @@ public class CalculatorBehaviors
     //}
 
     [Behavior, MemberData(nameof(AdditionInputs))]
+    public async Task<Behavior> AsyncAdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
+    {
+        await Task.Delay(1);
+
+        return new Behavior<Context, Input>()
+            .WithInput(() => new Input(a, b, expected))
+            .WithContext(() => new Context(0, 0, 0))
+            .Given("Set first number", (c, i) => Task.FromResult(c with { A = i.A })) // Inline step declaration.
+            .Given(SetSecondNumberAsync)
+            .When(AddNumbersAsync(calculator))
+            .Then(new CheckResultStepAsync());
+    }
+
+    [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
         return new Behavior<Context, Input>()
@@ -51,20 +65,34 @@ public class CalculatorBehaviors
     // Step implemented as a normal method.
     public Context SetSecondNumber(Context context, Input input) => context with { B = input.B };
 
+    public Task<Context> SetSecondNumberAsync(Context context, Input input) => Task.FromResult(context with { B = input.B });
+
     // Step implemented as a lambda step for greater flexibility.
     public LambdaStep<Context, Input> AddNumbers(Calculator calculator) =>
         new LambdaWhenStep<Context, Input>()
             .Named("Add numbers")
             .Handle((c, _) => c with { Result = calculator.Add(c.A, c.B) });
 
+    public LambdaStep<Context, Input> AddNumbersAsync(Calculator calculator) =>
+        new LambdaWhenStep<Context, Input>()
+            .Named("Add numbers")
+            .Handle((c, _) => Task.FromResult(c with { Result = calculator.Add(c.A, c.B) }));
+
     // Step implemented as type for full customization and reusability.
     public class CheckResultStep : ThenStep<Context, Input>
     {
-        public async Task ThenAsync(Context context, Input input)
+        public override void Then(Context context, Input input)
         {
-            await Task.Delay(500);
             Assert.Equal(input.Expected, context.Result);
-            // return Task.CompletedTask;
+        }
+    }
+
+    public class CheckResultStepAsync : ThenStep<Context, Input>
+    {
+        public Task ThenAsync(Context context, Input input)
+        {
+            Assert.Equal(input.Expected, context.Result);
+            return Task.CompletedTask;
         }
     }
 }
