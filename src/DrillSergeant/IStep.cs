@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
@@ -8,5 +9,5 @@ public interface IStep : IDisposable
     
     string Name { get; }
 
-    object? Execute(object context, object input, IDependencyResolver resolver);
+    Task<object?> Execute(object context, object input, IDependencyResolver resolver);
 }

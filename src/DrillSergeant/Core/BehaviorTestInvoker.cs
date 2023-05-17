@@ -89,19 +89,17 @@ public class BehaviorTestInvoker : XunitTestInvoker
             var stepTimer = new ExecutionTimer();
             previousStepFailed = false;
 
-            await stepTimer.AggregateAsync(() =>
+            await stepTimer.AggregateAsync(async () =>
             {
                 try
                 {
-                    context = step.Execute(context, input, resolver) ?? context;
+                    context = await step.Execute(context, input, resolver) ?? context;
                 }
                 catch (Exception ex)
                 {
                     Aggregator.Add(ex);
                     previousStepFailed = true;
                 }
-
-                return Task.CompletedTask;
             });
 
             FormatStepCompletedMessage(previousStepFailed, step.Name, stepTimer.Total);

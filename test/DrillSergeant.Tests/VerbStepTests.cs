@@ -62,7 +62,7 @@ public class VerbStepTests
         public record Input();
 
         [Fact]
-        public void NonAsyncMethodWithNoReturnReturnsNull()
+        public async Task NonAsyncMethodWithNoReturnReturnsNull()
         {
             // Arrange.
             var step = new StubStep_NonAsync_NoReturn();
@@ -71,14 +71,14 @@ public class VerbStepTests
             var input = new Input();
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBeNull();
         }
 
         [Fact]
-        public void AsyncMethodWithNoReturnReturnsNull()
+        public async Task AsyncMethodWithNoReturnReturnsNull()
         {
             // Arrange.
             var step = new StubStep_Async_NoReturn();
@@ -87,14 +87,14 @@ public class VerbStepTests
             var input = new Input();
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBeNull();
         }
 
         [Fact]
-        public void NonAsyncMethodWithReturnReturnsExpectedValue()
+        public async Task NonAsyncMethodWithReturnReturnsExpectedValue()
         {
             // Arrange.
             var step = new StubStep_NonAsync_ReturnsValue();
@@ -103,14 +103,14 @@ public class VerbStepTests
             var input = new Input();
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBe(1);
         }
 
         [Fact]
-        public void AsyncMethodWithReturnReturnsExpectedValue()
+        public async Task AsyncMethodWithReturnReturnsExpectedValue()
         {
             // Arrange.
             var step = new StubStep_Async_ReturnsValue();
@@ -119,7 +119,7 @@ public class VerbStepTests
             var input = new Input();
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBe(1);

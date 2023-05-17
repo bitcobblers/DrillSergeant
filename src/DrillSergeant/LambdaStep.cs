@@ -60,7 +60,7 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task>? handler) => this.SetHandler(handler);
 
-    public override object? Execute(object context, object input, IDependencyResolver resolver)
+    public override async Task<object?> Execute(object context, object input, IDependencyResolver resolver)
     {
         var parameters = ResolveParameters(resolver, context, input, this.handler.Method.GetParameters());
         var isAsync = IsAsync(this.handler.Method);
@@ -70,11 +70,11 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
         {
             if (this.handler.Method.ReturnType.IsGenericType)
             {
-                return r.Result;
+                return await r;
             }
             else
             {
-                r.Wait();
+                await r;
                 return null;
             }
         }

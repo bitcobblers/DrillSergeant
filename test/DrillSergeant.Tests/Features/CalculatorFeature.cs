@@ -60,10 +60,11 @@ public class CalculatorBehaviors
     // Step implemented as type for full customization and reusability.
     public class CheckResultStep : ThenStep<Context, Input>
     {
-        public Task ThenAsync(Context context, Input input)
+        public async Task ThenAsync(Context context, Input input)
         {
+            await Task.Delay(500);
             Assert.Equal(input.Expected, context.Result);
-            return Task.CompletedTask;
+            // return Task.CompletedTask;
         }
     }
 }

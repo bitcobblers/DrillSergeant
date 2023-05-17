@@ -36,7 +36,7 @@ public class LambdaStepTests
         public record Input();
 
         [Fact]
-        public void NonAsyncHandlerWithReturnReturnsValue()
+        public async Task NonAsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
             var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => c with { Value = 1 });
@@ -46,14 +46,14 @@ public class LambdaStepTests
             var expected = new Context(1);
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBe(expected);
         }
 
         [Fact]
-        public void NonAsyncHandlerWithNoReturnReturnsNull()
+        public async Task NonAsyncHandlerWithNoReturnReturnsNull()
         {
             // Arrange.
             var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => { });
@@ -63,14 +63,14 @@ public class LambdaStepTests
             var expected = new Context(1);
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBe(null);
         }
 
         [Fact]
-        public void AsyncHandlerWithReturnReturnsValue()
+        public async Task AsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
             var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => Task.FromResult(c with { Value = 1 }));
@@ -80,14 +80,14 @@ public class LambdaStepTests
             var expected = new Context(1);
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBe(expected);
         }
 
         [Fact]
-        public void AsyncHandlerWithNoReturnReturnsNull()
+        public async Task AsyncHandlerWithNoReturnReturnsNull()
         {
             // Arrange.
             var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => Task.CompletedTask);
@@ -97,7 +97,7 @@ public class LambdaStepTests
             var expected = new Context(1);
 
             // Act.
-            var result = step.Execute(context, input, resolver);
+            var result = await step.Execute(context, input, resolver);
 
             // Assert.
             result.ShouldBeNull();

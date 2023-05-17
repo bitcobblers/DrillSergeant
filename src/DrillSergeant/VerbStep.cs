@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
@@ -19,7 +19,7 @@ public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
         this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 
-    public override object? Execute(object context, object input, IDependencyResolver resolver)
+    public override async Task<object?> Execute(object context, object input, IDependencyResolver resolver)
     {
         var handler = this.PickHandler();
         var parameters = this.ResolveParameters(resolver, context, input, handler.Method.GetParameters());
@@ -27,15 +27,14 @@ public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
         if (handler.IsAsync)
         {
             var taskType = handler.Method.ReturnType;
-            var task = handler.Method.Invoke(handler.Target, parameters)!;
-
-            taskType.GetMethod("Wait", Array.Empty<Type>())?.Invoke(task, null);
+            dynamic task = handler.Method.Invoke(handler.Target, parameters)!;
 
             if (taskType.GenericTypeArguments.Length > 0)
             {
-                return taskType.GetProperty("Result")?.GetValue(task, null);
+                return await task;
             }
 
+            await task;
             return null;
         }
 
