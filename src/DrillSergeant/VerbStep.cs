@@ -55,14 +55,12 @@ public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
         var highestGroup = allCandidates.First().ToArray();
         var numAsync = highestGroup.Count(x => x.IsAsync);
 
-        if (
-            (numAsync > 1) ||
-            (highestGroup.Length == 2 && numAsync == 0) ||
-            (highestGroup.Length > 2 && numAsync != 1))
+        if (highestGroup.Length >= 2 && numAsync != 1)
         {
             throw new AmbiguousVerbException(this.Verb);
         }
 
-        return highestGroup.First();
+        // Prefer async.
+        return highestGroup.FirstOrDefault(x => x.IsAsync) ?? highestGroup.First();
     }
 }
