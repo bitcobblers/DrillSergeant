@@ -64,7 +64,7 @@ public class CalculatorBehaviors
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
+    public IBehavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
         var input = new Input(a, b, expected);
 

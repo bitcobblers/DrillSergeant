@@ -72,14 +72,14 @@ public class BehaviorTestInvoker : XunitTestInvoker
     internal static bool IsAsync(MethodInfo method) =>
         method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
 
-    private async Task<Behavior?> GetBehavior(object testClassInstance, object?[] parameters)
+    private async Task<IBehavior?> GetBehavior(object testClassInstance, object?[] parameters)
     {
         if(IsAsync(TestMethod))
         {
             dynamic asyncResult = TestMethod.Invoke(testClassInstance, parameters)!;
             object asyncBehavior = await asyncResult;
 
-            if(asyncBehavior is Behavior behavior)
+            if(asyncBehavior is IBehavior behavior)
             {
                 return behavior;
             }
@@ -88,7 +88,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
         {
             var syncResult = TestMethod.Invoke(testClassInstance, parameters);
 
-            if (syncResult is Behavior behavior)
+            if (syncResult is IBehavior behavior)
             {
                 return behavior;
             }
