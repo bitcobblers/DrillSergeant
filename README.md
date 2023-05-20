@@ -43,8 +43,6 @@ Each step within a behavior can update its context, which is then fed into the n
 
 The only required parameter to a behavior is the `input` parameter, which must be a type of `TInput`.  Context on the other hand is optional and can be omitted.  If it is, then a new instance of `TContext` will be instantiated using its parameterless constructor.
 
-Use the `WithInput()` and `WithContext()` methods to configure the behavior:
-
 ```
 var input = new Input();
 var behavior1 = new Behavior<Context,Input>(input); // Creates context automatically.
