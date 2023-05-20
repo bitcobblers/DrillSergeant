@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
@@ -102,13 +103,14 @@ public class BehaviorTestInvoker : XunitTestInvoker
         var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
         var parameters = ParseParameters(TestMethod, TestMethodArguments, resolver);
         var behavior = await GetBehavior(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
+        var serializationOptions = new JsonSerializerOptions { WriteIndented = true };
         bool previousStepFailed = false;
 
         foreach (var step in behavior)
         {
             if (previousStepFailed)
             {
-                FormatStepSkippedMessage(step.Name);
+                FormatStepSkippedMessage(step.Verb, step.Name);
                 continue;
             }
 
@@ -128,26 +130,32 @@ public class BehaviorTestInvoker : XunitTestInvoker
                 }
             });
 
-            FormatStepCompletedMessage(previousStepFailed, step.Name, stepTimer.Total);
+            FormatStepCompletedMessage(previousStepFailed, step.Verb, step.Name, stepTimer.Total);
+            
+            if (behavior.LogContext)
+            {
+                _outputHelper.WriteLine($"Current Context: {JsonSerializer.Serialize(behavior.Context, serializationOptions)}");
+                _outputHelper.WriteLine(string.Empty);
+            }
         }
 
         await Task.CompletedTask;
     }
 
-    private void FormatStepSkippedMessage(string name)
+    private void FormatStepSkippedMessage(string verb, string name)
     {
-        _outputHelper.WriteLine($"Step (skipped due to previous failure): {name}");
+        _outputHelper.WriteLine($"{verb} (skipped due to previous failure): {name}");
     }
 
-    private void FormatStepCompletedMessage(bool failed, string name, decimal elapsed)
+    private void FormatStepCompletedMessage(bool failed, string verb, string name, decimal elapsed)
     {
         if (failed)
         {
-            _outputHelper.WriteLine($"Step (failed): {name} took {elapsed:N2}s");
+            _outputHelper.WriteLine($"{verb} (failed): {name} took {elapsed:N2}s");
         }
         else
         {
-            _outputHelper.WriteLine($"Step: {name} took {elapsed:N2}s");
+            _outputHelper.WriteLine($"{verb}: {name} took {elapsed:N2}s");
         }
     }
 

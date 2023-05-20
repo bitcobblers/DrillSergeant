@@ -69,6 +69,7 @@ public class CalculatorBehaviors
         var input = new Input(a, b, expected);
 
         return new Behavior<Context, Input>(input)
+            .EnableContextLogging()
             .Given("Configure logging", ConfigureLogger)
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)

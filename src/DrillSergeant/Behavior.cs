@@ -18,9 +18,17 @@ public class Behavior<TContext, TInput> : IBehavior
 
     public object Input { get; }
 
+    public bool LogContext { get; private set; }
+
     public Behavior<TContext, TInput> AddStep(IStep step)
     {
         this.steps.Add(step);
+        return this;
+    }
+
+    public Behavior<TContext, TInput> EnableContextLogging()
+    {
+        this.LogContext = true;
         return this;
     }
 
