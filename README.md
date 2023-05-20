@@ -98,7 +98,6 @@ public class MyStep<Context,Input> : GivenStep<Context,Input>
     public override void Given(Context context, Input input)
     {
         // Perform some action.
-        return context with { /* changes */ };
     }
 }
 ```
@@ -157,9 +156,7 @@ In this example, we're using the mocking library `FakeItEasy` to create a resolv
 
 ### Keep Logic In Behaviors to a Minimum
 
-Logic for behaviors should go in their respective steps.  Likewise setup code for dependency resolution should be taken care of within the [BehaviorResolverSetup] method.  Try to avoid writing any code within the behavior itself unless it is trivial.
-
-Internally `DrillSergeant` will execute the behavior method prior to executing any test cases, therefore it's important not to write any logic within the behavior itself.  The behavior should only be a single a single return statement.
+Logic for behaviors should go in their respective steps.  Likewise setup code for dependency resolution should be taken care of within the `[BehaviorResolverSetup]` method.  Try to avoid writing any code within the behavior itself unless it is trivial.
 
 ```
 public Behavior MyBehavior(int a, int b, [Inject] MyDependency dependency)
