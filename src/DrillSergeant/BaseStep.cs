@@ -29,13 +29,18 @@ public abstract class BaseStep<TContext, TInput> : IStep
 
     internal virtual object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
     {
+        var contextType = context.GetType();
+        var inputType = input.GetType();
+
         object resolve(ParameterInfo parameter)
         {
-            if (parameter.ParameterType == context.GetType())
+            if (parameter.ParameterType == contextType ||
+                contextType.GetInterfaces().Contains(parameter.ParameterType))
             {
                 return context;
             }
-            else if (parameter.ParameterType == input.GetType())
+            else if (parameter.ParameterType == inputType ||
+                inputType.GetInterfaces().Contains(parameter.ParameterType))
             {
                 return input;
             }

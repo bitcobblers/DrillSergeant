@@ -11,14 +11,23 @@ public class CalculatorBehaviors
 {
     public ITestOutputHelper output;
 
-    public record Context
+    public interface ILoggerContext
+    {
+        ITestOutputHelper? Logger { get; set; }
+    }
+
+    public interface IEmptyInput { }
+
+    public class Context : ILoggerContext
     {
         public int A { get; set; }
         public int B { get; set; }
         public int Result { get; set; }
+
+        public ITestOutputHelper? Logger { get; set; }
     }
 
-    public record Input(int A, int B, int Expected);
+    public record Input(int A, int B, int Expected) : IEmptyInput;
 
     public CalculatorBehaviors(ITestOutputHelper output)
     {
@@ -57,7 +66,10 @@ public class CalculatorBehaviors
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
-        return new Behavior<Context, Input>(new Input(a, b, expected))
+        var input = new Input(a, b, expected);
+
+        return new Behavior<Context, Input>(input)
+            .Given("Configure logging", ConfigureLogger)
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))
@@ -96,6 +108,7 @@ public class CalculatorBehaviors
     {
         public override void Then(Context context, Input input)
         {
+            context.Logger?.WriteLine("Checking result");
             Assert.Equal(input.Expected, context.Result);
         }
     }
@@ -107,5 +120,10 @@ public class CalculatorBehaviors
             Assert.Equal(input.Expected, context.Result);
             return Task.CompletedTask;
         }
+    }
+
+    private void ConfigureLogger(ILoggerContext loggerContext, IEmptyInput input)
+    {
+        loggerContext.Logger = this.output;
     }
 }
