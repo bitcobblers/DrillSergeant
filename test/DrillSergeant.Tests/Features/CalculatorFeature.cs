@@ -1,5 +1,5 @@
-﻿using DrillSergeant.Core;
-using DrillSergeant.GWT;
+﻿using DrillSergeant.GWT;
+using FakeItEasy;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -9,7 +9,8 @@ namespace DrillSergeant.Tests.Features;
 
 public class CalculatorBehaviors
 {
-    public ITestOutputHelper output;
+    private readonly ITestOutputHelper output;
+    private readonly Calculator calculator = new Calculator();
 
     public interface ILoggerContext
     {
@@ -43,16 +44,8 @@ public class CalculatorBehaviors
         };
     }
 
-    //[BehaviorResolverSetup]
-    //public IDependencyResolver ConfigureResolver()
-    //{
-    //    var resolver = A.Fake<IDependencyResolver>();
-    //    A.CallTo(() => resolver.Resolve(typeof(Calculator))).Returns(new Calculator());
-    //    return resolver;
-    //}
-
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Task<Behavior<Context,Input>> AsyncAdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
+    public Task<Behavior<Context,Input>> AsyncAdditionBehavior(int a, int b, int expected)
     {
         var behavior = new Behavior<Context, Input>(new Input(a, b, expected))
             .Given("Set first number", (c, i) => c.A = i.A)
@@ -63,13 +56,23 @@ public class CalculatorBehaviors
         return Task.FromResult(behavior);
     }
 
+    private IDependencyResolver ConfigureResolver()
+    {
+        var resolver = A.Fake<IDependencyResolver>();
+
+        A.CallTo(() => resolver.Resolve(typeof(Calculator))).Returns(this.calculator);
+
+        return resolver;
+    }
+
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public IBehavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
+    public IBehavior AdditionBehavior(int a, int b, int expected)
     {
         var input = new Input(a, b, expected);
 
         return new Behavior<Context, Input>(input)
             .EnableContextLogging()
+            .ConfigureResolver(ConfigureResolver)
             .Given("Do nothing", () => { })
             .Given("Configure logging", ConfigureLogger)
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
