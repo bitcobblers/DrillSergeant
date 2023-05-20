@@ -73,31 +73,6 @@ public class BehaviorTestInvoker : XunitTestInvoker
     internal static bool IsAsync(MethodInfo method) =>
         method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
 
-    private async Task<IBehavior?> GetBehavior(object testClassInstance, object?[] parameters)
-    {
-        if(IsAsync(TestMethod))
-        {
-            dynamic asyncResult = TestMethod.Invoke(testClassInstance, parameters)!;
-            object asyncBehavior = await asyncResult;
-
-            if(asyncBehavior is IBehavior behavior)
-            {
-                return behavior;
-            }
-        }
-        else
-        {
-            var syncResult = TestMethod.Invoke(testClassInstance, parameters);
-
-            if (syncResult is IBehavior behavior)
-            {
-                return behavior;
-            }
-        }
-
-        throw new InvalidOperationException("Test method did not return a behavior.");
-    }
-
     private async Task InvokeBehavior(object testClassInstance)
     {
         var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
@@ -105,6 +80,12 @@ public class BehaviorTestInvoker : XunitTestInvoker
         var behavior = await GetBehavior(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
         var serializationOptions = new JsonSerializerOptions { WriteIndented = true };
         bool previousStepFailed = false;
+
+        if(behavior.LogContext)
+        {
+            _outputHelper.WriteLine($"Initial Context: {JsonSerializer.Serialize(behavior.Context, serializationOptions)}");
+            _outputHelper.WriteLine(string.Empty);
+        }
 
         foreach (var step in behavior)
         {
@@ -134,7 +115,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
             
             if (behavior.LogContext)
             {
-                _outputHelper.WriteLine($"Current Context: {JsonSerializer.Serialize(behavior.Context, serializationOptions)}");
+                _outputHelper.WriteLine($"Context: {JsonSerializer.Serialize(behavior.Context, serializationOptions)}");
                 _outputHelper.WriteLine(string.Empty);
             }
         }
@@ -142,21 +123,40 @@ public class BehaviorTestInvoker : XunitTestInvoker
         await Task.CompletedTask;
     }
 
+    private async Task<IBehavior?> GetBehavior(object testClassInstance, object?[] parameters)
+    {
+        if (IsAsync(TestMethod))
+        {
+            dynamic asyncResult = TestMethod.Invoke(testClassInstance, parameters)!;
+            object asyncBehavior = await asyncResult;
+
+            if (asyncBehavior is IBehavior behavior)
+            {
+                return behavior;
+            }
+        }
+        else
+        {
+            var syncResult = TestMethod.Invoke(testClassInstance, parameters);
+
+            if (syncResult is IBehavior behavior)
+            {
+                return behavior;
+            }
+        }
+
+        throw new InvalidOperationException("Test method did not return a behavior.");
+    }
+
     private void FormatStepSkippedMessage(string verb, string name)
     {
-        _outputHelper.WriteLine($"{verb} (skipped due to previous failure): {name}");
+        _outputHelper.WriteLine($"❎ {verb} (skipped due to previous failure): {name}");
     }
 
     private void FormatStepCompletedMessage(bool failed, string verb, string name, decimal elapsed)
     {
-        if (failed)
-        {
-            _outputHelper.WriteLine($"{verb} (failed): {name} took {elapsed:N2}s");
-        }
-        else
-        {
-            _outputHelper.WriteLine($"{verb}: {name} took {elapsed:N2}s");
-        }
+        var icon = failed ? "❎" : "✅";
+        _outputHelper.WriteLine($"{icon} {verb}: {name} took {elapsed:N2}s");
     }
 
     internal static IDependencyResolver? GetDependencyResolver(Type testClass, object instance)
