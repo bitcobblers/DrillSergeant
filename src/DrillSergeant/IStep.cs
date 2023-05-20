@@ -9,5 +9,5 @@ public interface IStep : IDisposable
     
     string Name { get; }
 
-    Task<object?> Execute(object context, object input, IDependencyResolver resolver);
+    Task Execute(object context, object input, IDependencyResolver resolver);
 }

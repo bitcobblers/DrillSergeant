@@ -7,5 +7,7 @@ public class WhenStep<TContext, TInput> : VerbStep<TContext, TInput>
     {
     }
 
-    public virtual TContext When(TContext context, TInput input) => context;
+    public virtual void When(TContext context, TInput input)
+    {
+    }
 }

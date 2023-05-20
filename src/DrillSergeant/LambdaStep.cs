@@ -36,18 +36,6 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
         return this;
     }
 
-    public LambdaStep<TContext, TInput> Handle(Func<TContext, TInput, TContext>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, TContext>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, TContext>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, TContext>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, TContext>? handler) => this.SetHandler(handler);
-
-    public LambdaStep<TContext, TInput> Handle(Func<TContext, TInput, Task<TContext>>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, Task<TContext>>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, Task<TContext>>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task<TContext>>? handler) => this.SetHandler(handler);
-    public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task<TContext>>? handler) => this.SetHandler(handler);
-
     public LambdaStep<TContext, TInput> Handle(Action<TContext, TInput>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1>(Action<TContext, TInput, TArg1>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Action<TContext, TInput, TArg1, TArg2>? handler) => this.SetHandler(handler);
@@ -60,7 +48,7 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Func<TContext, TInput, TArg1, TArg2, TArg3, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Func<TContext, TInput, TArg1, TArg2, TArg3, TArg4, Task>? handler) => this.SetHandler(handler);
 
-    public override async Task<object?> Execute(object context, object input, IDependencyResolver resolver)
+    public override async Task Execute(object context, object input, IDependencyResolver resolver)
     {
         var parameters = ResolveParameters(resolver, context, input, this.handler.Method.GetParameters());
         var isAsync = IsAsync(this.handler.Method);
@@ -68,19 +56,7 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
 
         if (isAsync)
         {
-            if (this.handler.Method.ReturnType.IsGenericType)
-            {
-                return await r;
-            }
-            else
-            {
-                await r;
-                return null;
-            }
-        }
-        else
-        {
-            return r;
+            await r;
         }
     }
 }

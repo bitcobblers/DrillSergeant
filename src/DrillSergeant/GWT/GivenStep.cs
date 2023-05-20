@@ -7,5 +7,7 @@ public class GivenStep<TContext, TInput> : VerbStep<TContext, TInput>
     {
     }
 
-    public virtual TContext Given(TContext context, TInput input) => context;
+    public virtual void Given(TContext context, TInput input)
+    {
+    }
 }

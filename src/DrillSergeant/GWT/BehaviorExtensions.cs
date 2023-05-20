@@ -5,15 +5,15 @@ namespace DrillSergeant.GWT;
 
 public static class BehaviorExtensions
 {
-    public static Behavior<TContext, TInput> Given<TContext,TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, TContext> step)
+    public static Behavior<TContext, TInput> Given<TContext,TInput>(this Behavior<TContext, TInput> behavior, Action<TContext, TInput> step)
         where TContext: class, new() =>
         behavior.Given(step.Method.Name, step);
 
-    public static Behavior<TContext, TInput> Given<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, Task<TContext>> step)
+    public static Behavior<TContext, TInput> Given<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, Task> step)
         where TContext: class, new() =>
         behavior.Given(step.Method.Name, step);
 
-    public static Behavior<TContext, TInput> Given<TContext,TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, TContext> step)
+    public static Behavior<TContext, TInput> Given<TContext,TInput>(this Behavior<TContext, TInput> behavior, string name, Action<TContext, TInput> step)
         where TContext: class, new()
     {
         behavior.AddStep(
@@ -24,7 +24,7 @@ public static class BehaviorExtensions
         return behavior;
     }
 
-    public static Behavior<TContext, TInput> Given<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, Task<TContext>> step)
+    public static Behavior<TContext, TInput> Given<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, Task> step)
         where TContext: class, new()
     {
         behavior.AddStep(
@@ -44,15 +44,15 @@ public static class BehaviorExtensions
 
     // ---
 
-    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, TContext> step)
+    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, Action<TContext, TInput> step)
         where TContext : class, new() =>
         behavior.When(step.Method.Name, step);
 
-    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, Task<TContext>> step)
+    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, Task> step)
         where TContext : class, new() =>
         behavior.When(step.Method.Name, step);
 
-    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, TContext> step)
+    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Action<TContext, TInput> step)
         where TContext : class, new()
     {
         behavior.AddStep(
@@ -63,7 +63,7 @@ public static class BehaviorExtensions
         return behavior;
     }
 
-    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, Task<TContext>> step)
+    public static Behavior<TContext, TInput> When<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, Task> step)
         where TContext : class, new()
     {
         behavior.AddStep(
@@ -83,15 +83,15 @@ public static class BehaviorExtensions
 
     // ---
 
-    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, TContext> step)
+    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, Action<TContext, TInput> step)
         where TContext : class, new() =>
         behavior.Then(step.Method.Name, step);
 
-    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, Task<TContext>> step)
+    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, Func<TContext, TInput, Task> step)
         where TContext : class, new() =>
         behavior.Then(step.Method.Name, step);
 
-    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, TContext> step)
+    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Action<TContext, TInput> step)
         where TContext : class, new()
     {
         behavior.AddStep(
@@ -102,7 +102,7 @@ public static class BehaviorExtensions
         return behavior;
     }
 
-    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, Task<TContext>> step)
+    public static Behavior<TContext, TInput> Then<TContext, TInput>(this Behavior<TContext, TInput> behavior, string name, Func<TContext, TInput, Task> step)
         where TContext : class, new()
     {
         behavior.AddStep(

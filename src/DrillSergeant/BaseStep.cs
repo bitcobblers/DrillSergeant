@@ -25,7 +25,7 @@ public abstract class BaseStep<TContext, TInput> : IStep
         GC.SuppressFinalize(this);
     }
 
-    public abstract Task<object?> Execute(object context, object input, IDependencyResolver resolver);
+    public abstract Task Execute(object context, object input, IDependencyResolver resolver);
 
     internal virtual object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
     {

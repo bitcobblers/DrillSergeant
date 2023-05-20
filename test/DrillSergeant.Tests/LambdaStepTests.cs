@@ -32,75 +32,48 @@ public class LambdaStepTests
 
     public class ExecuteMethod : LambdaStepTests
     {
-        public record Context(int Value = 0);
+        public record Context
+        {
+            public int Value { get; set; }
+        }
+
         public record Input();
 
         [Fact]
         public async Task NonAsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => c with { Value = 1 });
+            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => c.Value = 1);
             var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
-            var expected = new Context(1);
 
             // Act.
-            var result = await step.Execute(context, input, resolver);
+            await step.Execute(context, input, resolver);
 
             // Assert.
-            result.ShouldBe(expected);
-        }
-
-        [Fact]
-        public async Task NonAsyncHandlerWithNoReturnReturnsNull()
-        {
-            // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => { });
-            var resolver = A.Fake<IDependencyResolver>();
-            var context = new Context();
-            var input = new Input();
-            var expected = new Context(1);
-
-            // Act.
-            var result = await step.Execute(context, input, resolver);
-
-            // Assert.
-            result.ShouldBe(null);
+            context.Value.ShouldBe(1);
         }
 
         [Fact]
         public async Task AsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => Task.FromResult(c with { Value = 1 }));
+            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) =>
+            {
+                c.Value = 1;
+                return Task.CompletedTask;
+            });
+
             var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
-            var expected = new Context(1);
 
             // Act.
-            var result = await step.Execute(context, input, resolver);
+            await step.Execute(context, input, resolver);
 
             // Assert.
-            result.ShouldBe(expected);
-        }
-
-        [Fact]
-        public async Task AsyncHandlerWithNoReturnReturnsNull()
-        {
-            // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => Task.CompletedTask);
-            var resolver = A.Fake<IDependencyResolver>();
-            var context = new Context();
-            var input = new Input();
-            var expected = new Context(1);
-
-            // Act.
-            var result = await step.Execute(context, input, resolver);
-
-            // Assert.
-            result.ShouldBeNull();
+            context.Value.ShouldBe(1);
         }
     }
 }

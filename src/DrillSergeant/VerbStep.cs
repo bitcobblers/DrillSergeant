@@ -19,7 +19,7 @@ public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
         this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 
-    public override async Task<object?> Execute(object context, object input, IDependencyResolver resolver)
+    public override async Task Execute(object context, object input, IDependencyResolver resolver)
     {
         var handler = this.PickHandler();
         var parameters = this.ResolveParameters(resolver, context, input, handler.Method.GetParameters());
@@ -29,16 +29,11 @@ public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
             var taskType = handler.Method.ReturnType;
             dynamic task = handler.Method.Invoke(handler.Target, parameters)!;
 
-            if (taskType.GenericTypeArguments.Length > 0)
-            {
-                return await task;
-            }
-
             await task;
-            return null;
+            return;
         }
 
-        return handler.Method.Invoke(handler.Target, parameters);
+        handler.Method.Invoke(handler.Target, parameters);
     }
 
     internal virtual VerbMethod PickHandler()

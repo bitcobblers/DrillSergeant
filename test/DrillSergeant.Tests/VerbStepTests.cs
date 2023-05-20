@@ -58,40 +58,12 @@ public class VerbStepTests
 
     public class ExecuteMethod : VerbStepTests
     {
-        public record Context();
+        public record Context
+        {
+            public int Value { get; set; }
+        }
+
         public record Input();
-
-        [Fact]
-        public async Task NonAsyncMethodWithNoReturnReturnsNull()
-        {
-            // Arrange.
-            var step = new StubStep_NonAsync_NoReturn();
-            var resolver = A.Fake<IDependencyResolver>();
-            var context = new Context();
-            var input = new Input();
-
-            // Act.
-            var result = await step.Execute(context, input, resolver);
-
-            // Assert.
-            result.ShouldBeNull();
-        }
-
-        [Fact]
-        public async Task AsyncMethodWithNoReturnReturnsNull()
-        {
-            // Arrange.
-            var step = new StubStep_Async_NoReturn();
-            var resolver = A.Fake<IDependencyResolver>();
-            var context = new Context();
-            var input = new Input();
-
-            // Act.
-            var result = await step.Execute(context, input, resolver);
-
-            // Assert.
-            result.ShouldBeNull();
-        }
 
         [Fact]
         public async Task NonAsyncMethodWithReturnReturnsExpectedValue()
@@ -103,10 +75,10 @@ public class VerbStepTests
             var input = new Input();
 
             // Act.
-            var result = await step.Execute(context, input, resolver);
+            await step.Execute(context, input, resolver);
 
             // Assert.
-            result.ShouldBe(1);
+            context.Value.ShouldBe(1);
         }
 
         [Fact]
@@ -119,28 +91,10 @@ public class VerbStepTests
             var input = new Input();
 
             // Act.
-            var result = await step.Execute(context, input, resolver);
+            await step.Execute(context, input, resolver);
 
             // Assert.
-            result.ShouldBe(1);
-        }
-
-        public class StubStep_NonAsync_NoReturn : VerbStep<Context, Input>
-        {
-            public StubStep_NonAsync_NoReturn() : base("Test")
-            {
-            }
-
-            public void Test(Context context, Input input) { }
-        }
-
-        public class StubStep_Async_NoReturn : VerbStep<Context, Input>
-        {
-            public StubStep_Async_NoReturn() : base("Test")
-            {
-            }
-
-            public Task Test(Context context, Input input) => Task.CompletedTask;
+            context.Value.ShouldBe(1);
         }
 
         public class StubStep_NonAsync_ReturnsValue : VerbStep<Context, Input>
@@ -149,7 +103,7 @@ public class VerbStepTests
             {
             }
 
-            public int Test(Context context, Input input) => 1;
+            public void Test(Context context, Input input) => context.Value = 1;
         }
 
         public class StubStep_Async_ReturnsValue : VerbStep<Context, Input>
@@ -158,7 +112,11 @@ public class VerbStepTests
             {
             }
 
-            public Task<int> Test(Context context, Input input) => Task.FromResult(1);
+            public Task Test(Context context, Input input)
+            {
+                context.Value = 1;
+                return Task.CompletedTask;
+            }
         }
 
         public interface IStubInjectable

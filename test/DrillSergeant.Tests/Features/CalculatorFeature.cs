@@ -13,9 +13,9 @@ public class CalculatorBehaviors
 
     public record Context
     {
-        public int A { get; init; }
-        public int B { get; init; }
-        public int Result { get; init; }
+        public int A { get; set; }
+        public int B { get; set; }
+        public int Result { get; set; }
     }
 
     public record Input(int A, int B, int Expected);
@@ -46,8 +46,8 @@ public class CalculatorBehaviors
     public Task<Behavior<Context,Input>> AsyncAdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
         var behavior = new Behavior<Context, Input>(() => new Input(a, b, expected))
-            .Given("Set first number", (c, i) => Task.FromResult(c with { A = i.A })) // Inline step declaration.
-            .Given(SetSecondNumber)
+            .Given("Set first number", (c, i) => c.A = i.A)
+            .Given(SetSecondNumberAsync)
             .When(AddNumbersAsync(calculator))
             .Then(new CheckResultStepAsync());
 
@@ -58,27 +58,38 @@ public class CalculatorBehaviors
     public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
         return new Behavior<Context, Input>(() => new Input(a, b, expected))
-            .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
+            .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))
             .Then(new CheckResultStep());
     }
 
     // Step implemented as a normal method.
-    public Context SetSecondNumber(Context context, Input input) => context with { B = input.B };
+    private void SetSecondNumber(Context context, Input input) => context.B = input.B;
 
-    public Task<Context> SetSecondNumberAsync(Context context, Input input) => Task.FromResult(context with { B = input.B });
+    private Task SetSecondNumberAsync(Context context, Input input)
+    {
+        context.B = input.B;
+        return Task.CompletedTask;
+    }
 
     // Step implemented as a lambda step for greater flexibility.
     public LambdaStep<Context, Input> AddNumbers(Calculator calculator) =>
         new LambdaWhenStep<Context, Input>()
             .Named("Add numbers")
-            .Handle((c, _) => c with { Result = calculator.Add(c.A, c.B) });
+            .Handle((c, _) =>
+            {
+                c.Result = calculator.Add(c.A, c.B);
+            });
 
     public LambdaStep<Context, Input> AddNumbersAsync(Calculator calculator) =>
         new LambdaWhenStep<Context, Input>()
             .Named("Add numbers")
-            .Handle((c, _) => Task.FromResult(c with { Result = calculator.Add(c.A, c.B) }));
+            .Handle((c, _) =>
+            {
+                c.Result = calculator.Add(c.A, c.B);
+                return Task.CompletedTask;
+            });
 
     // Step implemented as type for full customization and reusability.
     public class CheckResultStep : ThenStep<Context, Input>
