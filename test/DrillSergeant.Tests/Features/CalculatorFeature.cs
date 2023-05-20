@@ -45,7 +45,7 @@ public class CalculatorBehaviors
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Task<Behavior<Context,Input>> AsyncAdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
-        var behavior = new Behavior<Context, Input>(() => new Input(a, b, expected))
+        var behavior = new Behavior<Context, Input>(new Input(a, b, expected))
             .Given("Set first number", (c, i) => c.A = i.A)
             .Given(SetSecondNumberAsync)
             .When(AddNumbersAsync(calculator))
@@ -57,7 +57,7 @@ public class CalculatorBehaviors
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
-        return new Behavior<Context, Input>(() => new Input(a, b, expected))
+        return new Behavior<Context, Input>(new Input(a, b, expected))
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))

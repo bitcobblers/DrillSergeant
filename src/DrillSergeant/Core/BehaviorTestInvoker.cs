@@ -102,8 +102,6 @@ public class BehaviorTestInvoker : XunitTestInvoker
         var resolver = GetDependencyResolver(TestClass, testClassInstance) ?? new DefaultResolver();
         var parameters = ParseParameters(TestMethod, TestMethodArguments, resolver);
         var behavior = await GetBehavior(testClassInstance, parameters) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
-        var context = behavior.InitContext();
-        var input = behavior.MapInput();
         bool previousStepFailed = false;
 
         foreach (var step in behavior)
@@ -121,7 +119,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
             {
                 try
                 {
-                    await step.Execute(context, input, resolver);
+                    await step.Execute(behavior.Context, behavior.Input, resolver);
                 }
                 catch (Exception ex)
                 {
