@@ -25,7 +25,7 @@ public class Behavior<TContext, TInput> : Behavior
     where TContext : class, new()
 {
     public Behavior(TInput input, TContext? context = null)
-        : base(input!, context ?? new TContext())
+        : base(context ?? new TContext(), input!)
     {
     }
 
