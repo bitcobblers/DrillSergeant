@@ -7,14 +7,14 @@
 
 # Getting Started
 
-For a complete example of a feature, see [this](https://github.com/bitcobblers/DrillSergeant/blob/main/test/DrillSergeant.Tests/Features/CalculatorFeature.cs)
+For a complete example of a feature, see the following [example](https://github.com/bitcobblers/DrillSergeant/blob/main/test/DrillSergeant.Tests/Features/CalculatorFeature.cs).
 
 ## Creating a Behavior
 
 Creating a behavior is very simple:
 
 ```
-[Behavior, Theory, InputData(1,1)]
+[Behavior, InputData(1,1)]
 public Behavior MyBehaviorTest(int value1, int value2)
 {
     var input = new Input(value1, value2);
@@ -59,14 +59,6 @@ Inline steps are the simplest type of step.  An inline step can be added simply 
 
 ```
 Given("My step", (c,i) => {
-    // Perform some action
-});
-```
-
-All steps pass the `context` and `input` as the first two parameters.  To pass additional dependencies, can call one of the generic overrides:
-
-```
-Given<MyDependency>("My step", (c,i, dep) => {
     // Perform some action
 });
 ```
@@ -123,51 +115,28 @@ public class MyStep<Context,Input> : GivenStep<Context,Input>
 
 ## Configuring the Resolver
 
-`DrillSergeant` has first-class support for dependency injection.  When writing a behavior method, simply prefix any dependency with the `[Inject]` attribute:
+`DrillSergeant` supports dependency injection for class steps and inline steps.  This is accomplished via the `IDependencyResolver` interface.  The default behavior when injecting parameters is to invoke their default constructor.  However this can be configured.  To override this behavior, use the `ConfigureResolver()` method and supply your own:
 
 ```
-[Behavior]
-public Behavior MyBehavior([Inject] MyDependency dependency)
-{
-    // ...
-}
+var behavior = 
+    new Behavior<Context,Input>(input)
+        .ConfigureResolver(() => {
+            var resolver = A.Fake<IDependencyResolver();
+
+            // Configure resolver here...
+
+            return resolver;
+        });
 ```
-
-The `[Inject]` parameter is needed so that DrillSergeant can differentiate between input parameters passed by `[Theory]` and what it needs to inject.
-
-Dependency resolution is handled with the `IDependencyResolver` interface, which contains a single method: `object Resolve(Type type)`.  By default `DrillSergeant` will satisfy dependencies by instantiating new instances of them via the `Activator.CreateInstance()` method.  To override this: a custom resolver can be configured in the behavior class:
-
-```
-[BehaviorResolverSetup]
-public IDependencyResolver SetupResolver()
-{
-    var resolver = A.Fake<IDependencyResolver>();
-  
-    A.CallTo(() => resolver.Resove(typeof(MyDependency))).Returns(new MyDependency);
-}
-```
-
 In this example, we're using the mocking library `FakeItEasy` to create a resolver that returns instances of the required dependency, but for more advanced scenarios a real DI container can be substituted in its place.
-
-**Note: The resolver is scoped to each test case and does not share data between tests.  To share data, use xunit's `ClassFixture` and `CollectionFixture` fixtures.**
-**Note: The name of the method here is unimportant.  `DrillSergeant` will look for the first `public` method returning an `IDependencyResolver` that is marked with the `[BehaviorSetupResolver]` attribute.c 
 
 ## Best Practices
 
-### Keep Logic In Behaviors to a Minimum
-
-Logic for behaviors should go in their respective steps.  Likewise setup code for dependency resolution should be taken care of within the `[BehaviorResolverSetup]` method.  Try to avoid writing any code within the behavior itself unless it is trivial.
-
-```
-public Behavior MyBehavior(int a, int b, [Inject] MyDependency dependency)
-{
-    var input = new Input(a,b); // This is ok.
-    dependency.Initialize(); // Put this in the resolver setup method.
-    
-    return new Behavior<Context,Input>(input);
-}
-```
-
 ### Favor Xunit Class/Collection Fixtures
 
-Xunit already has a mechanism for handling injection of dependencies with `IClassFixture<>` and `ICollectionFixture`.  These should be preferred by default.  The `IDependencyResolver` is experimental and may be removed before the official release.
+Xunit already has a mechanism for handling shared data with constructors, `IClassFixture<>`, and `ICollectionFixture`.  These should be preferred by default.  More information can be found [here](https://xunit.net/docs/shared-context).
+
+As a quick recap:
+* Use constructors/private fields for dependencies that are isolated at the test level.
+* Use `IClassFixture<>` for dependencies that are isolated at the class level.
+* Use `ICollectionFixture<>` for global dependencies.
