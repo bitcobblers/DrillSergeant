@@ -36,12 +36,16 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
         return this;
     }
 
+    public LambdaStep<TContext, TInput> Handle(Action? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle(Action<TContext>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle(Action<TContext, TInput>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1>(Action<TContext, TInput, TArg1>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Action<TContext, TInput, TArg1, TArg2>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3>(Action<TContext, TInput, TArg1, TArg2, TArg3>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2, TArg3, TArg4>(Action<TContext, TInput, TArg1, TArg2, TArg3, TArg4>? handler) => this.SetHandler(handler);
 
+    public LambdaStep<TContext, TInput> Handle(Func<Task>? handler) => this.SetHandler(handler);
+    public LambdaStep<TContext, TInput> Handle(Func<TContext, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle(Func<TContext, TInput, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1>(Func<TContext, TInput, TArg1, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle<TArg1, TArg2>(Func<TContext, TInput, TArg1, TArg2, Task>? handler) => this.SetHandler(handler);

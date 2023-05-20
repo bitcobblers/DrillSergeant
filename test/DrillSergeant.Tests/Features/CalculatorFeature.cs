@@ -70,6 +70,7 @@ public class CalculatorBehaviors
 
         return new Behavior<Context, Input>(input)
             .EnableContextLogging()
+            .Given("Do nothing", () => { })
             .Given("Configure logging", ConfigureLogger)
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
@@ -90,7 +91,7 @@ public class CalculatorBehaviors
     public LambdaStep<Context, Input> AddNumbers(Calculator calculator) =>
         new LambdaWhenStep<Context, Input>()
             .Named("Add numbers")
-            .Handle((c, _) =>
+            .Handle((c) =>
             {
                 c.Result = calculator.Add(c.A, c.B);
             });
