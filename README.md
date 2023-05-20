@@ -17,7 +17,9 @@ Creating a behavior is very simple:
 [Behavior, Theory, InputData(1,1)]
 public Behavior MyBehaviorTest(int value1, int value2)
 {
-    var behavior = new Behavior<Context,Input>()
+    var input = new Input(value1, value2);
+    var behavior = new Behavior<Context,Input>(input);
+
     // Configure behavior here...
     
     return behavior;
@@ -31,31 +33,27 @@ Behaviors are regular test methods that are decorated with the `[Behavior]` attr
 `DrillSergeant` is built on top of [`xunit`](https://xunit.net/) and makes use of `[Theory]` based tests.  As a result behavior tests require both a context to hold state throughout the test and input to drive the test.  These are typically defined using the C# `record` type:
 
 ```
-public record Context();
+public class Context {};
 public record Input();
 ```
 
-Each step within a behavior returns an updated context, which is then fed into the next step.  Input on the other hand is immutable and does not change between steps.  While it's not a requirement to use the `record` type, it is preferred because they're immutable by default and have syntax that makes copying them easy:
-
-```
-return context with { UpdatedField = "new_value" };
-```
+Each step within a behavior can update its context, which is then fed into the next step.  It's recommended to use the C# `record` type for inputs and `class` for context.
 
 ### Configuring Input and Context
+
+The only required parameter to a behavior is the `input` parameter, which must be a type of `TInput`.  Context on the other hand is optional and can be omitted.  If it is, then a new instance of `TContext` will be instantiated using its parameterless constructor.
 
 Use the `WithInput()` and `WithContext()` methods to configure the behavior:
 
 ```
-var behavior = new Behavior<Context,Input>()
-    .WithInput(() => new Input())
-    .WithContext(() => new Context());
+var input = new Input();
+var behavior1 = new Behavior<Context,Input>(input); // Creates context automatically.
+var behavior2 = new Behavior<Context,Input>(input, new Context()); // Manually specify context.
 ```
-
-The `WithInput()` method is used to map the arguments passed to the test method to the `Input` type used by the test.  Likewise, the `WithContext()` method is used to establish the initial context for the first step.
 
 ## Configuring Steps
 
-Individual steps can be configured dependeing on the level of granularity required.
+Individual steps can be configured depending on the level of granularity required.
 
 ### Inline Steps
 
@@ -64,16 +62,14 @@ Inline steps are the simplest type of step.  An inline step can be added simply 
 ```
 Given("My step", (c,i) => {
     // Perform some action
-    return c with { /* changes */ };
 });
 ```
 
-All steps pass the `context` and `input` as the first two parameters.  To pass additional dependencies you can call one of the generic overrides:
+All steps pass the `context` and `input` as the first two parameters.  To pass additional dependencies, can call one of the generic overrides:
 
 ```
 Given<MyDependency>("My step", (c,i, dep) => {
     // Perform some action
-    return c with { /* changes */ };
 });
 ```
 
@@ -89,11 +85,10 @@ public LambdaStep<Context,Input> MyStep =>
         .Named("My step")
         .Handle( (c,i) => {
 		    // Perform some action.
-            return c with { /* changes */ };
     });
 ```
 
-As you can see, the syntax is nearly identical to an inline step.
+As you can see, the syntax is nearly identical to an inline step.  In fact, inline steps are actually converted to lambda steps behind the scenes.
 
 ### Class Steps
 
@@ -102,7 +97,7 @@ Class steps are the most flexible type of step and best used when a particular s
 ```
 public class MyStep<Context,Input> : GivenStep<Context,Input>
 {
-    public override Context Given(Context context, Input input)
+    public override void Given(Context context, Input input)
     {
         // Perform some action.
         return context with { /* changes */ };
@@ -115,18 +110,16 @@ Unlike inline and lambda steps, class steps are convention based.  By default, T
 ```
 public class MyStep<Context,Input> : GivenStep<Context,Input>
 {
-    // DrillSergeant will not excute this.
-    public override Context Given(Context context, Input input)
+    // DrillSergeant will *not* excute this.
+    public override void Given(Context context, Input input)
     {
         // Perform some action.
-        return context with { /* changes */ };
     }
   
     // DrillSergeant will execute this.
-    public override Context Given(Context context, Input input, MyDependency dependency)
+    public override void Given(Context context, Input input, MyDependency dependency)
     {
         // Perform some action.
-        return context with { /* changes */ };
     }
 }
 ```
@@ -136,6 +129,7 @@ public class MyStep<Context,Input> : GivenStep<Context,Input>
 `DrillSergeant` has first-class support for dependency injection.  When writing a behavior method, simply prefix any dependency with the `[Inject]` attribute:
 
 ```
+[Behavior]
 public Behavior MyBehavior([Inject] MyDependency dependency)
 {
     // ...
@@ -163,29 +157,22 @@ In this example, we're using the mocking library `FakeItEasy` to create a resolv
 
 ## Best Practices
 
-### No Logic in Behaviors
+### Keep Logic In Behaviors to a Minimum
+
+Logic for behaviors should go in their respective steps.  Likewise setup code for dependency resolution should be taken care of within the [BehaviorResolverSetup] method.  Try to avoid writing any code within the behavior itself unless it is trivial.
 
 Internally `DrillSergeant` will execute the behavior method prior to executing any test cases, therefore it's important not to write any logic within the behavior itself.  The behavior should only be a single a single return statement.
 
 ```
-public Behavior MyBehavior([Inject] MyDependency dependency)
+public Behavior MyBehavior(int a, int b, [Inject] MyDependency dependency)
 {
-    dependency.Initialize(); // Don't do this!!!
+    var input = new Input(a,b); // This is ok.
+    dependency.Initialize(); // Put this in the resolver setup method.
     
-    return new Behavior<Context,Input>();
+    return new Behavior<Context,Input>(input);
 }
 ```
 
-If you need to perform initialization on dependencies prior to running the test, they should be performed within the `SetupResolver()` method.
+### Favor Xunit Class/Collection Fixtures
 
-### Don't Mutate Context.  Instead Return New Context
-
-Future editions of `DrillSergeant` will keep a running history of context as it executes behavior.  Therefore it's a good idea to make sure that when returning from a step that a new context is created based on the previous step.  This can be accomplished easily using the `with` construct.
-
-### Don't Mutate Input.  Just Don't.
-
-The input for each behavior scenario is tied to the test results in xunit.  Once the input has been mapped with the `WithInput()` method, do not modify it again.
-
-### Don't Map Input or Context More Than Once
-
-The `WithInput()` and `WithContext()` methods are only executed once prior to executing any steps.  Calling either method multiple times with only result in the previous handler being overwritten.
+Xunit already has a mechanism for handling injection of dependencies with `IClassFixture<>` and `ICollectionFixture`.  These should be preferred by default.  The `IDependencyResolver` is experimental and may be removed before the official release.
