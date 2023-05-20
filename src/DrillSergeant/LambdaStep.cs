@@ -36,6 +36,8 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
         return this;
     }
 
+    public LambdaStep<TContext, TInput> Handle(Delegate handler) => this.SetHandler(handler);
+
     public LambdaStep<TContext, TInput> Handle(Action? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle(Action<TContext>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle(Action<TContext, TInput>? handler) => this.SetHandler(handler);

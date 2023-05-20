@@ -73,7 +73,6 @@ public class CalculatorBehaviors
         return new Behavior<Context, Input>(input)
             .EnableContextLogging()
             .ConfigureResolver(ConfigureResolver)
-            .Given("Do nothing", () => { })
             .Given("Configure logging", ConfigureLogger)
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
