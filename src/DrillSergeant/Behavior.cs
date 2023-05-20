@@ -17,17 +17,12 @@ public abstract class Behavior : IEnumerable<IStep>
 }
 
 public class Behavior<TContext, TInput> : Behavior
+    where TContext : class, new()
 {
-    public Behavior<TContext, TInput> WithContext(Func<TContext> initContext)
-    {
-        this.InitContext = () => initContext()!;
-        return this;
-    }
-
-    public Behavior<TContext, TInput> WithInput(Func<TInput> mapInput)
+    public Behavior(Func<TInput> mapInput, Func<TContext>? initContext = null)
     {
         this.MapInput = () => mapInput()!;
-        return this;
+        this.InitContext = () => (initContext?.Invoke() ?? new TContext());
     }
 
     public Behavior<TContext, TInput> AddStep(IStep step)

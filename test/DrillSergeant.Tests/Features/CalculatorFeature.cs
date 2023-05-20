@@ -11,7 +11,13 @@ public class CalculatorBehaviors
 {
     public ITestOutputHelper output;
 
-    public record Context(int A, int B, int Result);
+    public record Context
+    {
+        public int A { get; init; }
+        public int B { get; init; }
+        public int Result { get; init; }
+    }
+
     public record Input(int A, int B, int Expected);
 
     public CalculatorBehaviors(ITestOutputHelper output)
@@ -39,9 +45,7 @@ public class CalculatorBehaviors
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Task<Behavior<Context,Input>> AsyncAdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
-        var behavior = new Behavior<Context, Input>()
-            .WithInput(() => new Input(a, b, expected))
-            .WithContext(() => new Context(0, 0, 0))
+        var behavior = new Behavior<Context, Input>(() => new Input(a, b, expected))
             .Given("Set first number", (c, i) => Task.FromResult(c with { A = i.A })) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbersAsync(calculator))
@@ -53,9 +57,7 @@ public class CalculatorBehaviors
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(int a, int b, int expected, [Inject] Calculator calculator)
     {
-        return new Behavior<Context, Input>()
-            .WithInput(() => new Input(a, b, expected))
-            .WithContext(() => new Context(0, 0, 0))
+        return new Behavior<Context, Input>(() => new Input(a, b, expected))
             .Given("Set first number", (c, i) => c with { A = i.A }) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))
