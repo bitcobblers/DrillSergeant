@@ -26,7 +26,6 @@ public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
 
         if (handler.IsAsync)
         {
-            var taskType = handler.Method.ReturnType;
             dynamic task = handler.Method.Invoke(handler.Target, parameters)!;
 
             await task;
