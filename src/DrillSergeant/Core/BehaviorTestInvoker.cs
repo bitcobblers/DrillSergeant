@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
@@ -75,14 +75,9 @@ public class BehaviorTestInvoker : XunitTestInvoker
     private async Task InvokeBehavior(object testClassInstance)
     {
         var behavior = await GetBehavior(testClassInstance, TestMethodArguments) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
-        var serializationOptions = new JsonSerializerOptions { WriteIndented = true };
         bool previousStepFailed = false;
 
-        if(behavior.LogContext)
-        {
-            _outputHelper.WriteLine($"Initial Context: {JsonSerializer.Serialize(behavior.Context, serializationOptions)}");
-            _outputHelper.WriteLine(string.Empty);
-        }
+        WriteLogContext(behavior.LogContext, "Initial Context", behavior.Context);
 
         foreach (var step in behavior)
         {
@@ -109,12 +104,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
             });
 
             FormatStepCompletedMessage(previousStepFailed, step.Verb, step.Name, stepTimer.Total);
-            
-            if (behavior.LogContext)
-            {
-                _outputHelper.WriteLine($"Context: {JsonSerializer.Serialize(behavior.Context, serializationOptions)}");
-                _outputHelper.WriteLine(string.Empty);
-            }
+            WriteLogContext(behavior.LogContext, "Context", behavior.Context);
         }
 
         await Task.CompletedTask;
@@ -143,6 +133,27 @@ public class BehaviorTestInvoker : XunitTestInvoker
         }
 
         throw new InvalidOperationException("Test method did not return a behavior.");
+    }
+
+    private void WriteLogContext(bool shouldLog, string label, object context)
+    {
+        if (shouldLog == false)
+        {
+            return;
+        }
+
+        var serializationSettings = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            Error = (s, e) =>
+            {
+                e.ErrorContext.Handled = true;
+            }
+        };
+
+        var serializedContext = JsonConvert.SerializeObject(context, serializationSettings);
+        _outputHelper.WriteLine($"{label}: {serializedContext}");
+        _outputHelper.WriteLine(string.Empty);
     }
 
     private void FormatStepSkippedMessage(string verb, string name)
