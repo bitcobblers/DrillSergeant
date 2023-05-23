@@ -74,7 +74,7 @@ public LambdaStep<Context,Input> MyStep =>
     new GivenLambdaStep<Context,Input>()
         .Named("My step")
         .Handle( (c,i) => {
-		    // Perform some action.
+            // Perform some action.
     });
 ```
 
