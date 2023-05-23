@@ -1,5 +1,4 @@
 ﻿using DrillSergeant.GWT;
-using FakeItEasy;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -9,31 +8,16 @@ namespace DrillSergeant.Tests.Features;
 
 public class CalculatorBehaviors
 {
-    private readonly ITestOutputHelper output;
     private readonly Calculator calculator = new Calculator();
 
-    public interface ILoggerContext
-    {
-        ITestOutputHelper? Logger { get; set; }
-    }
-
-    public interface IEmptyInput { }
-
-    public class Context : ILoggerContext
+    public class Context
     {
         public int A { get; set; }
         public int B { get; set; }
         public int Result { get; set; }
-
-        public ITestOutputHelper? Logger { get; set; }
     }
 
-    public record Input(int A, int B, int Expected) : IEmptyInput;
-
-    public CalculatorBehaviors(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
+    public record Input(int A, int B, int Expected);
 
     public static IEnumerable<object[]> AdditionInputs
     {
@@ -56,15 +40,6 @@ public class CalculatorBehaviors
         return Task.FromResult(behavior);
     }
 
-    private IDependencyResolver ConfigureResolver()
-    {
-        var resolver = A.Fake<IDependencyResolver>();
-
-        A.CallTo(() => resolver.Resolve(typeof(Calculator))).Returns(this.calculator);
-
-        return resolver;
-    }
-
     [Behavior, MemberData(nameof(AdditionInputs))]
     public IBehavior AdditionBehavior(int a, int b, int expected)
     {
@@ -72,8 +47,6 @@ public class CalculatorBehaviors
 
         return new Behavior<Context, Input>(input)
             .EnableContextLogging()
-            .ConfigureResolver(ConfigureResolver)
-            .Given("Configure logging", ConfigureLogger)
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
             .When(AddNumbers(calculator))
@@ -112,7 +85,6 @@ public class CalculatorBehaviors
     {
         public override void Then(Context context, Input input)
         {
-            context.Logger?.WriteLine("Checking result");
             Assert.Equal(input.Expected, context.Result);
         }
     }
@@ -124,10 +96,5 @@ public class CalculatorBehaviors
             Assert.Equal(input.Expected, context.Result);
             return Task.CompletedTask;
         }
-    }
-
-    private void ConfigureLogger(ILoggerContext loggerContext, IEmptyInput input)
-    {
-        loggerContext.Logger = this.output;
     }
 }
