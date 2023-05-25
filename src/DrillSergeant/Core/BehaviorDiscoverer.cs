@@ -25,4 +25,16 @@ public class BehaviorDiscoverer : TheoryDiscoverer
                 dataRow)
         };
     }
+
+    protected override IEnumerable<IXunitTestCase> CreateTestCasesForTheory(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute)
+    {
+        return new[]
+        {
+            new BehaviorTheoryTestCase(
+                DiagnosticMessageSink,
+                discoveryOptions.MethodDisplayOrDefault(),
+                discoveryOptions.MethodDisplayOptionsOrDefault(),
+                testMethod)
+        };
+    }
 }

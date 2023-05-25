@@ -1,14 +1,14 @@
-﻿using DrillSergeant.GWT;
+﻿using AutoFixture.Xunit2;
+using DrillSergeant.GWT;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace DrillSergeant.Tests.Features;
 
 public class CalculatorBehaviors
 {
-    private readonly Calculator calculator = new Calculator();
+    private readonly Calculator calculator = new();
 
     public class Context
     {
@@ -26,6 +26,21 @@ public class CalculatorBehaviors
             new object[] { 1, 2, 3 },
             new object[] { 2, 3, 5 }
         };
+    }
+
+    [Behavior]
+    [InlineAutoData]
+    [InlineAutoData]
+    public IBehavior AdditionBehaviorWithAutoData(int a, int b)
+    {
+        var input = new Input(a, b, a + b);
+
+        return new Behavior<Context, Input>(input)
+            .EnableContextLogging()
+            .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
+            .Given(SetSecondNumber)
+            .When(AddNumbers(calculator))
+            .Then(new CheckResultStep());
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
@@ -89,6 +104,7 @@ public class CalculatorBehaviors
         }
     }
 
+    // Class-level step.
     public class CheckResultStepAsync : ThenStep<Context, Input>
     {
         public Task ThenAsync(Context context, Input input)

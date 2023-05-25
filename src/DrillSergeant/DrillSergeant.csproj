@@ -18,12 +18,6 @@
     <Description>Write acceptance tests in pure C#.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="BehaviorBuilder.cs" />
-    <Compile Remove="Core\BehaviorTheoryTestCase.cs" />
-    <Compile Remove="Core\BehaviorTheoryTestCaseRunner.cs" />
-    <Compile Remove="Core\MessageBusExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <None Include="..\..\README.md">
       <Pack>True</Pack>
