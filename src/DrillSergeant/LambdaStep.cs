@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
-public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
+public class LambdaStep<TContext, TInput> : BaseStep<TInput>
 {
     private string? name;
     private Delegate handler = () => { };
