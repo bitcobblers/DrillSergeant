@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using Shouldly;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -43,15 +44,19 @@ public class LambdaStepTests
         public async Task NonAsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep<Input>("Test").Handle((c, i) => c.Value = 1);
-            var context = new Context();
+            var step = new LambdaStep<Input>("Test").Handle((c, i) =>
+            {
+                c.Value = 1;
+            });
+
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            ((object)context.Value).ShouldBe(1);
         }
 
         [Fact]
@@ -64,14 +69,14 @@ public class LambdaStepTests
                 return Task.CompletedTask;
             });
 
-            var context = new Context();
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            ((object)context.Value).ShouldBe(1);
         }
     }
 }

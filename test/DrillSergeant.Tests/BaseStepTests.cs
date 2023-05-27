@@ -74,7 +74,7 @@ public class BaseStepTests
             resolvedInput.ShouldBeSameAs(input);
         }
 
-        private void StubExecuteMethodWithParameters(Context context, Input input, DateTime dateDependency)
+        private void StubExecuteMethodWithParameters(Context context, Input input)
         {
         }
     }

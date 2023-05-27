@@ -25,21 +25,36 @@ public abstract class BaseStep : IStep
         GC.SuppressFinalize(this);
     }
 
-    public abstract Task Execute(object context, object input);
+    public virtual async Task Execute(object context, object input)
+    {
+        var handler = this.PickHandler();
+        var parameters = this.ResolveParameters(context, input, handler.Method.GetParameters());
+        dynamic result = handler.DynamicInvoke(parameters)!;
+
+        if (IsAsync(handler.Method))
+        {
+            await result;
+        }
+    }
 
     internal virtual object?[] ResolveParameters(object context, object input, ParameterInfo[] parameters)
     {
         var contextType = context.GetType();
         var inputType = input.GetType();
 
-        object? resolve(ParameterInfo parameter)
+        object? resolve(ParameterInfo parameter, int index)
         {
-            if (parameter.ParameterType == contextType ||
-                contextType.GetInterfaces().Contains(parameter.ParameterType))
+            if (index == 0)
             {
                 return context;
             }
-            else if (parameter.ParameterType == inputType ||
+
+            //if (parameter.ParameterType == contextType ||
+            //    contextType.GetInterfaces().Contains(parameter.ParameterType))
+            //{
+            //    return context;
+            //}
+            if (parameter.ParameterType == inputType ||
                 inputType.GetInterfaces().Contains(parameter.ParameterType))
             {
                 return input;
@@ -50,6 +65,8 @@ public abstract class BaseStep : IStep
 
         return parameters.Select(resolve).ToArray();
     }
+
+    protected abstract Delegate PickHandler();
 
     [ExcludeFromCodeCoverage]
     protected virtual void Dispose(bool disposing)

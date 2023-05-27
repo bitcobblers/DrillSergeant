@@ -8,13 +8,13 @@ public class Behavior<TInput> : IBehavior
 {
     protected readonly List<IStep> steps = new();
 
-    public Behavior(TInput input, object? context = null)
+    public Behavior(TInput input)
     {
         this.Input = input!;
-        this.Context = context ?? new ExpandoObject();
+        this.Context = new ExpandoObject();
     }
 
-    public object Context { get; }
+    public dynamic Context { get; } = new ExpandoObject();
 
     public object Input { get; }
 

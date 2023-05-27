@@ -46,15 +46,5 @@ public class LambdaStep<TInput> : BaseStep
     public LambdaStep<TInput> Handle(Func<dynamic, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TInput> Handle(Func<dynamic, TInput, Task>? handler) => this.SetHandler(handler);
 
-    public override async Task Execute(object context, object input)
-    {
-        var parameters = ResolveParameters(context, input, this.handler.Method.GetParameters());
-        var isAsync = IsAsync(this.handler.Method);
-        dynamic r = this.handler.DynamicInvoke(parameters)!;
-
-        if (isAsync)
-        {
-            await r;
-        }
-    }
+    protected override Delegate PickHandler() => this.handler;
 }

@@ -180,7 +180,7 @@ public class VerbStepTests
             var expected = stub.GetType().GetMethod("Test", new[] { typeof(int) });
 
             // Act.
-            var verbMethod = stub.PickHandler();
+            var verbMethod = stub.PickHandlerWrapper();
             var handler = verbMethod;
 
             // Assert.
@@ -195,7 +195,7 @@ public class VerbStepTests
             var expected = stub.GetType().GetMethod("Test", new[] { typeof(string) });
 
             // Act.
-            var handler = stub.PickHandler();
+            var handler = stub.PickHandlerWrapper();
 
             // Assert.
             Assert.Equal(expected, handler.Method);
@@ -209,7 +209,7 @@ public class VerbStepTests
             var expected = stub.GetType().GetMethod("TestAsync", new[] { typeof(int) });
 
             // Act.
-            var handler = stub.PickHandler();
+            var handler = stub.PickHandlerWrapper();
 
             // Assert.
             Assert.Equal(expected, handler.Method);
@@ -222,7 +222,7 @@ public class VerbStepTests
             var stub = new StubWithNoVerb();
 
             // Assert.
-            Assert.Throws<MissingVerbException>(() => stub.PickHandler());
+            Assert.Throws<MissingVerbException>(() => stub.PickHandlerWrapper());
         }
 
         [Theory]
@@ -231,72 +231,53 @@ public class VerbStepTests
         public void ThrowsAmbiguousVerbException_Scenarios(Type type)
         {
             // Arrange.
-            var stub = (VerbStep<object>)Activator.CreateInstance(type)!;
+            var stub = (StubWithExposedPickHandler)Activator.CreateInstance(type)!;
 
             // Assert.
-            Assert.Throws<AmbiguousVerbException>(() => stub.PickHandler());
+            Assert.Throws<AmbiguousVerbException>(() => stub.PickHandlerWrapper());
         }
 
-        public class StubWithMultipleSyncVerbs : VerbStep<object>
+        public class StubWithExposedPickHandler : VerbStep<object>
         {
-            public StubWithMultipleSyncVerbs()
+            public StubWithExposedPickHandler()
                 : base("Test")
             {
             }
 
+            public Delegate PickHandlerWrapper() => this.PickHandler();
+        }
+
+        public class StubWithMultipleSyncVerbs : StubWithExposedPickHandler
+        {
             public void Test() { }
             public void Test(int arg1) { }
         }
 
-        public class StubWithSyncAndAsync_SameName : VerbStep<object>
+        public class StubWithSyncAndAsync_SameName : StubWithExposedPickHandler
         {
-            public StubWithSyncAndAsync_SameName()
-                : base("Test")
-            {
-            }
-
             public void Test(int arg) { }
             public Task Test(string arg) => Task.CompletedTask;
         }
 
-        public class StubWithSyncAndAsync_DifferentName : VerbStep<object>
+        public class StubWithSyncAndAsync_DifferentName : StubWithExposedPickHandler
         {
-            public StubWithSyncAndAsync_DifferentName()
-                : base("Test")
-            {
-            }
-
             public void Test(int arg) { }
             public Task TestAsync(int arg) => Task.CompletedTask;
         }
 
-        public class StubWithNoVerb : VerbStep<object>
+        public class StubWithNoVerb : StubWithExposedPickHandler
         {
-            public StubWithNoVerb()
-                : base("ignored")
-            {
-            }
         }
 
-        public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : VerbStep<object>
+        public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : StubWithExposedPickHandler
         {
-            public StubWithTwoHandlersSameNumberOfParameters_NoAsync()
-                : base("Test")
-            {
-            }
-
             public void Test(int arg) { }
 
             public void Test(string arg) { }
         }
 
-        public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : VerbStep<object>
+        public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : StubWithExposedPickHandler
         {
-            public StubWithTwoHandlers_SameNumberOfParameters_TwoAsync()
-                : base("Test")
-            {
-            }
-
             public Task Test(string arg) => Task.CompletedTask;
 
             public Task Test(long arg) => Task.CompletedTask;
