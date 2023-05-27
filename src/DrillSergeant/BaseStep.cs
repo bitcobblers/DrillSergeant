@@ -25,14 +25,14 @@ public abstract class BaseStep<TContext, TInput> : IStep
         GC.SuppressFinalize(this);
     }
 
-    public abstract Task Execute(object context, object input, IDependencyResolver resolver);
+    public abstract Task Execute(object context, object input);
 
-    internal virtual object?[] ResolveParameters(IDependencyResolver resolver, object context, object input, ParameterInfo[] parameters)
+    internal virtual object?[] ResolveParameters(object context, object input, ParameterInfo[] parameters)
     {
         var contextType = context.GetType();
         var inputType = input.GetType();
 
-        object resolve(ParameterInfo parameter)
+        object? resolve(ParameterInfo parameter)
         {
             if (parameter.ParameterType == contextType ||
                 contextType.GetInterfaces().Contains(parameter.ParameterType))
@@ -45,7 +45,7 @@ public abstract class BaseStep<TContext, TInput> : IStep
                 return input;
             }
 
-            return resolver.Resolve(parameter.ParameterType);
+            return null;
         }
 
         return parameters.Select(resolve).ToArray();

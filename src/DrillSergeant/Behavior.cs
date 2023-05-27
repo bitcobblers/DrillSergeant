@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace DrillSergeant;
@@ -21,8 +20,6 @@ public class Behavior<TContext, TInput> : IBehavior
 
     public bool LogContext { get; private set; }
 
-    public IDependencyResolver Resolver { get; private set; } = new DefaultResolver();
-
     public Behavior<TContext, TInput> AddStep(IStep step)
     {
         this.steps.Add(step);
@@ -32,12 +29,6 @@ public class Behavior<TContext, TInput> : IBehavior
     public Behavior<TContext, TInput> EnableContextLogging()
     {
         this.LogContext = true;
-        return this;
-    }
-
-    public Behavior<TContext, TInput> ConfigureResolver(Func<IDependencyResolver?> configureResolver)
-    {
-        this.Resolver = configureResolver?.Invoke() ?? this.Resolver;
         return this;
     }
 

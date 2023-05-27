@@ -46,9 +46,9 @@ public class LambdaStep<TContext, TInput> : BaseStep<TContext, TInput>
     public LambdaStep<TContext, TInput> Handle(Func<TContext, Task>? handler) => this.SetHandler(handler);
     public LambdaStep<TContext, TInput> Handle(Func<TContext, TInput, Task>? handler) => this.SetHandler(handler);
 
-    public override async Task Execute(object context, object input, IDependencyResolver resolver)
+    public override async Task Execute(object context, object input)
     {
-        var parameters = ResolveParameters(resolver, context, input, this.handler.Method.GetParameters());
+        var parameters = ResolveParameters(context, input, this.handler.Method.GetParameters());
         var isAsync = IsAsync(this.handler.Method);
         dynamic r = this.handler.DynamicInvoke(parameters)!;
 

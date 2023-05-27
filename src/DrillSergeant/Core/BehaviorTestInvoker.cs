@@ -94,7 +94,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
             {
                 try
                 {
-                    await step.Execute(behavior.Context, behavior.Input, behavior.Resolver);
+                    await step.Execute(behavior.Context, behavior.Input);
                 }
                 catch (Exception ex)
                 {

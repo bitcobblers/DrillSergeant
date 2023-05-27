@@ -1,5 +1,4 @@
-﻿using FakeItEasy;
-using Shouldly;
+﻿using Shouldly;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -70,12 +69,11 @@ public class VerbStepTests
         {
             // Arrange.
             var step = new StubStep_NonAsync_ReturnsValue();
-            var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
 
             // Act.
-            await step.Execute(context, input, resolver);
+            await step.Execute(context, input);
 
             // Assert.
             context.Value.ShouldBe(1);
@@ -86,12 +84,11 @@ public class VerbStepTests
         {
             // Arrange.
             var step = new StubStep_Async_ReturnsValue();
-            var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
 
             // Act.
-            await step.Execute(context, input, resolver);
+            await step.Execute(context, input);
 
             // Assert.
             context.Value.ShouldBe(1);

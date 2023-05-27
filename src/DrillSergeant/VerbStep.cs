@@ -19,10 +19,10 @@ public class VerbStep<TContext, TInput> : BaseStep<TContext, TInput>
         this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 
-    public override async Task Execute(object context, object input, IDependencyResolver resolver)
+    public override async Task Execute(object context, object input)
     {
         var handler = this.PickHandler();
-        var parameters = this.ResolveParameters(resolver, context, input, handler.Method.GetParameters());
+        var parameters = this.ResolveParameters(context, input, handler.Method.GetParameters());
 
         if (handler.IsAsync)
         {

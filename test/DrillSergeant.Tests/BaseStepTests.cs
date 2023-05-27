@@ -45,13 +45,12 @@ public class BaseStepTests
         {
             // Arrange.
             var step = A.Fake<BaseStep<Context, Input>>(options => options.CallsBaseMethods());
-            var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
             var parameters = stubExecuteMethodWithParameters.GetParameters();
 
             // Act.
-            var resolvedParameters = step.ResolveParameters(resolver, context, input, parameters);
+            var resolvedParameters = step.ResolveParameters(context, input, parameters);
             var resolvedContext = resolvedParameters.First(x => x!.GetType() == typeof(Context));
 
             // Assert.
@@ -63,34 +62,16 @@ public class BaseStepTests
         {
             // Arrange.
             var step = A.Fake<BaseStep<Context, Input>>(options => options.CallsBaseMethods());
-            var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
             var parameters = stubExecuteMethodWithParameters.GetParameters();
 
             // Act.
-            var resolvedParameters = step.ResolveParameters(resolver, context, input, parameters);
+            var resolvedParameters = step.ResolveParameters(context, input, parameters);
             var resolvedInput = resolvedParameters.First(x => x!.GetType() == typeof(Input));
 
             // Assert.
             resolvedInput.ShouldBeSameAs(input);
-        }
-
-        [Fact]
-        public void OtherParameterResolvedUsingResolver()
-        {
-            // Arrange.
-            var step = A.Fake<BaseStep<Context, Input>>(options => options.CallsBaseMethods());
-            var resolver = A.Fake<IDependencyResolver>();
-            var context = new Context();
-            var input = new Input();
-            var parameters = stubExecuteMethodWithParameters.GetParameters();
-
-            // Act.
-            var resolvedParameters = step.ResolveParameters(resolver, context, input, parameters);
-
-            // Assert.
-            A.CallTo(() => resolver.Resolve(typeof(DateTime))).MustHaveHappened();
         }
 
         private void StubExecuteMethodWithParameters(Context context, Input input, DateTime dateDependency)

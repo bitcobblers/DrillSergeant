@@ -44,12 +44,11 @@ public class LambdaStepTests
         {
             // Arrange.
             var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => c.Value = 1);
-            var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
 
             // Act.
-            await step.Execute(context, input, resolver);
+            await step.Execute(context, input);
 
             // Assert.
             context.Value.ShouldBe(1);
@@ -65,12 +64,11 @@ public class LambdaStepTests
                 return Task.CompletedTask;
             });
 
-            var resolver = A.Fake<IDependencyResolver>();
             var context = new Context();
             var input = new Input();
 
             // Act.
-            await step.Execute(context, input, resolver);
+            await step.Execute(context, input);
 
             // Assert.
             context.Value.ShouldBe(1);
