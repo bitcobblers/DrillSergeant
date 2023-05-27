@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
@@ -19,23 +19,7 @@ public class VerbStep<TContext, TInput> : BaseStep
         this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 
-    public override async Task Execute(object context, object input)
-    {
-        var handler = this.PickHandler();
-        var parameters = this.ResolveParameters(context, input, handler.Method.GetParameters());
-
-        if (handler.IsAsync)
-        {
-            dynamic task = handler.Method.Invoke(handler.Target, parameters)!;
-
-            await task;
-            return;
-        }
-
-        handler.Method.Invoke(handler.Target, parameters);
-    }
-
-    internal virtual VerbMethod PickHandler()
+    protected override Delegate PickHandler()
     {
         var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                             where m.Name == this.Verb || m.Name == this.Verb + "Async"
@@ -61,6 +45,8 @@ public class VerbStep<TContext, TInput> : BaseStep
         }
 
         // Prefer async.
-        return highestGroup.FirstOrDefault(x => x.IsAsync) ?? highestGroup.First();
+        var handler = highestGroup.FirstOrDefault(x => x.IsAsync) ?? highestGroup.First();
+
+        return handler.Method.ToDelegate(handler.Target);
     }
 }

@@ -25,7 +25,17 @@ public abstract class BaseStep : IStep
         GC.SuppressFinalize(this);
     }
 
-    public abstract Task Execute(object context, object input);
+    public virtual async Task Execute(object context, object input)
+    {
+        var handler = this.PickHandler();
+        var parameters = this.ResolveParameters(context, input, handler.Method.GetParameters());
+        dynamic result = handler.DynamicInvoke(parameters)!;
+
+        if (IsAsync(handler.Method))
+        {
+            await result;
+        }
+    }
 
     internal virtual object?[] ResolveParameters(object context, object input, ParameterInfo[] parameters)
     {
@@ -50,6 +60,8 @@ public abstract class BaseStep : IStep
 
         return parameters.Select(resolve).ToArray();
     }
+
+    protected abstract Delegate PickHandler();
 
     [ExcludeFromCodeCoverage]
     protected virtual void Dispose(bool disposing)
