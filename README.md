@@ -113,23 +113,6 @@ public class MyStep<Context,Input> : GivenStep<Context,Input>
 }
 ```
 
-## Configuring the Resolver
-
-`DrillSergeant` supports dependency injection for class steps and inline steps.  This is accomplished via the `IDependencyResolver` interface.  The default behavior when injecting parameters is to invoke their default constructor.  However this can be configured.  To override this behavior, use the `ConfigureResolver()` method and supply your own:
-
-```
-var behavior = 
-    new Behavior<Context,Input>(input)
-        .ConfigureResolver(() => {
-            var resolver = A.Fake<IDependencyResolver();
-
-            // Configure resolver here...
-
-            return resolver;
-        });
-```
-In this example, we're using the mocking library `FakeItEasy` to create a resolver that returns instances of the required dependency, but for more advanced scenarios a real DI container can be substituted in its place.
-
 ## Best Practices
 
 ### Favor Xunit Class/Collection Fixtures
