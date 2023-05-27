@@ -1,17 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace DrillSergeant;
 
-public class Behavior<TContext, TInput> : IBehavior
-    where TContext : class, new()
+public class Behavior<TInput> : IBehavior
 {
     protected readonly List<IStep> steps = new();
 
-    public Behavior(TInput input, TContext? context = null)
+    public Behavior(TInput input, object? context = null)
     {
         this.Input = input!;
-        this.Context = context ?? new TContext();
+        this.Context = context ?? new ExpandoObject();
     }
 
     public object Context { get; }
@@ -20,13 +20,13 @@ public class Behavior<TContext, TInput> : IBehavior
 
     public bool LogContext { get; private set; }
 
-    public Behavior<TContext, TInput> AddStep(IStep step)
+    public Behavior<TInput> AddStep(IStep step)
     {
         this.steps.Add(step);
         return this;
     }
 
-    public Behavior<TContext, TInput> EnableContextLogging()
+    public Behavior<TInput> EnableContextLogging()
     {
         this.LogContext = true;
         return this;

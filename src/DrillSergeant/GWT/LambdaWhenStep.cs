@@ -1,6 +1,6 @@
 ﻿namespace DrillSergeant.GWT;
 
-public class LambdaWhenStep<TContext, TInput> : LambdaStep<TContext, TInput>
+public class LambdaWhenStep<TInput> : LambdaStep<TInput>
 {
     public LambdaWhenStep()
         : base("When")

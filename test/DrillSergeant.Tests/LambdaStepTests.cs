@@ -20,7 +20,7 @@ public class LambdaStepTests
         public void SettingBlankNameDoesNotChangeExistingValue(string blankValue)
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Named("expected");
+            var step = new LambdaStep<Input>("Test").Named("expected");
 
             // Act.
             step.Named(blankValue);
@@ -43,7 +43,7 @@ public class LambdaStepTests
         public async Task NonAsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => c.Value = 1);
+            var step = new LambdaStep<Input>("Test").Handle((c, i) => c.Value = 1);
             var context = new Context();
             var input = new Input();
 
@@ -58,7 +58,7 @@ public class LambdaStepTests
         public async Task AsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) =>
+            var step = new LambdaStep<Input>("Test").Handle((c, i) =>
             {
                 c.Value = 1;
                 return Task.CompletedTask;

@@ -42,7 +42,7 @@ public class VerbStepTests
             Assert.Equal(typeof(StubStep).Name, step.Name);
         }
 
-        public class StubStep : VerbStep<object,object>
+        public class StubStep : VerbStep<object>
         {
             public StubStep(string verb) : base(verb)
             {
@@ -94,7 +94,7 @@ public class VerbStepTests
             context.Value.ShouldBe(1);
         }
 
-        public class StubStep_NonAsync_ReturnsValue : VerbStep<Context, Input>
+        public class StubStep_NonAsync_ReturnsValue : VerbStep<Input>
         {
             public StubStep_NonAsync_ReturnsValue() : base("Test")
             {
@@ -103,7 +103,7 @@ public class VerbStepTests
             public void Test(Context context, Input input) => context.Value = 1;
         }
 
-        public class StubStep_Async_ReturnsValue : VerbStep<Context, Input>
+        public class StubStep_Async_ReturnsValue : VerbStep<Input>
         {
             public StubStep_Async_ReturnsValue() : base("Test")
             {
@@ -121,7 +121,7 @@ public class VerbStepTests
             void DoSomething();
         }
 
-        public class StubWithNoParameters : VerbStep<Context,Input>
+        public class StubWithNoParameters : VerbStep<Input>
         {
             public StubWithNoParameters()
                 : base("Test")
@@ -136,7 +136,7 @@ public class VerbStepTests
             }
         }
 
-        public class StubWithInjectableParameter : VerbStep<Context, Input>
+        public class StubWithInjectableParameter : VerbStep<Input>
         {
             public StubWithInjectableParameter()
                 : base("Test")
@@ -149,7 +149,7 @@ public class VerbStepTests
             }
         }
 
-        public class StubThatReturnsValue_Sync : VerbStep<Context, Input>
+        public class StubThatReturnsValue_Sync : VerbStep<Input>
         {
             public StubThatReturnsValue_Sync()
                 : base("Test")
@@ -159,7 +159,7 @@ public class VerbStepTests
             public string Test() => "expected";
         }
 
-        public class StubThatReturnsValue_Async : VerbStep<Context, Input>
+        public class StubThatReturnsValue_Async : VerbStep<Input>
         {
             public StubThatReturnsValue_Async()
                 : base("Test")
@@ -231,13 +231,13 @@ public class VerbStepTests
         public void ThrowsAmbiguousVerbException_Scenarios(Type type)
         {
             // Arrange.
-            var stub = (VerbStep<object, object>)Activator.CreateInstance(type)!;
+            var stub = (VerbStep<object>)Activator.CreateInstance(type)!;
 
             // Assert.
             Assert.Throws<AmbiguousVerbException>(() => stub.PickHandler());
         }
 
-        public class StubWithMultipleSyncVerbs : VerbStep<object, object>
+        public class StubWithMultipleSyncVerbs : VerbStep<object>
         {
             public StubWithMultipleSyncVerbs()
                 : base("Test")
@@ -248,7 +248,7 @@ public class VerbStepTests
             public void Test(int arg1) { }
         }
 
-        public class StubWithSyncAndAsync_SameName : VerbStep<object, object>
+        public class StubWithSyncAndAsync_SameName : VerbStep<object>
         {
             public StubWithSyncAndAsync_SameName()
                 : base("Test")
@@ -259,7 +259,7 @@ public class VerbStepTests
             public Task Test(string arg) => Task.CompletedTask;
         }
 
-        public class StubWithSyncAndAsync_DifferentName : VerbStep<object, object>
+        public class StubWithSyncAndAsync_DifferentName : VerbStep<object>
         {
             public StubWithSyncAndAsync_DifferentName()
                 : base("Test")
@@ -270,7 +270,7 @@ public class VerbStepTests
             public Task TestAsync(int arg) => Task.CompletedTask;
         }
 
-        public class StubWithNoVerb : VerbStep<object, object>
+        public class StubWithNoVerb : VerbStep<object>
         {
             public StubWithNoVerb()
                 : base("ignored")
@@ -278,7 +278,7 @@ public class VerbStepTests
             }
         }
 
-        public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : VerbStep<object, object>
+        public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : VerbStep<object>
         {
             public StubWithTwoHandlersSameNumberOfParameters_NoAsync()
                 : base("Test")
@@ -290,7 +290,7 @@ public class VerbStepTests
             public void Test(string arg) { }
         }
 
-        public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : VerbStep<object, object>
+        public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : VerbStep<object>
         {
             public StubWithTwoHandlers_SameNumberOfParameters_TwoAsync()
                 : base("Test")
