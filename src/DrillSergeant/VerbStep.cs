@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
-public class VerbStep<TContext, TInput> : BaseStep<TInput>
+public class VerbStep<TContext, TInput> : BaseStep
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 

@@ -22,7 +22,7 @@ public class BaseStepTests
             var method = GetMethod(typeof(IsAsyncMethod), methodName);
 
             // Act.
-            bool result = BaseStep<object>.IsAsync(method);
+            bool result = BaseStep.IsAsync(method);
 
             // Assert.
             result.ShouldBe(expected);
@@ -44,7 +44,7 @@ public class BaseStepTests
         public void ContextParameterResolvesToPassedContext()
         {
             // Arrange.
-            var step = A.Fake<BaseStep<Input>>(options => options.CallsBaseMethods());
+            var step = A.Fake<BaseStep>(options => options.CallsBaseMethods());
             var context = new Context();
             var input = new Input();
             var parameters = stubExecuteMethodWithParameters.GetParameters();
@@ -61,7 +61,7 @@ public class BaseStepTests
         public void InputParameterResolvesToPassedInput()
         {
             // Arrange.
-            var step = A.Fake<BaseStep<Input>>(options => options.CallsBaseMethods());
+            var step = A.Fake<BaseStep>(options => options.CallsBaseMethods());
             var context = new Context();
             var input = new Input();
             var parameters = stubExecuteMethodWithParameters.GetParameters();

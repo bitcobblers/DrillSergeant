@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
-public abstract class BaseStep<TInput> : IStep
+public abstract class BaseStep : IStep
 {
     public virtual string Verb { get; protected set; } = "<unknown>";
 
