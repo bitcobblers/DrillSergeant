@@ -112,14 +112,3 @@ public class MyStep<Context,Input> : GivenStep<Context,Input>
     }
 }
 ```
-
-## Best Practices
-
-### Favor Xunit Class/Collection Fixtures
-
-Xunit already has a mechanism for handling shared data with constructors, `IClassFixture<>`, and `ICollectionFixture`.  These should be preferred by default.  More information can be found [here](https://xunit.net/docs/shared-context).
-
-As a quick recap:
-* Use constructors/private fields for dependencies that are isolated at the test level.
-* Use `IClassFixture<>` for dependencies that are isolated at the class level.
-* Use `ICollectionFixture<>` for global dependencies.
