@@ -83,15 +83,17 @@ public abstract class BaseStep : IStep
             return source;
         }
 
-        if (contextType.IsInterface == false)
+        if (contextType.IsPrimitive ||
+            contextType.IsArray ||
+            contextType == typeof(string))
         {
-            var serialized = JsonConvert.SerializeObject(source);
-            var converted = JsonConvert.DeserializeObject(serialized, contextType)!;
-
-            return converted;
+            throw new InvalidOperationException("Cannot cast context to a primitive type.");
         }
 
-        return source;
+        var serialized = JsonConvert.SerializeObject(source);
+        var converted = JsonConvert.DeserializeObject(serialized, contextType)!;
+
+        return converted;
     }
 
     internal static void UpdateContext(IDictionary<string, object?> context, object changedContext)
