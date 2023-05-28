@@ -27,7 +27,7 @@ public abstract class BaseStep : IStep
         GC.SuppressFinalize(this);
     }
 
-    public virtual async Task Execute(IDictionary<string, object?> context, object input)
+    public virtual async Task Execute(IDictionary<string, object?> context, IDictionary<string, object?> input)
     {
         var handler = PickHandler();
         var parameters = ResolveParameters(context, input, handler.Method.GetParameters());
@@ -45,7 +45,7 @@ public abstract class BaseStep : IStep
         }
     }
 
-    internal virtual object?[] ResolveParameters(IDictionary<string, object?> context, object input, ParameterInfo[] parameters)
+    internal virtual object?[] ResolveParameters(IDictionary<string, object?> context, IDictionary<string, object?> input, ParameterInfo[] parameters)
     {
         var contextType = context.GetType();
         var inputType = input.GetType();
@@ -54,13 +54,11 @@ public abstract class BaseStep : IStep
         {
             if (index == 0)
             {
-                return CastContext(context, parameter.ParameterType);
+                return DynamicCast(context, parameter.ParameterType);
             }
-
-            if (parameter.ParameterType == inputType ||
-                inputType.GetInterfaces().Contains(parameter.ParameterType))
+            else if (index == 1)
             {
-                return input;
+                return DynamicCast(input, parameter.ParameterType);
             }
 
             return null;
@@ -76,22 +74,22 @@ public abstract class BaseStep : IStep
     {
     }
 
-    internal static object CastContext(IDictionary<string, object?> source, Type contextType)
+    internal static object DynamicCast(IDictionary<string, object?> source, Type type)
     {
-        if (contextType == typeof(object))
+        if (type == typeof(object))
         {
             return source;
         }
 
-        if (contextType.IsPrimitive ||
-            contextType.IsArray ||
-            contextType == typeof(string))
+        if (type.IsPrimitive ||
+            type.IsArray ||
+            type == typeof(string))
         {
-            throw new InvalidOperationException("Cannot cast context to a primitive type.");
+            throw new InvalidOperationException("Cannot cast to a primitive type.");
         }
 
         var serialized = JsonConvert.SerializeObject(source);
-        var converted = JsonConvert.DeserializeObject(serialized, contextType)!;
+        var converted = JsonConvert.DeserializeObject(serialized, type)!;
 
         return converted;
     }

@@ -1,9 +1,6 @@
-﻿using FakeItEasy;
-using Shouldly;
+﻿using Shouldly;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
@@ -42,29 +39,12 @@ public class BaseStepTests
 
         private readonly MethodInfo stubExecuteMethodWithParameters = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithParameters));
 
-        [Fact]
-        public void InputParameterResolvesToPassedInput()
-        {
-            // Arrange.
-            var step = A.Fake<BaseStep>(options => options.CallsBaseMethods());
-            dynamic context = new ExpandoObject();
-            var input = new Input();
-            var parameters = stubExecuteMethodWithParameters.GetParameters();
-
-            // Act.
-            var resolvedParameters = (object?[])step.ResolveParameters(context, input, parameters);
-            var resolvedInput = resolvedParameters.First(x => x!.GetType() == typeof(Input));
-
-            // Assert.
-            resolvedInput.ShouldBeSameAs(input);
-        }
-
         private void StubExecuteMethodWithParameters(Context context, Input input)
         {
         }
     }
 
-    public class CastContextMethod : BaseStepTests
+    public class DynamicCastMethod : BaseStepTests
     {
         [Fact]
         public void CallingWithObjectTypeReturnsSource()
@@ -73,7 +53,7 @@ public class BaseStepTests
             var source = new Dictionary<string, object?>();
 
             // Act.
-            var result = BaseStep.CastContext(source, typeof(object));
+            var result = BaseStep.DynamicCast(source, typeof(object));
 
             // Assert.
             source.ShouldBeSameAs(result);
@@ -96,7 +76,7 @@ public class BaseStepTests
             };
 
             // Act.
-            var result = BaseStep.CastContext(source, typeof(StubWithProperties));
+            var result = BaseStep.DynamicCast(source, typeof(StubWithProperties));
 
             // Assert.
             result.ShouldBe(expected);
@@ -112,7 +92,7 @@ public class BaseStepTests
             var source = new Dictionary<string, object?>();
 
             // Act and Assert.
-            Assert.Throws<InvalidOperationException>(() => BaseStep.CastContext(source, type));
+            Assert.Throws<InvalidOperationException>(() => BaseStep.DynamicCast(source, type));
         }
 
         public record StubWithProperties

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
-public class LambdaStep<TInput> : BaseStep
+public class LambdaStep : BaseStep
 {
     private string? name;
     private Delegate handler = () => { };
@@ -13,9 +13,9 @@ public class LambdaStep<TInput> : BaseStep
         this.Verb = verb;
     }
 
-    public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaStep<TInput>);
+    public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaStep);
 
-    public LambdaStep<TInput> Named(string name)
+    public LambdaStep Named(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -26,7 +26,7 @@ public class LambdaStep<TInput> : BaseStep
         return this;
     }
 
-    private LambdaStep<TInput> SetHandler(Delegate? handler)
+    private LambdaStep SetHandler(Delegate? handler)
     {
         if (handler != null)
         {
@@ -36,15 +36,15 @@ public class LambdaStep<TInput> : BaseStep
         return this;
     }
 
-    public LambdaStep<TInput> Handle(Delegate handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Delegate handler) => this.SetHandler(handler);
 
-    public LambdaStep<TInput> Handle(Action? handler) => this.SetHandler(handler);
-    public LambdaStep<TInput> Handle(Action<dynamic>? handler) => this.SetHandler(handler);
-    public LambdaStep<TInput> Handle(Action<dynamic, TInput>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Action? handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Action<dynamic>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Action<dynamic, dynamic>? handler) => this.SetHandler(handler);
 
-    public LambdaStep<TInput> Handle(Func<Task>? handler) => this.SetHandler(handler);
-    public LambdaStep<TInput> Handle(Func<dynamic, Task>? handler) => this.SetHandler(handler);
-    public LambdaStep<TInput> Handle(Func<dynamic, TInput, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Func<Task>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Func<dynamic, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Func<dynamic, dynamic, Task>? handler) => this.SetHandler(handler);
 
     protected override Delegate PickHandler() => this.handler;
 }

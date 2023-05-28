@@ -10,5 +10,5 @@ public interface IStep : IDisposable
     
     string Name { get; }
 
-    Task Execute(IDictionary<string,object?> context, object input);
+    Task Execute(IDictionary<string, object?> context, IDictionary<string, object?> input);
 }

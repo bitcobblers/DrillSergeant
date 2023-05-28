@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace DrillSergeant;
 
-public class VerbStep<TInput> : BaseStep
+public class VerbStep : BaseStep
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 

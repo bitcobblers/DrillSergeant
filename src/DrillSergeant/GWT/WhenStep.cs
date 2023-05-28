@@ -1,6 +1,6 @@
 ﻿namespace DrillSergeant.GWT;
 
-public class WhenStep<TInput> : VerbStep<TInput>
+public class WhenStep : VerbStep
 {
     public WhenStep()
         : base("When")
