@@ -41,7 +41,7 @@ public class CalculatorBehaviors
     {
         var behavior = new Behavior<Input>(new Input(a, b, expected))
             .Given("Set first number", (c, i) => c.A = i.A)
-            .Given(SetSecondNumberAsync)
+            .GivenAsync(SetSecondNumberAsync)
             .When(AddNumbersAsync(calculator))
             .Then(new CheckResultStepAsync());
 
