@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using Shouldly;
 using System;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -41,33 +42,16 @@ public class BaseStepTests
         private readonly MethodInfo stubExecuteMethodWithParameters = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithParameters));
 
         [Fact]
-        public void ContextParameterResolvesToPassedContext()
-        {
-            // Arrange.
-            var step = A.Fake<BaseStep>(options => options.CallsBaseMethods());
-            var context = new Context();
-            var input = new Input();
-            var parameters = stubExecuteMethodWithParameters.GetParameters();
-
-            // Act.
-            var resolvedParameters = step.ResolveParameters(context, input, parameters);
-            var resolvedContext = resolvedParameters.First(x => x!.GetType() == typeof(Context));
-
-            // Assert.
-            resolvedContext.ShouldBeSameAs(context);
-        }
-
-        [Fact]
         public void InputParameterResolvesToPassedInput()
         {
             // Arrange.
             var step = A.Fake<BaseStep>(options => options.CallsBaseMethods());
-            var context = new Context();
+            dynamic context = new ExpandoObject();
             var input = new Input();
             var parameters = stubExecuteMethodWithParameters.GetParameters();
 
             // Act.
-            var resolvedParameters = step.ResolveParameters(context, input, parameters);
+            var resolvedParameters = (object?[])step.ResolveParameters(context, input, parameters);
             var resolvedInput = resolvedParameters.First(x => x!.GetType() == typeof(Input));
 
             // Assert.

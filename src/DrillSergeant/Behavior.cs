@@ -14,7 +14,7 @@ public class Behavior<TInput> : IBehavior
         this.Context = new ExpandoObject();
     }
 
-    public dynamic Context { get; } = new ExpandoObject();
+    public IDictionary<string,object?> Context { get; } = new ExpandoObject();
 
     public object Input { get; }
 

@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using System;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -57,7 +58,7 @@ public class VerbStepTests
 
     public class ExecuteMethod : VerbStepTests
     {
-        public record Context
+        public class Context
         {
             public int Value { get; set; }
         }
@@ -69,14 +70,14 @@ public class VerbStepTests
         {
             // Arrange.
             var step = new StubStep_NonAsync_ReturnsValue();
-            var context = new Context();
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            Assert.Equal(1, context.Value);
         }
 
         [Fact]
@@ -84,14 +85,14 @@ public class VerbStepTests
         {
             // Arrange.
             var step = new StubStep_Async_ReturnsValue();
-            var context = new Context();
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            Assert.Equal(1, context.Value);
         }
 
         public class StubStep_NonAsync_ReturnsValue : VerbStep<Input>
