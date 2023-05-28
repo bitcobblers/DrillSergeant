@@ -1,6 +1,6 @@
 ﻿namespace DrillSergeant.GWT;
 
-public class LambdaThenStep<TInput> : LambdaStep<TInput>
+public class LambdaThenStep : LambdaStep
 {
     public LambdaThenStep()
         : base("Then")

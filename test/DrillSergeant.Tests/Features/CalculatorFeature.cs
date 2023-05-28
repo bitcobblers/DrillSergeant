@@ -24,11 +24,11 @@ public class CalculatorBehaviors
     [Behavior]
     [InlineAutoData]
     [InlineAutoData]
-    public IBehavior AdditionBehaviorWithAutoData(int a, int b)
+    public Behavior AdditionBehaviorWithAutoData(int a, int b)
     {
         var input = new Input(a, b, a + b);
 
-        return new Behavior<Input>(input)
+        return new Behavior(input)
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
@@ -37,9 +37,9 @@ public class CalculatorBehaviors
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Task<Behavior<Input>> AsyncAdditionBehavior(int a, int b, int expected)
+    public Task<Behavior> AsyncAdditionBehavior(int a, int b, int expected)
     {
-        var behavior = new Behavior<Input>(new Input(a, b, expected))
+        var behavior = new Behavior(new Input(a, b, expected))
             .Given("Set first number", (c, i) => c.A = i.A)
             .GivenAsync(SetSecondNumberAsync)
             .When(AddNumbersAsync(calculator))
@@ -49,11 +49,11 @@ public class CalculatorBehaviors
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public IBehavior AdditionBehavior(int a, int b, int expected)
+    public Behavior AdditionBehavior(int a, int b, int expected)
     {
         var input = new Input(a, b, expected);
 
-        return new Behavior<Input>(input)
+        return new Behavior(input)
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .Given(SetSecondNumber)
@@ -64,23 +64,23 @@ public class CalculatorBehaviors
     // Step implemented as a normal method.
     private void SetSecondNumber(dynamic context, Input input) => context.B = input.B;
 
-    private Task SetSecondNumberAsync(dynamic context, Input input)
+    private Task SetSecondNumberAsync(dynamic context, dynamic input)
     {
         context.B = input.B;
         return Task.CompletedTask;
     }
 
     // Step implemented as a lambda step for greater flexibility.
-    public LambdaStep<Input> AddNumbers(Calculator calculator) =>
-        new LambdaWhenStep<Input>()
+    public LambdaStep AddNumbers(Calculator calculator) =>
+        new LambdaWhenStep()
             .Named("Add numbers")
             .Handle((c) =>
             {
                 c.Result = calculator.Add(c.A, c.B);
             });
 
-    public LambdaStep<Input> AddNumbersAsync(Calculator calculator) =>
-        new LambdaWhenStep<Input>()
+    public LambdaStep AddNumbersAsync(Calculator calculator) =>
+        new LambdaWhenStep()
             .Named("Add numbers")
             .Handle((c, _) =>
             {
@@ -89,7 +89,7 @@ public class CalculatorBehaviors
             });
 
     // Step implemented as type for full customization and reusability.
-    public class CheckResultStep : ThenStep<Input>
+    public class CheckResultStep : ThenStep
     {
         public void Then(dynamic context, Input input)
         {
@@ -98,7 +98,7 @@ public class CalculatorBehaviors
     }
 
     // Class-level step.
-    public class CheckResultStepAsync : ThenStep<Input>
+    public class CheckResultStepAsync : ThenStep
     {
         public Task ThenAsync(dynamic context, Input input)
         {

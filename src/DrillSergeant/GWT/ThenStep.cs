@@ -1,6 +1,6 @@
 ﻿namespace DrillSergeant.GWT;
 
-public class ThenStep<TInput> : VerbStep<TInput>
+public class ThenStep : VerbStep
 {
     public ThenStep()
         : base("Then")

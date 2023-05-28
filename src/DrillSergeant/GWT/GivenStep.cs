@@ -1,6 +1,6 @@
 ﻿namespace DrillSergeant.GWT;
 
-public class GivenStep<TInput> : VerbStep<TInput>
+public class GivenStep : VerbStep
 {
     public GivenStep()
         : base("Given")
