@@ -8,11 +8,7 @@ public class Behavior<TInput> : IBehavior
 {
     protected readonly List<IStep> steps = new();
 
-    public Behavior(TInput input)
-    {
-        this.Input = input!;
-        this.Context = new ExpandoObject();
-    }
+    public Behavior(TInput input) => this.Input = input!;
 
     public IDictionary<string,object?> Context { get; } = new ExpandoObject();
 

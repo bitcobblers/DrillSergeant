@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DrillSergeant;
@@ -9,5 +10,5 @@ public interface IStep : IDisposable
     
     string Name { get; }
 
-    Task Execute(object context, object input);
+    Task Execute(IDictionary<string,object?> context, object input);
 }

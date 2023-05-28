@@ -27,7 +27,7 @@ public abstract class BaseStep : IStep
         GC.SuppressFinalize(this);
     }
 
-    public virtual async Task Execute(object context, object input)
+    public virtual async Task Execute(IDictionary<string, object?> context, object input)
     {
         var handler = PickHandler();
         var parameters = ResolveParameters(context, input, handler.Method.GetParameters());
@@ -41,12 +41,11 @@ public abstract class BaseStep : IStep
 
         if (object.ReferenceEquals(context, resolvedContext) == false)
         {
-            var unpacked = UnpackContext(resolvedContext);
-            UpdateContext(context, unpacked);
+            UpdateContext(context, resolvedContext);
         }
     }
 
-    internal virtual object?[] ResolveParameters(object context, object input, ParameterInfo[] parameters)
+    internal virtual object?[] ResolveParameters(IDictionary<string, object?> context, object input, ParameterInfo[] parameters)
     {
         var contextType = context.GetType();
         var inputType = input.GetType();
@@ -55,7 +54,7 @@ public abstract class BaseStep : IStep
         {
             if (index == 0)
             {
-                return CastContext((IDictionary<string, object>)context, parameter.ParameterType);
+                return CastContext(context, parameter.ParameterType);
             }
 
             if (parameter.ParameterType == inputType ||
@@ -77,7 +76,7 @@ public abstract class BaseStep : IStep
     {
     }
 
-    internal static object CastContext(IDictionary<string, object> source, Type contextType)
+    internal static object CastContext(IDictionary<string, object?> source, Type contextType)
     {
         if (contextType == typeof(object))
         {
@@ -95,24 +94,13 @@ public abstract class BaseStep : IStep
         return source;
     }
 
-    internal static IDictionary<string, object> UnpackContext(object context)
+    internal static void UpdateContext(IDictionary<string, object?> context, object changedContext)
     {
-        var result = new Dictionary<string, object>();
         var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
 
-        foreach (var property in context.GetType().GetProperties(flags))
+        foreach (var property in changedContext.GetType().GetProperties(flags))
         {
-            result.Add(property.Name, property.GetValue(context)!);
-        }
-
-        return result;
-    }
-
-    internal static void UpdateContext(object context, object changedContext)
-    {
-        foreach (var (k, v) in (IDictionary<string, object>)changedContext)
-        {
-            ((IDictionary<string, object>)context)[k] = v;
+            context[property.Name] = property.GetValue(changedContext);
         }
     }
 
