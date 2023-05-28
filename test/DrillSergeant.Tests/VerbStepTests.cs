@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using System;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -42,7 +43,7 @@ public class VerbStepTests
             Assert.Equal(typeof(StubStep).Name, step.Name);
         }
 
-        public class StubStep : VerbStep<object, object>
+        public class StubStep : VerbStep<object>
         {
             public StubStep(string verb) : base(verb)
             {
@@ -57,7 +58,7 @@ public class VerbStepTests
 
     public class ExecuteMethod : VerbStepTests
     {
-        public record Context
+        public class Context
         {
             public int Value { get; set; }
         }
@@ -69,14 +70,14 @@ public class VerbStepTests
         {
             // Arrange.
             var step = new StubStep_NonAsync_ReturnsValue();
-            var context = new Context();
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            Assert.Equal(1, context.Value);
         }
 
         [Fact]
@@ -84,17 +85,17 @@ public class VerbStepTests
         {
             // Arrange.
             var step = new StubStep_Async_ReturnsValue();
-            var context = new Context();
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            Assert.Equal(1, context.Value);
         }
 
-        public class StubStep_NonAsync_ReturnsValue : VerbStep<Context, Input>
+        public class StubStep_NonAsync_ReturnsValue : VerbStep<Input>
         {
             public StubStep_NonAsync_ReturnsValue() : base("Test")
             {
@@ -103,7 +104,7 @@ public class VerbStepTests
             public void Test(Context context, Input input) => context.Value = 1;
         }
 
-        public class StubStep_Async_ReturnsValue : VerbStep<Context, Input>
+        public class StubStep_Async_ReturnsValue : VerbStep<Input>
         {
             public StubStep_Async_ReturnsValue() : base("Test")
             {
@@ -121,7 +122,7 @@ public class VerbStepTests
             void DoSomething();
         }
 
-        public class StubWithNoParameters : VerbStep<Context, Input>
+        public class StubWithNoParameters : VerbStep<Input>
         {
             public StubWithNoParameters()
                 : base("Test")
@@ -136,7 +137,7 @@ public class VerbStepTests
             }
         }
 
-        public class StubWithInjectableParameter : VerbStep<Context, Input>
+        public class StubWithInjectableParameter : VerbStep<Input>
         {
             public StubWithInjectableParameter()
                 : base("Test")
@@ -149,7 +150,7 @@ public class VerbStepTests
             }
         }
 
-        public class StubThatReturnsValue_Sync : VerbStep<Context, Input>
+        public class StubThatReturnsValue_Sync : VerbStep<Input>
         {
             public StubThatReturnsValue_Sync()
                 : base("Test")
@@ -159,7 +160,7 @@ public class VerbStepTests
             public string Test() => "expected";
         }
 
-        public class StubThatReturnsValue_Async : VerbStep<Context, Input>
+        public class StubThatReturnsValue_Async : VerbStep<Input>
         {
             public StubThatReturnsValue_Async()
                 : base("Test")
@@ -237,7 +238,7 @@ public class VerbStepTests
             Assert.Throws<AmbiguousVerbException>(() => stub.PickHandlerWrapper());
         }
 
-        public class StubWithExposedPickHandler : VerbStep<object, object>
+        public class StubWithExposedPickHandler : VerbStep<object>
         {
             public StubWithExposedPickHandler()
                 : base("Test")

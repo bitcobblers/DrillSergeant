@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using Shouldly;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -20,7 +21,7 @@ public class LambdaStepTests
         public void SettingBlankNameDoesNotChangeExistingValue(string blankValue)
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Named("expected");
+            var step = new LambdaStep<Input>("Test").Named("expected");
 
             // Act.
             step.Named(blankValue);
@@ -43,35 +44,39 @@ public class LambdaStepTests
         public async Task NonAsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) => c.Value = 1);
-            var context = new Context();
+            var step = new LambdaStep<Input>("Test").Handle((c, i) =>
+            {
+                c.Value = 1;
+            });
+
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            ((object)context.Value).ShouldBe(1);
         }
 
         [Fact]
         public async Task AsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep<Context, Input>("Test").Handle((c, i) =>
+            var step = new LambdaStep<Input>("Test").Handle((c, i) =>
             {
                 c.Value = 1;
                 return Task.CompletedTask;
             });
 
-            var context = new Context();
+            dynamic context = new ExpandoObject();
             var input = new Input();
 
             // Act.
             await step.Execute(context, input);
 
             // Assert.
-            context.Value.ShouldBe(1);
+            ((object)context.Value).ShouldBe(1);
         }
     }
 }

@@ -1,13 +1,9 @@
 ﻿namespace DrillSergeant.GWT;
 
-public class WhenStep<TContext, TInput> : VerbStep<TContext, TInput>
+public class WhenStep<TInput> : VerbStep<TInput>
 {
     public WhenStep()
         : base("When")
-    {
-    }
-
-    public virtual void When(TContext context, TInput input)
     {
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -25,31 +27,37 @@ public abstract class BaseStep : IStep
         GC.SuppressFinalize(this);
     }
 
-    public virtual async Task Execute(object context, object input)
+    public virtual async Task Execute(IDictionary<string, object?> context, object input)
     {
-        var handler = this.PickHandler();
-        var parameters = this.ResolveParameters(context, input, handler.Method.GetParameters());
+        var handler = PickHandler();
+        var parameters = ResolveParameters(context, input, handler.Method.GetParameters());
+        var resolvedContext = parameters.FirstOrDefault() ?? context;
         dynamic result = handler.DynamicInvoke(parameters)!;
 
         if (IsAsync(handler.Method))
         {
             await result;
         }
+
+        if (object.ReferenceEquals(context, resolvedContext) == false)
+        {
+            UpdateContext(context, resolvedContext);
+        }
     }
 
-    internal virtual object?[] ResolveParameters(object context, object input, ParameterInfo[] parameters)
+    internal virtual object?[] ResolveParameters(IDictionary<string, object?> context, object input, ParameterInfo[] parameters)
     {
         var contextType = context.GetType();
         var inputType = input.GetType();
 
-        object? resolve(ParameterInfo parameter)
+        object? resolve(ParameterInfo parameter, int index)
         {
-            if (parameter.ParameterType == contextType ||
-                contextType.GetInterfaces().Contains(parameter.ParameterType))
+            if (index == 0)
             {
-                return context;
+                return CastContext(context, parameter.ParameterType);
             }
-            else if (parameter.ParameterType == inputType ||
+
+            if (parameter.ParameterType == inputType ||
                 inputType.GetInterfaces().Contains(parameter.ParameterType))
             {
                 return input;
@@ -66,6 +74,36 @@ public abstract class BaseStep : IStep
     [ExcludeFromCodeCoverage]
     protected virtual void Dispose(bool disposing)
     {
+    }
+
+    internal static object CastContext(IDictionary<string, object?> source, Type contextType)
+    {
+        if (contextType == typeof(object))
+        {
+            return source;
+        }
+
+        if (contextType.IsPrimitive ||
+            contextType.IsArray ||
+            contextType == typeof(string))
+        {
+            throw new InvalidOperationException("Cannot cast context to a primitive type.");
+        }
+
+        var serialized = JsonConvert.SerializeObject(source);
+        var converted = JsonConvert.DeserializeObject(serialized, contextType)!;
+
+        return converted;
+    }
+
+    internal static void UpdateContext(IDictionary<string, object?> context, object changedContext)
+    {
+        var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+
+        foreach (var property in changedContext.GetType().GetProperties(flags))
+        {
+            context[property.Name] = property.GetValue(changedContext);
+        }
     }
 
     internal static bool IsAsync(MethodInfo method) =>

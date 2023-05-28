@@ -1,6 +1,6 @@
 ﻿namespace DrillSergeant.GWT;
 
-public class LambdaGivenStep<TContext, TInput> : LambdaStep<TContext, TInput>
+public class LambdaGivenStep< TInput> : LambdaStep<TInput>
 {
     public LambdaGivenStep()
         : base("Given")
