@@ -10,13 +10,6 @@ public class CalculatorBehaviors
 {
     private readonly Calculator calculator = new();
 
-    public class Context
-    {
-        public int A { get; set; }
-        public int B { get; set; }
-        public int Result { get; set; }
-    }
-
     public record Input(int A, int B, int Expected);
 
     public static IEnumerable<object[]> AdditionInputs
@@ -69,9 +62,9 @@ public class CalculatorBehaviors
     }
 
     // Step implemented as a normal method.
-    private void SetSecondNumber(Context context, Input input) => context.B = input.B;
+    private void SetSecondNumber(dynamic context, Input input) => context.B = input.B;
 
-    private Task SetSecondNumberAsync(Context context, Input input)
+    private Task SetSecondNumberAsync(dynamic context, Input input)
     {
         context.B = input.B;
         return Task.CompletedTask;
