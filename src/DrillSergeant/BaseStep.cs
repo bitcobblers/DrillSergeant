@@ -45,33 +45,28 @@ public abstract class BaseStep : IStep
         }
     }
 
-    internal virtual object?[] ResolveParameters(IDictionary<string, object?> context, IDictionary<string, object?> input, ParameterInfo[] parameters)
-    {
-        var contextType = context.GetType();
-        var inputType = input.GetType();
-
-        object? resolve(ParameterInfo parameter, int index)
-        {
-            if (index == 0)
-            {
-                return DynamicCast(context, parameter.ParameterType);
-            }
-            else if (index == 1)
-            {
-                return DynamicCast(input, parameter.ParameterType);
-            }
-
-            return null;
-        }
-
-        return parameters.Select(resolve).ToArray();
-    }
-
     protected abstract Delegate PickHandler();
 
     [ExcludeFromCodeCoverage]
     protected virtual void Dispose(bool disposing)
     {
+    }
+
+    internal static object?[] ResolveParameters(IDictionary<string, object?> context, IDictionary<string, object?> input, ParameterInfo[] parameters)
+    {
+        var result = new object[parameters.Length];
+
+        if(result.Length>0)
+        {
+            result[0] = DynamicCast(context, parameters[0].ParameterType);
+        }
+
+        if(result.Length>1)
+        {
+            result[1] = DynamicCast(input, parameters[1].ParameterType);
+        }
+
+        return result;
     }
 
     internal static object DynamicCast(IDictionary<string, object?> source, Type type)

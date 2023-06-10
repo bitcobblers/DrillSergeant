@@ -34,12 +34,73 @@ public class BaseStepTests
 
     public class ResolveParametersMethod : BaseStepTests
     {
-        public record Context();
-        public record Input();
+        public record Context(int IntValue = 0, string? StringValue = null);
+        public record Input(int Value);
 
-        private readonly MethodInfo stubExecuteMethodWithParameters = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithParameters));
+        [Fact]
+        public void ExtraParametersAreNullified()
+        {
+            // Arrange.
+            var context = new Dictionary<string, object?>();
+            var input = new Dictionary<string, object?>();
+            var method = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithExtraParameter));
+
+            // Act.
+            var parameters = BaseStep.ResolveParameters(context, input, method.GetParameters());
+
+            // Assert.
+            parameters[2].ShouldBeNull();
+        }
+
+        [Fact]
+        public void AutomaticallyCastsDictionaryToContext()
+        {
+            // Arrange.
+            var method = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithParameters));
+            var expected = new Context(1, "expected");
+            var context = new Dictionary<string, object?>
+            {
+                ["IntValue"] = expected.IntValue,
+                ["StringValue"] = expected.StringValue
+            };
+
+            var input = new Dictionary<string, object?>();
+
+            // Act.
+            var result = BaseStep.ResolveParameters(context, input, method.GetParameters());
+            var actual = (Context?)result[0];
+
+            // Assert.
+            actual.ShouldNotBeNull();
+            actual.ShouldBe(expected);
+        }
+
+        [Fact]
+        public void AutomaticallyCastsDictionaryToInput()
+        {
+            // Arrange.
+            var method = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithParameters));
+            var expected = new Input(1);
+            var context = new Dictionary<string, object?>();
+            var input = new Dictionary<string, object?>
+            {
+                ["Value"] = 1
+            };
+
+            // Act.
+            var result = BaseStep.ResolveParameters(context, input, method.GetParameters());
+            var actual = (Input?)result[1];
+
+            // Assert.
+            actual.ShouldNotBeNull();
+            actual.ShouldBe(expected);
+        }
 
         private void StubExecuteMethodWithParameters(Context context, Input input)
+        {
+        }
+
+        private void StubExecuteMethodWithExtraParameter(Context context, Input input, object extra)
         {
         }
     }
