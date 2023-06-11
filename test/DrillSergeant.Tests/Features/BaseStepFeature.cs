@@ -49,6 +49,16 @@ public class BaseStepFeature
             .Then("Check Value", c => Assert.Equal("expected", c.Value));
     }
 
+    [Behavior]
+    public Behavior ReferenceTypeContextValuesArePreservedBetweenSteps()
+    {
+        object value = new();
+
+        return new Behavior()
+            .Given("Set context", c => c.Value = value)
+            .Then("Verify context is same", c => Assert.Same(value, c.Value));
+    }
+
     public Behavior SetupContext =>
         new Behavior()
             .Given("Background Step 1", c => c.A = 1)

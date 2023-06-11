@@ -56,15 +56,16 @@ public abstract class BaseStep : IStep
     internal static object?[] ResolveParameters(IDictionary<string, object?> context, IDictionary<string, object?> input, ParameterInfo[] parameters)
     {
         var result = new object[parameters.Length];
+        var caster = new ReflectionParameterCaster();
 
         if (result.Length > 0)
         {
-            result[0] = DynamicCast(context, parameters[0].ParameterType);
+            result[0] = caster.Cast(context, parameters[0].ParameterType);
         }
 
         if (result.Length > 1)
         {
-            result[1] = DynamicCast(CopyInput(input), parameters[1].ParameterType);
+            result[1] = caster.Cast(CopyInput(input), parameters[1].ParameterType);
         }
 
         return result;

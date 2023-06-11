@@ -34,8 +34,16 @@ public class BaseStepTests
 
     public class ResolveParametersMethod : BaseStepTests
     {
-        public record Context(int IntValue = 0, string? StringValue = null);
-        public record Input(int Value);
+        public record Context()
+        {
+            public int IntValue { get; init; }
+            public string? StringValue { get; init; }
+        }
+
+        public record Input
+        {
+            public int Value { get; init; }
+        }
 
         [Fact]
         public void ExtraParametersAreNullified()
@@ -57,7 +65,12 @@ public class BaseStepTests
         {
             // Arrange.
             var method = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithParameters));
-            var expected = new Context(1, "expected");
+            var expected = new Context
+            {
+                IntValue = 1,
+                StringValue = "expected"
+            };
+
             var context = new Dictionary<string, object?>
             {
                 ["IntValue"] = expected.IntValue,
@@ -80,7 +93,7 @@ public class BaseStepTests
         {
             // Arrange.
             var method = GetMethod(typeof(ResolveParametersMethod), nameof(StubExecuteMethodWithParameters));
-            var expected = new Input(1);
+            var expected = new Input { Value = 1 };
             var context = new Dictionary<string, object?>();
             var input = new Dictionary<string, object?>
             {

@@ -10,7 +10,12 @@ public class CalculatorFeature
 {
     private readonly Calculator calculator = new();
 
-    public record Input(int A, int B, int Expected);
+    public record Input
+    {
+        public int A { get; init; }
+        public int B { get; init; }
+        public int Expected { get; init; }
+    }
 
     public static IEnumerable<object[]> AdditionInputs
     {
@@ -27,7 +32,12 @@ public class CalculatorFeature
     [InlineAutoData]
     public Behavior AdditionBehaviorWithAutoData(int a, int b)
     {
-        var input = new Input(a, b, a + b);
+        var input = new Input
+        {
+            A = a,
+            B = b,
+            Expected = a + b
+        };
 
         return new Behavior(input)
             .EnableContextLogging()
@@ -40,7 +50,14 @@ public class CalculatorFeature
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Task<Behavior> AsyncAdditionBehavior(int a, int b, int expected)
     {
-        var behavior = new Behavior(new Input(a, b, expected))
+        var input = new Input
+        {
+            A = a,
+            B = b,
+            Expected = expected
+        };
+
+        var behavior = new Behavior(input)
             .Given("Set first number", (c, i) => c.A = i.A)
             .GivenAsync(SetSecondNumberAsync)
             .When(AddNumbersAsync(calculator))
@@ -52,7 +69,12 @@ public class CalculatorFeature
     [Behavior, MemberData(nameof(AdditionInputs))]
     public Behavior AdditionBehavior(int a, int b, int expected)
     {
-        var input = new Input(a, b, expected);
+        var input = new Input
+        {
+            A = a,
+            B = b,
+            Expected = expected
+        };
 
         return new Behavior(input)
             .EnableContextLogging()
