@@ -40,6 +40,12 @@ public class Behavior : IBehavior
         return this;
     }
 
+    public Behavior Background(Behavior background)
+    {
+        this.steps.AddRange(background);
+        return this;
+    }
+
     public Behavior EnableContextLogging()
     {
         this.LogContext = true;
