@@ -5,8 +5,8 @@ namespace DrillSergeant.Tests.Features;
 
 public class BaseStepFeature
 {
-    [Behavior, InlineData(0)]
-    public Behavior ModifyingInputFails(int _)
+    [Behavior]
+    public Behavior ModifyingInputFails()
     {
         var input = new
         {

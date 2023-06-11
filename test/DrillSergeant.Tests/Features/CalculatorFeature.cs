@@ -17,7 +17,8 @@ public class CalculatorFeature
         get => new[]
         {
             new object[] { 1, 2, 3 },
-            new object[] { 2, 3, 5 }
+            new object[] { 2, 3, 5 },
+            new object[] { 3, 4, 7 }
         };
     }
 
