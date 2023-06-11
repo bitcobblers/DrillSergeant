@@ -77,7 +77,7 @@ public class BehaviorTestInvoker : XunitTestInvoker
         var behavior = await GetBehavior(testClassInstance, TestMethodArguments) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
         bool previousStepFailed = false;
 
-        WriteLogContext(behavior.LogContext, "Initial Context", behavior.Context);
+        WriteLogContext(behavior.LogContext, "Input", behavior.Input);
 
         foreach (var step in behavior)
         {
