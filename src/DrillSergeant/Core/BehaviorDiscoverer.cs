@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -15,8 +17,8 @@ public class BehaviorDiscoverer : TheoryDiscoverer
 
     protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute, object[] dataRow)
     {
-        return new[] 
-        { 
+        return new[]
+        {
             new BehaviorTestCase(
                 DiagnosticMessageSink,
                 discoveryOptions.MethodDisplayOrDefault(),
@@ -35,6 +37,27 @@ public class BehaviorDiscoverer : TheoryDiscoverer
                 discoveryOptions.MethodDisplayOrDefault(),
                 discoveryOptions.MethodDisplayOptionsOrDefault(),
                 testMethod)
+        };
+    }
+
+    public override IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute)
+    {
+        var dataAttributes = testMethod.Method.GetCustomAttributes(typeof(DataAttribute));
+        var hasParameters = testMethod.Method.GetParameters().Any();
+
+        if (dataAttributes.Any() || hasParameters)
+        {
+            return base.Discover(discoveryOptions, testMethod, theoryAttribute);
+        }
+
+        return new[]
+        {
+            new BehaviorTestCase(
+                DiagnosticMessageSink,
+                discoveryOptions.MethodDisplayOrDefault(),
+                discoveryOptions.MethodDisplayOptionsOrDefault(),
+                testMethod,
+                Array.Empty<object>())
         };
     }
 }

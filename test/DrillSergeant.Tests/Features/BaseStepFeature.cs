@@ -5,8 +5,8 @@ namespace DrillSergeant.Tests.Features;
 
 public class BaseStepFeature
 {
-    [Behavior, InlineData(0)]
-    public Behavior ModifyingInputFails(int _)
+    [Behavior]
+    public Behavior ModifyingInputFails()
     {
         var input = new
         {
@@ -16,5 +16,12 @@ public class BaseStepFeature
         return new Behavior(input)
             .When("Update input", (c, i) => i.Value = "error")
             .Then("Input should be unchanged", (c, i) => Assert.Equal("expected", i.Value));
+    }
+
+    [Behavior]
+    public Behavior CreatingBehaviorWithoutInputCreatesEmptyBag()
+    {
+        return new Behavior()
+            .Then("The input should be non-null", (c, i) => Assert.NotNull(i));
     }
 }

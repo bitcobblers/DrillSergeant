@@ -7,6 +7,6 @@ namespace DrillSergeant;
 
 [ExcludeFromCodeCoverage, AttributeUsage(AttributeTargets.Method)]
 [XunitTestCaseDiscoverer("DrillSergeant.Core.BehaviorDiscoverer", "DrillSergeant")]
-public sealed class BehaviorAttribute : TheoryAttribute
+public sealed class BehaviorAttribute : FactAttribute
 {
 }
