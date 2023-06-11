@@ -12,13 +12,13 @@ public class BehaviorDiscoverer : TheoryDiscoverer
         : base(diagnosticMessageSink)
     {
         // Uncomment this line to debug behavior discovery.
-        // System.Diagnostics.Debugger.Launch();
+        System.Diagnostics.Debugger.Launch();
     }
 
     protected override IEnumerable<IXunitTestCase> CreateTestCasesForDataRow(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute, object[] dataRow)
     {
-        return new[] 
-        { 
+        return new[]
+        {
             new BehaviorTestCase(
                 DiagnosticMessageSink,
                 discoveryOptions.MethodDisplayOrDefault(),
@@ -42,7 +42,10 @@ public class BehaviorDiscoverer : TheoryDiscoverer
 
     public override IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo theoryAttribute)
     {
-        if (testMethod.Method.GetParameters().Any())
+        var dataAttributes = testMethod.Method.GetCustomAttributes(typeof(DataAttribute));
+        var hasParameters = testMethod.Method.GetParameters().Any();
+
+        if (dataAttributes.Any() || hasParameters)
         {
             return base.Discover(discoveryOptions, testMethod, theoryAttribute);
         }
