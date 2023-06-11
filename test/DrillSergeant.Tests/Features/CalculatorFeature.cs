@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DrillSergeant.Tests.Features;
 
-public class CalculatorBehaviors
+public class CalculatorFeature
 {
     private readonly Calculator calculator = new();
 
@@ -105,5 +105,10 @@ public class CalculatorBehaviors
             Assert.Equal(input.Expected, context.Result);
             return Task.CompletedTask;
         }
+    }
+
+    public class Calculator
+    {
+        public int Add(int a, int b) => a + b;
     }
 }
