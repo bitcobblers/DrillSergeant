@@ -9,6 +9,11 @@ public class Behavior : IBehavior
 {
     protected readonly List<IStep> steps = new();
 
+    public Behavior()
+        : this(new { })
+    {
+    }
+
     public Behavior(object input)
     {
         var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;

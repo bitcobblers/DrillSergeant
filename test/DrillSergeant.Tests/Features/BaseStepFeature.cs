@@ -17,4 +17,11 @@ public class BaseStepFeature
             .When("Update input", (c, i) => i.Value = "error")
             .Then("Input should be unchanged", (c, i) => Assert.Equal("expected", i.Value));
     }
+
+    [Behavior]
+    public Behavior CreatingBehaviorWithoutInputCreatesEmptyBag()
+    {
+        return new Behavior()
+            .Then("The input should be non-null", (c, i) => Assert.NotNull(i));
+    }
 }
