@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -56,17 +57,30 @@ public abstract class BaseStep : IStep
     {
         var result = new object[parameters.Length];
 
-        if(result.Length>0)
+        if (result.Length > 0)
         {
             result[0] = DynamicCast(context, parameters[0].ParameterType);
         }
 
-        if(result.Length>1)
+        if (result.Length > 1)
         {
-            result[1] = DynamicCast(input, parameters[1].ParameterType);
+            result[1] = DynamicCast(CopyInput(input), parameters[1].ParameterType);
         }
 
         return result;
+    }
+
+    internal static IDictionary<string, object?> CopyInput(IDictionary<string,object?> input)
+    {
+        var copy = new ExpandoObject();
+        var copyAsDict = (IDictionary<string, object?>)copy;
+
+        foreach (var (key, value) in input)
+        {
+            copyAsDict[key] = value;
+        }
+
+        return copy;
     }
 
     internal static object DynamicCast(IDictionary<string, object?> source, Type type)

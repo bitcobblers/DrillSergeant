@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Features\Calculator.cs" />
 	  <Compile Remove="Features\Extensions.cs" />
 	  <Compile Remove="LambdaGivenStepTests.cs" />
 	  <Compile Remove="LambdaThenStepTests.cs" />
