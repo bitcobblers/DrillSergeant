@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace DrillSergeant.GWT;
@@ -104,6 +105,13 @@ public static class BehaviorExtensions
         return behavior;
     }
 
+    public static Behavior Given<TStep>(this Behavior behavior) 
+        where TStep : IStep, new()
+    {
+        behavior.AddStep(new TStep());
+        return behavior;
+    }
+
     #endregion
 
     #region And
@@ -202,6 +210,13 @@ public static class BehaviorExtensions
     public static Behavior And(this Behavior behavior, IStep step)
     {
         behavior.AddStep(step);
+        return behavior;
+    }
+
+    public static Behavior And<TStep>(this Behavior behavior)
+        where TStep : IStep, new()
+    {
+        behavior.AddStep(new TStep());
         return behavior;
     }
 
@@ -306,6 +321,13 @@ public static class BehaviorExtensions
         return behavior;
     }
 
+    public static Behavior When<TStep>(this Behavior behavior)
+        where TStep : IStep, new()
+    {
+        behavior.AddStep(new TStep());
+        return behavior;
+    }
+
     #endregion
 
     #region Then
@@ -407,6 +429,13 @@ public static class BehaviorExtensions
         return behavior;
     }
 
+    public static Behavior Then<TStep>(this Behavior behavior)
+        where TStep : IStep, new()
+    {
+        behavior.AddStep(new TStep());
+        return behavior;
+    }
+
     #endregion
 
     #region But
@@ -505,6 +534,13 @@ public static class BehaviorExtensions
     public static Behavior But(this Behavior behavior, IStep step)
     {
         behavior.AddStep(step);
+        return behavior;
+    }
+
+    public static Behavior But<TStep>(this Behavior behavior)
+        where TStep : IStep, new()
+    {
+        behavior.AddStep(new TStep());
         return behavior;
     }
 

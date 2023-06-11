@@ -44,7 +44,8 @@ public class CalculatorFeature
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .And(SetSecondNumber)
             .When(AddNumbers(calculator))
-            .Then(new CheckResultStep());
+            .Then<CheckResultStep>();
+
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
@@ -61,7 +62,7 @@ public class CalculatorFeature
             .Given("Set first number", (c, i) => c.A = i.A)
             .GivenAsync(SetSecondNumberAsync)
             .When(AddNumbersAsync(calculator))
-            .Then(new CheckResultStepAsync());
+            .Then<CheckResultStepAsync>();
 
         return Task.FromResult(behavior);
     }
