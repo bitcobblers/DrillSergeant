@@ -26,6 +26,16 @@ public class BaseStepFeature
     }
 
     [Behavior]
+    public Behavior ReferenceTypeContextValuesArePreservedBetweenSteps()
+    {
+        object value = new();
+
+        return new Behavior()
+            .Given("Set context", c => c.Value = value)
+            .Then("Verify context is same", c => Assert.Same(value, c.Value));
+    }
+
+    [Behavior]
     public Behavior ConsumingBackroundAutomaticallyExecutesSteps()
     {
         return new Behavior()
@@ -47,16 +57,6 @@ public class BaseStepFeature
             .EnableContextLogging()
             .Background(SetupContextFromInput)
             .Then("Check Value", c => Assert.Equal("expected", c.Value));
-    }
-
-    [Behavior]
-    public Behavior ReferenceTypeContextValuesArePreservedBetweenSteps()
-    {
-        object value = new();
-
-        return new Behavior()
-            .Given("Set context", c => c.Value = value)
-            .Then("Verify context is same", c => Assert.Same(value, c.Value));
     }
 
     public Behavior SetupContext =>
