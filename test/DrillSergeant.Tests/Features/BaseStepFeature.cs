@@ -32,7 +32,7 @@ public class BaseStepFeature
             .EnableContextLogging()
             .Background(SetupContext)
             .Then("Check A", c => Assert.Equal(1, c.A))
-            .Then("Check B", c => Assert.Equal(2, c.B));
+            .But("Check B", c => Assert.Equal(2, c.B));
     }
 
     [Behavior]
@@ -52,7 +52,7 @@ public class BaseStepFeature
     public Behavior SetupContext =>
         new Behavior()
             .Given("Background Step 1", c => c.A = 1)
-            .Given("Background Step 2", c => c.B = 2);
+            .And("Background Step 2", c => c.B = 2);
 
     public Behavior SetupContextFromInput =>
         new Behavior()
