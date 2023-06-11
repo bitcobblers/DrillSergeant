@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DrillSergeant;
 
+[ExcludeFromCodeCoverage]
 [Obsolete("This was the original dynamic caster for parameter resolution.  It should not be used anymore because it is unable to preserve reference types.")]
 public class JsonParameterCaster : IParameterCaster
 {
