@@ -8,7 +8,7 @@ using Xunit.Sdk;
 
 namespace DrillSergeant.Core;
 
-public class BehaviorTestRunner : XunitTestRunner
+internal class BehaviorTestRunner : XunitTestRunner
 {
     public BehaviorTestRunner(ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, string skipReason, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource) 
         : base(test, messageBus, testClass, constructorArguments, testMethod, testMethodArguments, skipReason, beforeAfterAttributes, aggregator, cancellationTokenSource)

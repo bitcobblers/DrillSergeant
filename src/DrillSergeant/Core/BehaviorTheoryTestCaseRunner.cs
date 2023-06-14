@@ -7,7 +7,7 @@ using Xunit.Sdk;
 
 namespace DrillSergeant.Core;
 
-public class BehaviorTheoryTestCaseRunner : XunitTheoryTestCaseRunner
+internal class BehaviorTheoryTestCaseRunner : XunitTheoryTestCaseRunner
 {
     public BehaviorTheoryTestCaseRunner(IXunitTestCase testCase, string displayName, string skipReason, object[] constructorArguments, IMessageSink diagnosticMessageSink, IMessageBus messageBus, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource) 
         : base(testCase, displayName, skipReason, constructorArguments, diagnosticMessageSink, messageBus, aggregator, cancellationTokenSource)

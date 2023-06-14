@@ -9,10 +9,20 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
+/// <summary>
+/// Defines the root type that all steps are derived from.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Steps deriving from this type must implement <see cref="PickHandler"/> to determine which handler to execute when running the step.
+/// </para>
+/// </remarks>
 public abstract class BaseStep : IStep
 {
+    /// <inheritdoc />
     public virtual string Verb { get; protected set; } = "<unknown>";
 
+    /// <inheritdoc />
     public virtual string Name { get; protected set; } = "<untitled step>";
 
     [ExcludeFromCodeCoverage]
@@ -28,6 +38,7 @@ public abstract class BaseStep : IStep
         GC.SuppressFinalize(this);
     }
 
+    /// <inheritdoc />
     public virtual async Task Execute(IDictionary<string, object?> context, IDictionary<string, object?> input)
     {
         var handler = PickHandler();
@@ -46,6 +57,10 @@ public abstract class BaseStep : IStep
         }
     }
 
+    /// <summary>
+    /// Picks the handler method in the step that should be executed by the test runner.
+    /// </summary>
+    /// <returns>A delegate to the handler that should be executed.</returns>
     protected abstract Delegate PickHandler();
 
     [ExcludeFromCodeCoverage]

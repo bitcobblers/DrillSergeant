@@ -6,7 +6,7 @@ using Xunit.Sdk;
 
 namespace DrillSergeant.Core;
 
-public class BehaviorDiscoverer : TheoryDiscoverer
+internal class BehaviorDiscoverer : TheoryDiscoverer
 {
     public BehaviorDiscoverer(IMessageSink diagnosticMessageSink)
         : base(diagnosticMessageSink)

@@ -223,7 +223,7 @@ public class VerbStepTests
             var stub = new StubWithNoVerb();
 
             // Assert.
-            Assert.Throws<MissingVerbException>(() => stub.PickHandlerWrapper());
+            Assert.Throws<MissingVerbHandlerException>(() => stub.PickHandlerWrapper());
         }
 
         [Theory]
@@ -235,7 +235,7 @@ public class VerbStepTests
             var stub = (StubWithExposedPickHandler)Activator.CreateInstance(type)!;
 
             // Assert.
-            Assert.Throws<AmbiguousVerbException>(() => stub.PickHandlerWrapper());
+            Assert.Throws<AmbiguousVerbHandlerException>(() => stub.PickHandlerWrapper());
         }
 
         public class StubWithExposedPickHandler : VerbStep

@@ -10,7 +10,7 @@ using Xunit.Sdk;
 
 namespace DrillSergeant.Core;
 
-public class BehaviorTestInvoker : XunitTestInvoker
+internal class BehaviorTestInvoker : XunitTestInvoker
 {
     private readonly ITestOutputHelper _outputHelper;
 

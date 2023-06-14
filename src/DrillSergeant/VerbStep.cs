@@ -4,21 +4,34 @@ using System.Reflection;
 
 namespace DrillSergeant;
 
+/// <summary>
+/// Defines a step that is defined as a class instance.
+/// </summary>
 public class VerbStep : BaseStep
 {
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
+    /// <summary>
+    /// Iniitalizes a new instance of the <see cref="VerbStep"/> class.
+    /// </summary>
+    /// <param name="verb">The verb to associate with the step.</param>
     public VerbStep(string verb)
         : this(verb, string.Empty)
     {
     }
 
+    /// <summary>
+    /// Iniitalizes a new instance of the <see cref="VerbStep"/> class.
+    /// </summary>
+    /// <param name="verb">The verb to associate with the step.</param>
+    /// <param name="name">The name of the step.</param>
     public VerbStep(string verb, string? name)
     {
         this.Verb = verb;
         this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 
+    /// <inheritdoc />
     protected override Delegate PickHandler()
     {
         var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
@@ -33,7 +46,7 @@ public class VerbStep : BaseStep
 
         if (allCandidates.Any() == false)
         {
-            throw new MissingVerbException(this.Verb);
+            throw new MissingVerbHandlerException(this.Verb);
         }
 
         var highestGroup = allCandidates.First().ToArray();
@@ -41,7 +54,7 @@ public class VerbStep : BaseStep
 
         if (highestGroup.Length >= 2 && numAsync != 1)
         {
-            throw new AmbiguousVerbException(this.Verb);
+            throw new AmbiguousVerbHandlerException(this.Verb);
         }
 
         // Prefer async.

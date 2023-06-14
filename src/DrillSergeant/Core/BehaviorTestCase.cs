@@ -6,7 +6,7 @@ using Xunit.Sdk;
 
 namespace DrillSergeant.Core;
 
-public class BehaviorTestCase : XunitTestCase
+internal class BehaviorTestCase : XunitTestCase
 {
     [Obsolete("Called by the de-serializer", true)]
     public BehaviorTestCase()
