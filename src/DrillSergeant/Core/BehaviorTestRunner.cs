@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DrillSergeant.Reporting;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -10,26 +11,25 @@ namespace DrillSergeant.Core;
 
 internal class BehaviorTestRunner : XunitTestRunner
 {
-    public BehaviorTestRunner(ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, string skipReason, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource) 
+    public BehaviorTestRunner(ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, string skipReason, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource)
         : base(test, messageBus, testClass, constructorArguments, testMethod, testMethodArguments, skipReason, beforeAfterAttributes, aggregator, cancellationTokenSource)
     {
     }
 
     protected override async Task<Tuple<decimal, string>> InvokeTestAsync(ExceptionAggregator aggregator)
     {
-        var testOutputHelper = GetOutputHelper();
-        var executionTime = await InvokeTestMethodAsync(aggregator, testOutputHelper);
-        var output = testOutputHelper.Output;
-        
-        testOutputHelper.Uninitialize();
+        var (sink, decoy) = GetOutputHelper();
+        using var reporter = new RawTestReporter(sink, decoy, Test);
+        var executionTime = await InvokeTestMethodAsync(aggregator, reporter);
+        var output = reporter.Output;
 
         return Tuple.Create(executionTime, output);
     }
 
-    private Task<decimal> InvokeTestMethodAsync(ExceptionAggregator aggregator, ITestOutputHelper outputHelper)
+    private Task<decimal> InvokeTestMethodAsync(ExceptionAggregator aggregator, ITestReporter reporter)
     {
         var invoker = new BehaviorTestInvoker(
-            outputHelper,
+            reporter,
             Test,
             MessageBus,
             TestClass,
@@ -43,22 +43,24 @@ internal class BehaviorTestRunner : XunitTestRunner
         return invoker.RunAsync();
     }
 
-    private TestOutputHelper GetOutputHelper()
+    private (TestOutputHelper, DecoyTestOutputHelper) GetOutputHelper()
     {
-        TestOutputHelper? result = null;
+        TestOutputHelper? sink = null;
+        DecoyTestOutputHelper decoy = new();
 
-        foreach (object obj in ConstructorArguments)
+        for (int i = 0; i < ConstructorArguments.Length; i++)
         {
-            if (obj is TestOutputHelper testOutputHelper)
+            if (ConstructorArguments[i] is TestOutputHelper testOutputHelper)
             {
-                result = testOutputHelper;
+                sink = testOutputHelper;
+                ConstructorArguments[i] = decoy;
                 break;
             }
         }
 
-        result ??= new TestOutputHelper();
-        result.Initialize(MessageBus, Test);
+        sink ??= new TestOutputHelper();
+        sink.Initialize(MessageBus, Test);
 
-        return result;
+        return (sink, decoy);
     }
 }

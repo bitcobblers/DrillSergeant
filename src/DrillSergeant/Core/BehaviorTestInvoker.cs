@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using DrillSergeant.Reporting;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,11 +12,11 @@ namespace DrillSergeant.Core;
 
 internal class BehaviorTestInvoker : XunitTestInvoker
 {
-    private readonly ITestOutputHelper _outputHelper;
+    private readonly ITestReporter _reporter;
 
-    public BehaviorTestInvoker(ITestOutputHelper outputHelper, ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource)
+    public BehaviorTestInvoker(ITestReporter reporter, ITest test, IMessageBus messageBus, Type testClass, object[] constructorArguments, MethodInfo testMethod, object[] testMethodArguments, IReadOnlyList<BeforeAfterTestAttribute> beforeAfterAttributes, ExceptionAggregator aggregator, CancellationTokenSource cancellationTokenSource)
         : base(test, messageBus, testClass, constructorArguments, testMethod, testMethodArguments, beforeAfterAttributes, aggregator, cancellationTokenSource)
-        => _outputHelper = outputHelper;
+        => _reporter = reporter;
 
     protected override Task<decimal> InvokeTestMethodAsync(object testClassInstance)
     {
@@ -69,27 +69,23 @@ internal class BehaviorTestInvoker : XunitTestInvoker
         return Timer.Total;
     }
 
-    internal static bool IsAsync(MethodInfo method) =>
-        method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
-
     private async Task InvokeBehavior(object testClassInstance)
     {
         var behavior = await GetBehavior(testClassInstance, TestMethodArguments) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
         bool previousStepFailed = false;
 
-        WriteLogContext(behavior.LogContext, "Input", behavior.Input);
+        _reporter.WriteBlock("Input", behavior.Input);
 
         foreach (var step in behavior)
         {
+            var stepTimer = new ExecutionTimer();
+
             if (previousStepFailed)
             {
-                FormatStepSkippedMessage(step.Verb, step.Name);
+                _reporter.WriteStepResult(step.Verb, step.Name, previousStepFailed, stepTimer.Total, success: false, context: null);
                 continue;
             }
-
-            var stepTimer = new ExecutionTimer();
-            previousStepFailed = false;
-
+            
             await stepTimer.AggregateAsync(async () =>
             {
                 try
@@ -101,10 +97,11 @@ internal class BehaviorTestInvoker : XunitTestInvoker
                     Aggregator.Add(ex);
                     previousStepFailed = true;
                 }
+                finally
+                {
+                    _reporter.WriteStepResult(step.Verb, step.Name, false, stepTimer.Total, !previousStepFailed, behavior.Context);
+                }
             });
-
-            FormatStepCompletedMessage(previousStepFailed, step.Verb, step.Name, stepTimer.Total);
-            WriteLogContext(behavior.LogContext, "Context", behavior.Context);
         }
 
         await Task.CompletedTask;
@@ -135,37 +132,8 @@ internal class BehaviorTestInvoker : XunitTestInvoker
         throw new InvalidOperationException("Test method did not return a behavior.");
     }
 
-    private void WriteLogContext(bool shouldLog, string label, object context)
-    {
-        if (shouldLog == false)
-        {
-            return;
-        }
-
-        var serializationSettings = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            Error = (s, e) =>
-            {
-                e.ErrorContext.Handled = true;
-            }
-        };
-
-        var serializedContext = JsonConvert.SerializeObject(context, serializationSettings);
-        _outputHelper.WriteLine($"{label}: {serializedContext}");
-        _outputHelper.WriteLine(string.Empty);
-    }
-
-    private void FormatStepSkippedMessage(string verb, string name)
-    {
-        _outputHelper.WriteLine($"☐ {verb} (skipped due to previous failure): {name}");
-    }
-
-    private void FormatStepCompletedMessage(bool failed, string verb, string name, decimal elapsed)
-    {
-        var icon = failed ? "❎" : "✅";
-        _outputHelper.WriteLine($"{icon} {verb}: {name} took {elapsed:N2}s");
-    }
+    internal static bool IsAsync(MethodInfo method) =>
+        method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
 
     [SecuritySafeCritical]
     static void SetSynchronizationContext(SynchronizationContext context)
