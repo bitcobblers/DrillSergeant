@@ -4,15 +4,24 @@ using Xunit.Sdk;
 
 namespace DrillSergeant.Reporting;
 
+/// <summary>
+/// Defines a test output reporter that writes raw text to the output.
+/// </summary>
 public class RawTestReporter : BaseTestReporter
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RawTestReporter"/> class.
+    /// </summary>
+    /// <param name="sink">The output sink for the test.</param>
+    /// <param name="decoy">The decoy output for individual steps.</param>
+    /// <param name="test">The current test being executed.</param>
     public RawTestReporter(TestOutputHelper sink, DecoyTestOutputHelper decoy, ITest test)
         : base(sink, decoy, test)
     {
     }
 
     /// <inheritdoc />
-    public override void WriteBlock(string label, object context)
+    public override void WriteBlock(string label, object content)
     {
         var serializationSettings = new JsonSerializerSettings
         {
@@ -23,8 +32,8 @@ public class RawTestReporter : BaseTestReporter
             }
         };
 
-        var serializedContext = JsonConvert.SerializeObject(context, serializationSettings);
-        sink.WriteLine($"{label}: {serializedContext}");
+        var serializedContent = JsonConvert.SerializeObject(content, serializationSettings);
+        sink.WriteLine($"{label}: {serializedContent}");
         sink.WriteLine(string.Empty);
     }
 

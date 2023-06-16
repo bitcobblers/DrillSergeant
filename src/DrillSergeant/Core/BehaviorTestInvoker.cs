@@ -97,11 +97,9 @@ internal class BehaviorTestInvoker : XunitTestInvoker
                     Aggregator.Add(ex);
                     previousStepFailed = true;
                 }
-                finally
-                {
-                    _reporter.WriteStepResult(step.Verb, step.Name, false, stepTimer.Total, !previousStepFailed, behavior.Context);
-                }
             });
+
+            _reporter.WriteStepResult(step.Verb, step.Name, false, stepTimer.Total, !previousStepFailed, behavior.Context);
         }
 
         await Task.CompletedTask;
