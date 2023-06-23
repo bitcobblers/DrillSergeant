@@ -42,10 +42,9 @@ public class CalculatorFeature
         return new Behavior(input)
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
-            .And(SetSecondNumber)
+            .And<Input>(SetSecondNumber)
             .When(AddNumbers(calculator))
             .Then<CheckResultStep>();
-
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
@@ -80,7 +79,7 @@ public class CalculatorFeature
         return new Behavior(input)
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
-            .And(SetSecondNumber)
+            .And<Input>(SetSecondNumber)
             .When(AddNumbers(calculator))
             .Then(new CheckResultStep());
     }
