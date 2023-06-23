@@ -36,30 +36,25 @@ public class LambdaStep : BaseStep
         return this;
     }
 
-    /// <summary>
-    /// Sets the handler for the step.
-    /// </summary>
-    /// <param name="handler">The handler delegate to set.</param>
-    /// <returns>The current step.</returns>
     public LambdaStep Handle(Delegate handler) => this.SetHandler(handler);
+    
+    // ---
 
-    /// <inheritdoc cref="Handle(Delegate)" />
     public LambdaStep Handle(Action? handler) => this.SetHandler(handler);
-
-    /// <inheritdoc cref="Handle(Delegate)" />
     public LambdaStep Handle(Action<dynamic>? handler) => this.SetHandler(handler);
-
-    /// <inheritdoc cref="Handle(Delegate)" />
     public LambdaStep Handle(Action<dynamic, dynamic>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle<TContext>(Action<TContext>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle<TInput>(Action<dynamic, TInput>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle<TContext, TInput>(Action<TContext, TInput>? handler) => this.SetHandler(handler);
 
-    /// <inheritdoc cref="Handle(Delegate)" />
-    public LambdaStep Handle(Func<Task>? handler) => this.SetHandler(handler);
+    // ---
 
-    /// <inheritdoc cref="Handle(Delegate)" />
-    public LambdaStep Handle(Func<dynamic, Task>? handler) => this.SetHandler(handler);
-
-    /// <inheritdoc cref="Handle(Delegate)" />
-    public LambdaStep Handle(Func<dynamic, dynamic, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep HandleAsync(Func<Task>? handler) => this.SetHandler(handler);
+    public LambdaStep HandleAsync(Func<dynamic, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep HandleAsync(Func<dynamic, dynamic, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep HandleAsync<TContext>(Func<TContext, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep HandleAsync<TInput>(Func<dynamic, TInput, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep HandleAsync<TContext, TInput>(Func<TContext, TInput, Task>? handler) => this.SetHandler(handler);
 
     /// <inheritdoc />
     protected override Delegate PickHandler() => this.handler;

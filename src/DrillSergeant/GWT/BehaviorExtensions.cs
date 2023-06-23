@@ -76,7 +76,7 @@ public static class BehaviorExtensions
     public static Behavior GivenAsync(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
         behavior.GivenInternal(name, step);
 
-    public static Behavior GivenAsync<TContext>(this Behavior behavior, string name, Func<TContext, dynamic, Task> step) =>
+    public static Behavior GivenAsync<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
         behavior.GivenInternal(name, step);
 
     public static Behavior GivenAsync<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>
@@ -181,7 +181,7 @@ public static class BehaviorExtensions
     public static Behavior AndAsync(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
         behavior.AndInternal(name, step);
 
-    public static Behavior AndAsync<TContext>(this Behavior behavior, string name, Func<TContext, dynamic, Task> step) =>
+    public static Behavior AndAsync<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
         behavior.AndInternal(name, step);
 
     public static Behavior AndAsync<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>
@@ -286,7 +286,7 @@ public static class BehaviorExtensions
     public static Behavior WhenAsync(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
         behavior.WhenInternal(name, step);
 
-    public static Behavior WhenAsync<TContext>(this Behavior behavior, string name, Func<TContext, dynamic, Task> step) =>
+    public static Behavior WhenAsync<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
         behavior.WhenInternal(name, step);
 
     public static Behavior WhenAsync<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>
@@ -391,7 +391,7 @@ public static class BehaviorExtensions
     public static Behavior ThenAsync(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
         behavior.ThenInternal(name, step);
 
-    public static Behavior ThenAsync<TContext>(this Behavior behavior, string name, Func<TContext, dynamic, Task> step) =>
+    public static Behavior ThenAsync<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
         behavior.ThenInternal(name, step);
 
     public static Behavior ThenAsync<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>
@@ -496,7 +496,7 @@ public static class BehaviorExtensions
     public static Behavior ButAsync(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
         behavior.ButInternal(name, step);
 
-    public static Behavior ButAsync<TContext>(this Behavior behavior, string name, Func<TContext, dynamic, Task> step) =>
+    public static Behavior ButAsync<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
         behavior.ButInternal(name, step);
 
     public static Behavior ButAsync<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>

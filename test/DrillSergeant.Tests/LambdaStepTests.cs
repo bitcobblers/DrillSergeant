@@ -59,7 +59,7 @@ public class LambdaStepTests
         public async Task AsyncHandlerWithReturnReturnsValue()
         {
             // Arrange.
-            var step = new LambdaStep("Test").Handle((c, i) =>
+            var step = new LambdaStep("Test").HandleAsync((c, i) =>
             {
                 c.Value = 1;
                 return Task.CompletedTask;

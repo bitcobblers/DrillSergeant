@@ -18,7 +18,7 @@ public class AsyncVariationsFeature
     {
         return new Behavior()
             .Given("Set context", c => c.IsSuccess = false)
-            .WhenAsync(async c =>
+            .WhenAsync("Add delay", async c =>
             {
                 await Task.Delay(10);
                 c.IsSuccess = true;
@@ -31,7 +31,7 @@ public class AsyncVariationsFeature
     {
         return new Behavior()
             .Given("Set context", c => c.IsSuccess = false)
-            .WhenAsync<Context>(async c =>
+            .WhenAsync<Context>("Add delay", async c =>
             {
                 await Task.Delay(10);
                 c.IsSuccess = true;
@@ -44,7 +44,7 @@ public class AsyncVariationsFeature
     {
         return new Behavior()
             .Given("Set context", c => c.IsSuccess = false)
-            .WhenAsync<Input>(async (c, i) =>
+            .WhenAsync<Input>("Add delay", async (c, i) =>
             {
                 await Task.Delay(10);
                 c.IsSuccess = true;
@@ -57,7 +57,7 @@ public class AsyncVariationsFeature
     {
         return new Behavior()
             .Given("Set context", c => c.IsSuccess = false)
-            .WhenAsync<Context, Input>(async (c, i) =>
+            .WhenAsync<Context, Input>("Add delay", async (c, i) =>
             {
                 await Task.Delay(10);
                 c.IsSuccess = true;
@@ -77,7 +77,7 @@ public class AsyncVariationsFeature
     public LambdaStep DelayAndSet(int milliseconds) =>
         new LambdaWhenStep()
             .Named($"Adding delay of {milliseconds:N0}ms")
-            .Handle(async c =>
+            .HandleAsync(async c =>
             {
                 await Task.Delay(milliseconds);
                 c.IsSuccess = true;

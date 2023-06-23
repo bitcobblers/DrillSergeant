@@ -105,7 +105,7 @@ public class CalculatorFeature
     public LambdaStep AddNumbersAsync(Calculator calculator) =>
         new LambdaWhenStep()
             .Named("Add numbers")
-            .Handle((c, _) =>
+            .HandleAsync((c, _) =>
             {
                 c.Result = calculator.Add(c.A, c.B);
                 return Task.CompletedTask;
