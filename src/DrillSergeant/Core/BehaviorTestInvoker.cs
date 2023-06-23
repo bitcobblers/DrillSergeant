@@ -99,7 +99,7 @@ internal class BehaviorTestInvoker : XunitTestInvoker
                 }
             });
 
-            _reporter.WriteStepResult(step.Verb, step.Name, false, stepTimer.Total, !previousStepFailed, behavior.Context);
+            _reporter.WriteStepResult(step.Verb, step.Name, false, stepTimer.Total, !previousStepFailed, behavior.LogContext ? behavior.Context : null);
         }
 
         await Task.CompletedTask;
