@@ -114,6 +114,23 @@ public class ReflectionParameterCasterTests
         result.CovariantTypeValue.ShouldBeNull();
     }
 
+    [Fact]
+    public void NullPropertyIsUnset()
+    {
+        // Arrange.
+        var caster = new ReflectionParameterCaster();
+        var source = new Dictionary<string, object?>
+        {
+            ["StringValue"] = null
+        };
+
+        // Act.
+        var result = (TargetWithParameters)caster.Cast(source, typeof(TargetWithParameters));
+
+        // Assert.
+        result.CovariantTypeValue.ShouldBeNull();
+    }
+
     public record TargetWithoutEmptyConstructor(int Ignored);
 
     public record TargetWithParameters

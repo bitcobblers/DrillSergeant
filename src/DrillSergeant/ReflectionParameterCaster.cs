@@ -34,7 +34,12 @@ public class ReflectionParameterCaster : IParameterCaster
         {
             var value = source[property.Name]!;
 
-            if(value.GetType().IsAssignableTo(property.PropertyType))
+            if (value == null)
+            {
+                continue;
+            }
+
+            if (value.GetType().IsAssignableTo(property.PropertyType))
             {
                 property.SetValue(target, value, null);
             }
