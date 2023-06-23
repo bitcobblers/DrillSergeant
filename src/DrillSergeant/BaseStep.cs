@@ -130,5 +130,6 @@ public abstract class BaseStep : IStep
     }
 
     internal static bool IsAsync(MethodInfo method) =>
-        method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
+        method.ReturnType.Name == typeof(Task).Name ||
+        method.ReturnType.Name == typeof(Task<>).Name;
 }
