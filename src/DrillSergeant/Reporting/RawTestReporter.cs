@@ -45,7 +45,7 @@ public class RawTestReporter : BaseTestReporter
 
         if (skipped)
         {
-            sink.WriteLine($"☐ {verb} (skipped due to previous failure): {name}");
+            sink.WriteLine($"⏩ {verb} (skipped due to previous failure): {name}");
         }
         else
         {
