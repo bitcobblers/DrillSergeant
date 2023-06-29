@@ -29,30 +29,35 @@ public class VerbGenerator : IIncrementalGenerator
         });
     }
 
-    private static string GetVerbStepTemplate(string ns, string name) => $@"
+    private static string GetVerbStepTemplate(string ns, string verb) => $@"
 namespace {ns};
 
-public class {name}Step : VerbStep
+public class {verb}Step : VerbStep
 {{
-    public {name}Step()
-        : base(""{name}"")
+    public {verb}Step()
+        : base(""{verb}"")
     {{
     }}
 }}";
 
-    private static string GetLambdaVerbStepTemplate(string ns, string name) => $@"
+    private static string GetLambdaVerbStepTemplate(string ns, string verb) => $@"
 namespace {ns};
 
-public class {name}LambdaStep : LambdaStep
+public class {verb}LambdaStep : LambdaStep
 {{
-    public {name}LambdaStep()
-        : base(""{name}"")
+    public {verb}LambdaStep()
+        : base(""{verb}"")
+    {{
+    }}
+
+    public {verb}LambdaStep(string name)
+        : base(""{verb}"", name)
     {{
     }}
 }}
 ";
 
-    private static string GetBehaviorExtensionsTemplate(string ns, string name) => $@"
+    private static string GetBehaviorExtensionsTemplate(string ns, string verb) => $@"
 using System;
 using System.Threading.Tasks;
 
@@ -60,90 +65,90 @@ namespace {ns};
 
 public static partial class BehaviorExtensions
 {{
-    public static Behavior {name}(this Behavior behavior, Action step) =>
-        behavior.{name}(step.Method.Name, step);
+    public static Behavior {verb}(this Behavior behavior, Action step) =>
+        behavior.{verb}(step.Method.Name, step);
 
-    public static Behavior {name}(this Behavior behavior, Action<dynamic> step) =>
-        behavior.{name}(step.Method.Name, step);
+    public static Behavior {verb}(this Behavior behavior, Action<dynamic> step) =>
+        behavior.{verb}(step.Method.Name, step);
 
-    public static Behavior {name}(this Behavior behavior, Action<dynamic, dynamic> step) =>
-        behavior.{name}(step.Method.Name, step);
+    public static Behavior {verb}(this Behavior behavior, Action<dynamic, dynamic> step) =>
+        behavior.{verb}(step.Method.Name, step);
 
-    public static Behavior {name}<TContext>(this Behavior behavior, Action<TContext> step) =>
-        behavior.{name}(step.Method.Name, step);
+    public static Behavior {verb}<TContext>(this Behavior behavior, Action<TContext> step) =>
+        behavior.{verb}(step.Method.Name, step);
 
-    public static Behavior {name}<TInput>(this Behavior behavior, Action<dynamic, TInput> step) =>
-        behavior.{name}(step.Method.Name, step);
+    public static Behavior {verb}<TInput>(this Behavior behavior, Action<dynamic, TInput> step) =>
+        behavior.{verb}(step.Method.Name, step);
 
-    public static Behavior {name}<TContext, TInput>(this Behavior behavior, Action<TContext, TInput> step) =>
-        behavior.{name}(step.Method.Name, step);
-
-    // ---
-
-    public static Behavior {name}Async(this Behavior behavior, Func<Task> step) =>
-        behavior.{name}Internal(step.Method.Name, step);
-
-    public static Behavior {name}Async(this Behavior behavior, Func<dynamic, Task> step) =>
-        behavior.{name}Internal(step.Method.Name, step);
-
-    public static Behavior {name}Async(this Behavior behavior, Func<dynamic, dynamic, Task> step) =>
-        behavior.{name}Internal(step.Method.Name, step);
-
-    public static Behavior {name}Async<TContext>(this Behavior behavior, Func<TContext, Task> step) =>
-        behavior.{name}Internal(step.Method.Name, step);
-
-    public static Behavior {name}Async<TInput>(this Behavior behavior, Func<dynamic, TInput, Task> step) =>
-        behavior.{name}Internal(step.Method.Name, step);
-
-    public static Behavior {name}Async<TContext, TInput>(this Behavior behavior, Func<TContext, TInput, Task> step) =>
-        behavior.{name}Internal(step.Method.Name, step);
+    public static Behavior {verb}<TContext, TInput>(this Behavior behavior, Action<TContext, TInput> step) =>
+        behavior.{verb}(step.Method.Name, step);
 
     // ---
 
-    public static Behavior {name}(this Behavior behavior, string name, Action step) =>
-        behavior.{name}Internal(name, step);
+    public static Behavior {verb}Async(this Behavior behavior, Func<Task> step) =>
+        behavior.{verb}Internal(step.Method.Name, step);
 
-    public static Behavior {name}(this Behavior behavior, string name, Action<dynamic> step) =>
-        behavior.{name}Internal(name, step);
+    public static Behavior {verb}Async(this Behavior behavior, Func<dynamic, Task> step) =>
+        behavior.{verb}Internal(step.Method.Name, step);
 
-    public static Behavior {name}(this Behavior behavior, string name, Action<dynamic, dynamic> step) =>
-        behavior.{name}Internal(name, step);
+    public static Behavior {verb}Async(this Behavior behavior, Func<dynamic, dynamic, Task> step) =>
+        behavior.{verb}Internal(step.Method.Name, step);
 
-    public static Behavior {name}<TContext>(this Behavior behavior, string name, Action<TContext> step) =>
-        behavior.{name}Internal(name, step);
+    public static Behavior {verb}Async<TContext>(this Behavior behavior, Func<TContext, Task> step) =>
+        behavior.{verb}Internal(step.Method.Name, step);
 
-    public static Behavior {name}<TInput>(this Behavior behavior, string name, Action<dynamic, TInput> step) =>
-        behavior.{name}Internal(name, step);
+    public static Behavior {verb}Async<TInput>(this Behavior behavior, Func<dynamic, TInput, Task> step) =>
+        behavior.{verb}Internal(step.Method.Name, step);
 
-    public static Behavior {name}<TContext, TInput>(this Behavior behavior, string name, Action<TContext, TInput> step) =>
-        behavior.{name}Internal(name, step);
-
-    // ---
-
-    public static Behavior {name}Async(this Behavior behavior, string name, Func<Task> step) =>
-        behavior.{name}Internal(name, step);
-
-    public static Behavior {name}Async(this Behavior behavior, string name, Func<dynamic, Task> step) =>
-        behavior.{name}Internal(name, step);
-
-    public static Behavior {name}Async(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
-        behavior.{name}Internal(name, step);
-
-    public static Behavior {name}Async<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
-        behavior.{name}Internal(name, step);
-
-    public static Behavior {name}Async<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>
-        behavior.{name}Internal(name, step);
-
-    public static Behavior {name}Async<TContext, TInput>(this Behavior behavior, string name, Func<TContext, TInput, Task> step) =>
-        behavior.{name}Internal(name, step);
+    public static Behavior {verb}Async<TContext, TInput>(this Behavior behavior, Func<TContext, TInput, Task> step) =>
+        behavior.{verb}Internal(step.Method.Name, step);
 
     // ---
 
-    public static Behavior {name}<TStep>(this Behavior behavior) where TStep : IStep, new() =>
-        behavior.{name}(new TStep());
+    public static Behavior {verb}(this Behavior behavior, string name, Action step) =>
+        behavior.{verb}Internal(name, step);
 
-    public static Behavior {name}(this Behavior behavior, IStep step)
+    public static Behavior {verb}(this Behavior behavior, string name, Action<dynamic> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}(this Behavior behavior, string name, Action<dynamic, dynamic> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}<TContext>(this Behavior behavior, string name, Action<TContext> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}<TInput>(this Behavior behavior, string name, Action<dynamic, TInput> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}<TContext, TInput>(this Behavior behavior, string name, Action<TContext, TInput> step) =>
+        behavior.{verb}Internal(name, step);
+
+    // ---
+
+    public static Behavior {verb}Async(this Behavior behavior, string name, Func<Task> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}Async(this Behavior behavior, string name, Func<dynamic, Task> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}Async(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}Async<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}Async<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>
+        behavior.{verb}Internal(name, step);
+
+    public static Behavior {verb}Async<TContext, TInput>(this Behavior behavior, string name, Func<TContext, TInput, Task> step) =>
+        behavior.{verb}Internal(name, step);
+
+    // ---
+
+    public static Behavior {verb}<TStep>(this Behavior behavior) where TStep : IStep, new() =>
+        behavior.{verb}(new TStep());
+
+    public static Behavior {verb}(this Behavior behavior, IStep step)
     {{
         behavior.AddStep(step);
         return behavior;
@@ -151,10 +156,10 @@ public static partial class BehaviorExtensions
 
     // ---
 
-    private static Behavior {name}Internal(this Behavior behavior, string name, Delegate step)
+    private static Behavior {verb}Internal(this Behavior behavior, string name, Delegate step)
     {{
         behavior.AddStep(
-            new {name}LambdaStep()
+            new {verb}LambdaStep()
                 .Named(name)
                 .Handle(step));
 

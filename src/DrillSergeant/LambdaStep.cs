@@ -15,7 +15,21 @@ public class LambdaStep : BaseStep
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
     /// </summary>
     /// <param name="verb">The verb for the step.</param>
-    public LambdaStep(string verb) => this.Verb = verb;
+    public LambdaStep(string verb)
+        : this(verb, string.Empty)
+    { 
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LambdaStep"/> class.
+    /// </summary>
+    /// <param name="verb">The verb for the step.</param>
+    /// <param name="name">The name of the step.</param>
+    public LambdaStep(string verb, string name)
+    {
+        this.Verb = verb;
+        this.Named(name);
+    }
 
     /// <inheritdoc />
     public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaStep);
