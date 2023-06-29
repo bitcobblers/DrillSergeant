@@ -21,9 +21,9 @@ public class VerbGenerator : IIncrementalGenerator
 
                 foreach (var verb in verbGroup.Verbs)
                 {
-                    context.AddSource($"{verbGroup}/{verb}Step.g.cs", GetVerbStepTemplate(ns, verb));
-                    context.AddSource($"{verbGroup}/{verb}LambdaStep.g.cs", GetLambdaVerbStepTemplate(ns, verb));
-                    context.AddSource($"{verbGroup}/BehaviorExtensions.{verb}.g.cs", GetBehaviorExtensionsTemplate(ns, verb));
+                    context.AddSource($"{verbGroup.Name}/{verb}Step.g.cs", GetVerbStepTemplate(ns, verb));
+                    context.AddSource($"{verbGroup.Name}/{verb}LambdaStep.g.cs", GetLambdaVerbStepTemplate(ns, verb));
+                    context.AddSource($"{verbGroup.Name}/BehaviorExtensions.{verb}.g.cs", GetBehaviorExtensionsTemplate(ns, verb));
                 }
             }
         });

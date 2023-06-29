@@ -8,7 +8,9 @@ public class VerbGroup : IEquatable<VerbGroup>
     public string Name { get; set; } = string.Empty;
     public string[] Verbs { get; set; } = Array.Empty<string>();
 
-    private string DebuggerDisplay => $"{Name}: {string.Join(",", Verbs)}";
+    private string DebuggerDisplay => ToString();
+
+    public override string ToString() => $"{Name}: {string.Join(",", Verbs)}";
 
     public bool Equals(VerbGroup other)
     {
