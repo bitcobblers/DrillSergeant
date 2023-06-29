@@ -95,7 +95,7 @@ public class CalculatorFeature
 
     // Step implemented as a lambda step for greater flexibility.
     public LambdaStep AddNumbers(Calculator calculator) =>
-        new LambdaWhenStep()
+        new WhenLambdaStep()
             .Named("Add numbers")
             .Handle((c) =>
             {
@@ -103,7 +103,7 @@ public class CalculatorFeature
             });
 
     public LambdaStep AddNumbersAsync(Calculator calculator) =>
-        new LambdaWhenStep()
+        new WhenLambdaStep()
             .Named("Add numbers")
             .HandleAsync((c, _) =>
             {

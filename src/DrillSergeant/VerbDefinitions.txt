@@ -1,0 +1,8 @@
+﻿# Defines the verbs to be generated automatically for DrillSergeant.
+# The syntax is <group>:verb1[,verb2,verb3,...]
+#
+# Note: Due to caching issues with source generation, be sure to restart Visual Studio
+# if the templates change in order for intellisense to update properly.
+
+GWT:Given,When,Then,And,But
+AAA:Arrange,Act,Assert

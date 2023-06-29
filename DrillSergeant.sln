@@ -16,6 +16,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant", "src\DrillS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests", "test\DrillSergeant.Tests\DrillSergeant.Tests.csproj", "{B1019442-4A52-4274-8C3E-11296123C884}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.Generators", "src\DrillSergeant.Generators\DrillSergeant.Generators.csproj", "{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{B1019442-4A52-4274-8C3E-11296123C884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1019442-4A52-4274-8C3E-11296123C884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1019442-4A52-4274-8C3E-11296123C884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 		{B1019442-4A52-4274-8C3E-11296123C884} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
+		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35E642DB-4DFA-4054-B035-03F437C3F8BD}
