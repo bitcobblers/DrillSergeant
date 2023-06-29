@@ -12,9 +12,9 @@ internal class BehaviorTraitDiscoverer : TraitDiscoverer
 
         if (attributeInfo?.Attribute is BehaviorAttribute behavior)
         {
-            if (string.IsNullOrWhiteSpace(behavior.Category) == false)
+            if (string.IsNullOrWhiteSpace(behavior.Feature) == false)
             {
-                yield return new KeyValuePair<string, string>("Category", behavior.Category);
+                yield return new KeyValuePair<string, string>("Feature", behavior.Feature);
             }
         }
     }

@@ -13,5 +13,5 @@ namespace DrillSergeant;
 [XunitTestCaseDiscoverer("DrillSergeant.Core.BehaviorDiscoverer", "DrillSergeant")]
 public sealed class BehaviorAttribute : FactAttribute, ITraitAttribute
 {
-    public string? Category { get; set; }
+    public string? Feature { get; set; }
 }
