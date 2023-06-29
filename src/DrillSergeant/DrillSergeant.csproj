@@ -17,6 +17,15 @@
 		<Title>Drill Sergeant</Title>
 		<Description>Write acceptance tests in pure C#.</Description>
 	</PropertyGroup>
+	<PropertyGroup>
+		<EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Generated\**" />
+	  <EmbeddedResource Remove="Generated\**" />
+	  <None Remove="Generated\**" />
+	</ItemGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="VerbDefinitions.txt" />
 	</ItemGroup>
