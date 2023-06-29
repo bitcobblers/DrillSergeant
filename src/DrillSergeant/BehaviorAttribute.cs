@@ -9,7 +9,9 @@ namespace DrillSergeant;
 /// Defines an attribute used to notify the test runner that the method is a behavior test.
 /// </summary>
 [ExcludeFromCodeCoverage, AttributeUsage(AttributeTargets.Method)]
+[TraitDiscoverer("DrillSergeant.Core.BehaviorTraitDiscoverer", "DrillSergeant")]
 [XunitTestCaseDiscoverer("DrillSergeant.Core.BehaviorDiscoverer", "DrillSergeant")]
-public sealed class BehaviorAttribute : FactAttribute
+public sealed class BehaviorAttribute : FactAttribute, ITraitAttribute
 {
+    public string? Category { get; set; }
 }
