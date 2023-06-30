@@ -44,7 +44,18 @@ public class LambdaStep : BaseStep
             return this;
         }
 
-        this.name = name?.Trim();
+        this.name = name.Trim();
+        return this;
+    }
+
+    public LambdaStep SetVerb(string? verb)
+    {
+        if(string.IsNullOrWhiteSpace(verb))
+        {
+            return this;
+        }
+
+        this.Verb = verb.Trim();
         return this;
     }
 

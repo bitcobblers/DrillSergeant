@@ -170,6 +170,11 @@ public static partial class BehaviorExtensions_{verb}
 
     public static Behavior {verb}(this Behavior behavior, IStep step)
     {{
+        if(step is LambdaStep lambda)
+        {{
+            lambda.SetVerb(""{verb}"");
+        }}
+
         behavior.AddStep(step);
         return behavior;
     }}
