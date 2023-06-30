@@ -30,7 +30,7 @@ public class Behavior : IBehavior
         dynamic castedInput = new ExpandoObject();
         var dict = (IDictionary<string, object?>)castedInput;
 
-        foreach(var property in input.GetType().GetProperties(flags))
+        foreach (var property in input.GetType().GetProperties(flags))
         {
             dict[property.Name] = property.GetValue(input);
         }
@@ -39,7 +39,7 @@ public class Behavior : IBehavior
     }
 
     /// <inheritdoc cref="IBehavior.Context" />
-    public IDictionary<string,object?> Context { get; } = new ExpandoObject();
+    public IDictionary<string, object?> Context { get; } = new ExpandoObject();
 
     /// <inheritdoc cref="IBehavior.Input" />
     public IDictionary<string, object?> Input { get; }

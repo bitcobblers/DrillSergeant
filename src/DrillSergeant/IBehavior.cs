@@ -15,12 +15,12 @@ public interface IBehavior : IEnumerable<IStep>
     /// <summary>
     /// Gets the context associated with the behavior.
     /// </summary>
-    IDictionary<string,object?> Context { get; }
+    IDictionary<string, object?> Context { get; }
 
     /// <summary>
     /// Gets the input associted with the behavior.
     /// </summary>
-    IDictionary<string,object?> Input { get; }
+    IDictionary<string, object?> Input { get; }
 
     /// <summary>
     /// Gets a value indicating whether the context should be logged between steps.

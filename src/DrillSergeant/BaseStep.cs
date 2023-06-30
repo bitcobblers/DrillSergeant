@@ -86,7 +86,7 @@ public abstract class BaseStep : IStep
         return result;
     }
 
-    internal static IDictionary<string, object?> CopyInput(IDictionary<string,object?> input)
+    internal static IDictionary<string, object?> CopyInput(IDictionary<string, object?> input)
     {
         var copy = new ExpandoObject();
         var copyAsDict = (IDictionary<string, object?>)copy;

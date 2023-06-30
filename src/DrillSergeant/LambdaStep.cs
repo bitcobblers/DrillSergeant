@@ -17,7 +17,7 @@ public class LambdaStep : BaseStep
     /// <param name="verb">The verb for the step.</param>
     public LambdaStep(string verb)
         : this(verb, string.Empty)
-    { 
+    {
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class LambdaStep : BaseStep
     }
 
     public LambdaStep Handle(Delegate handler) => this.SetHandler(handler);
-    
+
     // ---
 
     public LambdaStep Handle(Action? handler) => this.SetHandler(handler);

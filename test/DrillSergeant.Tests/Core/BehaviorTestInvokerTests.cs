@@ -60,7 +60,7 @@ public class BehaviorTestInvokerTests
     //    }
 
     //    public class StubWithNoSetupMethod { }
-        
+
     //    public class StubWithSetupMethod
     //    {
     //        [BehaviorResolverSetup]

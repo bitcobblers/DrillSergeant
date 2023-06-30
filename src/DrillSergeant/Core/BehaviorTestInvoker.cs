@@ -85,7 +85,7 @@ internal class BehaviorTestInvoker : XunitTestInvoker
                 _reporter.WriteStepResult(step.Verb, step.Name, previousStepFailed, stepTimer.Total, success: false, context: null);
                 continue;
             }
-            
+
             await stepTimer.AggregateAsync(async () =>
             {
                 try
