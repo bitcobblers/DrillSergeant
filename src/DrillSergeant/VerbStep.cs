@@ -12,22 +12,19 @@ public class VerbStep : BaseStep
     public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
     /// <summary>
-    /// Iniitalizes a new instance of the <see cref="VerbStep"/> class.
+    /// Initializes a new instance of the <see cref="VerbStep"/> class.
     /// </summary>
-    /// <param name="verb">The verb to associate with the step.</param>
-    public VerbStep(string verb)
-        : this(verb, string.Empty)
+    public VerbStep()
+        : this(null)
     {
     }
 
     /// <summary>
     /// Iniitalizes a new instance of the <see cref="VerbStep"/> class.
     /// </summary>
-    /// <param name="verb">The verb to associate with the step.</param>
     /// <param name="name">The name of the step.</param>
-    public VerbStep(string verb, string? name)
+    public VerbStep(string? name)
     {
-        this.Verb = verb;
         this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
     }
 

@@ -15,19 +15,17 @@ public class LambdaStep : BaseStep
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
     /// </summary>
     /// <param name="verb">The verb for the step.</param>
-    public LambdaStep(string verb)
-        : this(verb, string.Empty)
+    public LambdaStep()
+        : this(string.Empty)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
     /// </summary>
-    /// <param name="verb">The verb for the step.</param>
     /// <param name="name">The name of the step.</param>
-    public LambdaStep(string verb, string name)
+    public LambdaStep(string name)
     {
-        this.Verb = verb;
         this.Named(name);
     }
 

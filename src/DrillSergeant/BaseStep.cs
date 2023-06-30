@@ -20,7 +20,7 @@ namespace DrillSergeant;
 public abstract class BaseStep : IStep
 {
     /// <inheritdoc />
-    public virtual string Verb { get; protected set; } = "<unknown>";
+    public virtual string Verb => "<unknown>";
 
     /// <inheritdoc />
     public virtual string Name { get; protected set; } = "<untitled step>";

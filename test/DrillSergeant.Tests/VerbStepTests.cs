@@ -1,5 +1,4 @@
-﻿using Shouldly;
-using System;
+﻿using System;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Xunit;
@@ -11,20 +10,10 @@ public class VerbStepTests
     public class ConstructorMethod : VerbStepTests
     {
         [Fact]
-        public void VerbIsSetCorrectly()
-        {
-            // Act.
-            var step = new StubStep("test");
-
-            // Assert.
-            Assert.Equal("test", step.Verb);
-        }
-
-        [Fact]
         public void NameIsSetCorrectly()
         {
             // Act.
-            var step = new StubStep("ignored", "expected");
+            var step = new StubStep("expected");
 
             // Assert.
             Assert.Equal("expected", step.Name);
@@ -37,7 +26,7 @@ public class VerbStepTests
         public void NullOrEmptyNameDefaultsToTypeName(string name)
         {
             // Act.
-            var step = new StubStep("ignored", name);
+            var step = new StubStep(name);
 
             // Assert.
             Assert.Equal(typeof(StubStep).Name, step.Name);
@@ -45,12 +34,8 @@ public class VerbStepTests
 
         public class StubStep : VerbStep
         {
-            public StubStep(string verb) : base(verb)
-            {
-            }
-
-            public StubStep(string verb, string name)
-                : base(verb, name)
+            public StubStep(string name)
+                : base(name)
             {
             }
         }
@@ -97,24 +82,20 @@ public class VerbStepTests
 
         public class StubStep_NonAsync_ReturnsValue : VerbStep
         {
-            public StubStep_NonAsync_ReturnsValue() : base("Test")
-            {
-            }
-
             public void Test(Context context, Input input) => context.Value = 1;
+
+            public override string Verb => "Test";
         }
 
         public class StubStep_Async_ReturnsValue : VerbStep
         {
-            public StubStep_Async_ReturnsValue() : base("Test")
-            {
-            }
-
             public Task Test(Context context, Input input)
             {
                 context.Value = 1;
                 return Task.CompletedTask;
             }
+
+            public override string Verb => "Test";
         }
 
         public interface IStubInjectable
@@ -124,50 +105,38 @@ public class VerbStepTests
 
         public class StubWithNoParameters : VerbStep
         {
-            public StubWithNoParameters()
-                : base("Test")
-            {
-            }
-
             public bool HasExecuted { get; private set; }
 
             public void Test()
             {
                 this.HasExecuted = true;
             }
+
+            public override string Verb => "Test";
         }
 
         public class StubWithInjectableParameter : VerbStep
         {
-            public StubWithInjectableParameter()
-                : base("Test")
-            {
-            }
-
             public void Test(IStubInjectable injectable)
             {
                 injectable.DoSomething();
             }
+
+            public override string Verb => "Test";
         }
 
         public class StubThatReturnsValue_Sync : VerbStep
         {
-            public StubThatReturnsValue_Sync()
-                : base("Test")
-            {
-            }
-
             public string Test() => "expected";
+
+            public override string Verb => "Test";
         }
 
         public class StubThatReturnsValue_Async : VerbStep
         {
-            public StubThatReturnsValue_Async()
-                : base("Test")
-            {
-            }
-
             public Task<string> Test() => Task.FromResult("expected");
+
+            public override string Verb => "Test";
         }
     }
 
@@ -240,10 +209,7 @@ public class VerbStepTests
 
         public class StubWithExposedPickHandler : VerbStep
         {
-            public StubWithExposedPickHandler()
-                : base("Test")
-            {
-            }
+            public override string Verb => "Test";
 
             public Delegate PickHandlerWrapper() => this.PickHandler();
         }
