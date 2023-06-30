@@ -63,14 +63,14 @@ public class {verb}LambdaStep : LambdaStep
 {{
     public {verb}LambdaStep()
     {{
+        SetVerb(""{verb}"");
     }}
 
     public {verb}LambdaStep(string name)
         : base(name)
     {{
+        SetVerb(""{verb}"");
     }}
-
-    public override string Verb => ""{verb}"";
 }}
 ";
 
