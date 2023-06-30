@@ -16,7 +16,7 @@ public class LambdaStep : BaseStep
     /// </summary>
     /// <param name="verb">The verb for the step.</param>
     public LambdaStep()
-        : this(string.Empty)
+        : this(null)
     {
     }
 
@@ -24,7 +24,7 @@ public class LambdaStep : BaseStep
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
     /// </summary>
     /// <param name="name">The name of the step.</param>
-    public LambdaStep(string name)
+    public LambdaStep(string? name)
     {
         this.Named(name);
     }
@@ -37,7 +37,7 @@ public class LambdaStep : BaseStep
     /// </summary>
     /// <param name="name">The name of the step.</param>
     /// <returns>The current step.</returns>
-    public LambdaStep Named(string name)
+    public LambdaStep Named(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
