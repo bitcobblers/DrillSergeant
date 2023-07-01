@@ -48,14 +48,16 @@ internal class BehaviorTestRunner : XunitTestRunner
         TestOutputHelper? sink = null;
         DecoyTestOutputHelper decoy = new();
 
-        for (int i = 0; i < ConstructorArguments.Length; i++)
+        for (var i = 0; i < ConstructorArguments.Length; i++)
         {
-            if (ConstructorArguments[i] is TestOutputHelper testOutputHelper)
+            if (ConstructorArguments[i] is not TestOutputHelper testOutputHelper)
             {
-                sink = testOutputHelper;
-                ConstructorArguments[i] = decoy;
-                break;
+                continue;
             }
+
+            sink = testOutputHelper;
+            ConstructorArguments[i] = decoy;
+            break;
         }
 
         sink ??= new TestOutputHelper();

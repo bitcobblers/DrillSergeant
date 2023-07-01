@@ -29,8 +29,8 @@ public class ReflectionParameterCaster : IParameterCaster
         var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
 
         foreach (var property in from p in type.GetProperties(flags)
-                                 where source.ContainsKey(p.Name)
-                                 select p)
+                 where source.ContainsKey(p.Name)
+                 select p)
         {
             var value = source[property.Name]!;
 
@@ -48,15 +48,13 @@ public class ReflectionParameterCaster : IParameterCaster
         return target;
     }
 
-    private object InstantiateTarget(Type type)
+    private static object InstantiateTarget(Type type)
     {
         var ctor = type.GetConstructor(Array.Empty<Type>());
 
-        if (ctor == null)
-        {
-            throw new InvalidOperationException($"The target type {type.FullName} does not have a parameterless constructor and cannot be used for parameter resolution.");
-        }
-
-        return ctor.Invoke(Array.Empty<object?>());
+        return ctor == null
+            ? throw new InvalidOperationException(
+                $"The target type {type.FullName} does not have a parameterless constructor and cannot be used for parameter resolution.")
+            : ctor.Invoke(Array.Empty<object?>());
     }
 }

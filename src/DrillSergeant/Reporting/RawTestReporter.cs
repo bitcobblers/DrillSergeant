@@ -33,23 +33,23 @@ public class RawTestReporter : BaseTestReporter
         };
 
         var serializedContent = JsonConvert.SerializeObject(content, serializationSettings);
-        sink.WriteLine($"{label}: {serializedContent}");
-        sink.WriteLine(string.Empty);
+        _sink.WriteLine($"{label}: {serializedContent}");
+        _sink.WriteLine(string.Empty);
     }
 
     /// <inheritdoc />
     public override void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context)
     {
         var icon = success ? "✅" : "❎";
-        var output = decoy.GetAndClear();
+        var output = _decoy.GetAndClear();
 
         if (skipped)
         {
-            sink.WriteLine($"⏩ {verb} (skipped due to previous failure): {name}");
+            _sink.WriteLine($"⏩ {verb} (skipped due to previous failure): {name}");
         }
         else
         {
-            sink.WriteLine($"{icon} {verb}: {name} took {elapsed:N2}s");
+            _sink.WriteLine($"{icon} {verb}: {name} took {elapsed:N2}s");
 
             if (context != null)
             {
@@ -58,8 +58,8 @@ public class RawTestReporter : BaseTestReporter
 
             if (string.IsNullOrWhiteSpace(output) == false)
             {
-                sink.WriteLine("Output:");
-                sink.WriteLine(output);
+                _sink.WriteLine("Output:");
+                _sink.WriteLine(output);
             }
         }
     }

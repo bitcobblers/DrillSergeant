@@ -8,7 +8,7 @@ namespace DrillSergeant.Tests.Features;
 
 public class CalculatorFeature
 {
-    private readonly Calculator calculator = new();
+    private readonly Calculator _calculator = new();
 
     public record Input
     {
@@ -43,7 +43,7 @@ public class CalculatorFeature
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .And<Input>(SetSecondNumber)
-            .When(AddNumbers(calculator))
+            .When(AddNumbers(_calculator))
             .Then<CheckResultStep>();
     }
 
@@ -60,7 +60,7 @@ public class CalculatorFeature
         var behavior = new Behavior(input)
             .Given("Set first number", (c, i) => c.A = i.A)
             .GivenAsync(SetSecondNumberAsync)
-            .When(AddNumbersAsync(calculator))
+            .When(AddNumbersAsync(_calculator))
             .Then<CheckResultStepAsync>();
 
         return Task.FromResult(behavior);
@@ -80,7 +80,7 @@ public class CalculatorFeature
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .And<Input>(SetSecondNumber)
-            .When(AddNumbers(calculator))
+            .When(AddNumbers(_calculator))
             .Then(new CheckResultStep());
     }
 

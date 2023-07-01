@@ -8,9 +8,9 @@ namespace DrillSergeant.Reporting;
 /// </summary>
 public abstract class BaseTestReporter : ITestReporter
 {
-    protected readonly TestOutputHelper sink;
-    protected readonly DecoyTestOutputHelper decoy;
-    protected readonly ITest test;
+    protected readonly TestOutputHelper _sink;
+    protected readonly DecoyTestOutputHelper _decoy;
+    protected readonly ITest _test;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseTestReporter"/> class.
@@ -18,18 +18,18 @@ public abstract class BaseTestReporter : ITestReporter
     /// <param name="sink">The output sink for the test.</param>
     /// <param name="decoy">The decoy output for individual steps.</param>
     /// <param name="test">The current test being executed.</param>
-    public BaseTestReporter(TestOutputHelper sink, DecoyTestOutputHelper decoy, ITest test)
+    protected BaseTestReporter(TestOutputHelper sink, DecoyTestOutputHelper decoy, ITest test)
     {
-        this.sink = sink;
-        this.decoy = decoy;
-        this.test = test;
+        _sink = sink;
+        _decoy = decoy;
+        _test = test;
     }
 
     /// <inheritdoc />
-    public virtual string Output => sink.Output;
+    public virtual string Output => _sink.Output;
 
 #pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
-    public void Dispose() => sink.Uninitialize();
+    public void Dispose() => _sink.Uninitialize();
 #pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
 
     /// <inheritdoc />

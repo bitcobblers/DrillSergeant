@@ -11,15 +11,15 @@ namespace DrillSergeant.Reporting;
 /// </remarks>
 public class DecoyTestOutputHelper : ITestOutputHelper
 {
-    private readonly StringBuilder buffer = new();
+    private readonly StringBuilder _buffer = new();
 
     /// <inheritdoc />
     public void WriteLine(string message) =>
-        buffer.AppendLine(message);
+        _buffer.AppendLine(message);
 
     /// <inheritdoc />
     public void WriteLine(string format, params object[] args) =>
-        buffer.AppendLine(string.Format(format, args));
+        _buffer.AppendLine(string.Format(format, args));
 
     /// <summary>
     /// Gets the current buffer content, clearing it in the process.
@@ -27,8 +27,8 @@ public class DecoyTestOutputHelper : ITestOutputHelper
     /// <returns>The current buffer content.</returns>
     public string GetAndClear()
     {
-        var result = buffer.ToString();
-        buffer.Clear();
+        var result = _buffer.ToString();
+        _buffer.Clear();
         return result;
     }
 }

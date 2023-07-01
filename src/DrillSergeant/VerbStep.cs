@@ -20,19 +20,19 @@ public class VerbStep : BaseStep
     }
 
     /// <summary>
-    /// Iniitalizes a new instance of the <see cref="VerbStep"/> class.
+    /// Initializes a new instance of the <see cref="VerbStep"/> class.
     /// </summary>
     /// <param name="name">The name of the step.</param>
     public VerbStep(string? name)
     {
-        this.Name = string.IsNullOrWhiteSpace(name) ? this.GetType().Name : name.Trim();
+        Name = string.IsNullOrWhiteSpace(name) ? GetType().Name : name.Trim();
     }
 
     /// <inheritdoc />
     protected override Delegate PickHandler()
     {
-        var allCandidates = from m in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                            where m.Name == this.Verb || m.Name == this.Verb + "Async"
+        var allCandidates = from m in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                            where m.Name == Verb || m.Name == Verb + "Async"
                             let numParameters = m.GetParameters().Length
                             let returnsTask = IsAsync(m)
                             orderby numParameters descending, returnsTask descending
@@ -43,7 +43,7 @@ public class VerbStep : BaseStep
 
         if (allCandidates.Any() == false)
         {
-            throw new MissingVerbHandlerException(this.Verb);
+            throw new MissingVerbHandlerException(Verb);
         }
 
         var highestGroup = allCandidates.First().ToArray();
@@ -51,7 +51,7 @@ public class VerbStep : BaseStep
 
         if (highestGroup.Length >= 2 && numAsync != 1)
         {
-            throw new AmbiguousVerbHandlerException(this.Verb);
+            throw new AmbiguousVerbHandlerException(Verb);
         }
 
         // Prefer async.

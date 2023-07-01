@@ -18,7 +18,7 @@ public interface IBehavior : IEnumerable<IStep>
     IDictionary<string, object?> Context { get; }
 
     /// <summary>
-    /// Gets the input associted with the behavior.
+    /// Gets the input associated with the behavior.
     /// </summary>
     IDictionary<string, object?> Input { get; }
 

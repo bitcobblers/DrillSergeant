@@ -54,7 +54,7 @@ public class VerbStepTests
         public async Task NonAsyncMethodWithReturnReturnsExpectedValue()
         {
             // Arrange.
-            var step = new StubStep_NonAsync_ReturnsValue();
+            var step = new StubStepNonAsyncReturnsValue();
             dynamic context = new ExpandoObject();
             dynamic input = new ExpandoObject();
 
@@ -69,7 +69,7 @@ public class VerbStepTests
         public async Task AsyncMethodWithReturnReturnsExpectedValue()
         {
             // Arrange.
-            var step = new StubStep_Async_ReturnsValue();
+            var step = new StubStepAsyncReturnsValue();
             dynamic context = new ExpandoObject();
             dynamic input = new ExpandoObject();
 
@@ -80,14 +80,14 @@ public class VerbStepTests
             Assert.Equal(1, context.Value);
         }
 
-        public class StubStep_NonAsync_ReturnsValue : VerbStep
+        public class StubStepNonAsyncReturnsValue : VerbStep
         {
             public void Test(Context context, Input input) => context.Value = 1;
 
             public override string Verb => "Test";
         }
 
-        public class StubStep_Async_ReturnsValue : VerbStep
+        public class StubStepAsyncReturnsValue : VerbStep
         {
             public Task Test(Context context, Input input)
             {
@@ -109,7 +109,7 @@ public class VerbStepTests
 
             public void Test()
             {
-                this.HasExecuted = true;
+                HasExecuted = true;
             }
 
             public override string Verb => "Test";
@@ -125,14 +125,14 @@ public class VerbStepTests
             public override string Verb => "Test";
         }
 
-        public class StubThatReturnsValue_Sync : VerbStep
+        public class StubThatReturnsValueSync : VerbStep
         {
             public string Test() => "expected";
 
             public override string Verb => "Test";
         }
 
-        public class StubThatReturnsValue_Async : VerbStep
+        public class StubThatReturnsValueAsync : VerbStep
         {
             public Task<string> Test() => Task.FromResult("expected");
 
@@ -161,7 +161,7 @@ public class VerbStepTests
         public void PrefersAsyncOverSyncWhenEqualParameters_SameName()
         {
             // Arrange.
-            var stub = new StubWithSyncAndAsync_SameName();
+            var stub = new StubWithSyncAndAsyncSameName();
             var expected = stub.GetType().GetMethod("Test", new[] { typeof(string) });
 
             // Act.
@@ -175,7 +175,7 @@ public class VerbStepTests
         public void PrefersAsyncOverSyncWhenEqualParameters_DifferentName()
         {
             // Arrange.
-            var stub = new StubWithSyncAndAsync_DifferentName();
+            var stub = new StubWithSyncAndAsyncDifferentName();
             var expected = stub.GetType().GetMethod("TestAsync", new[] { typeof(int) });
 
             // Act.
@@ -196,8 +196,8 @@ public class VerbStepTests
         }
 
         [Theory]
-        [InlineData(typeof(StubWithTwoHandlersSameNumberOfParameters_NoAsync))]
-        [InlineData(typeof(StubWithTwoHandlers_SameNumberOfParameters_TwoAsync))]
+        [InlineData(typeof(StubWithTwoHandlersSameNumberOfParametersNoAsync))]
+        [InlineData(typeof(StubWithTwoHandlersSameNumberOfParametersTwoAsync))]
         public void ThrowsAmbiguousVerbException_Scenarios(Type type)
         {
             // Arrange.
@@ -211,7 +211,7 @@ public class VerbStepTests
         {
             public override string Verb => "Test";
 
-            public Delegate PickHandlerWrapper() => this.PickHandler();
+            public Delegate PickHandlerWrapper() => PickHandler();
         }
 
         public class StubWithMultipleSyncVerbs : StubWithExposedPickHandler
@@ -220,13 +220,13 @@ public class VerbStepTests
             public void Test(int arg1) { }
         }
 
-        public class StubWithSyncAndAsync_SameName : StubWithExposedPickHandler
+        public class StubWithSyncAndAsyncSameName : StubWithExposedPickHandler
         {
             public void Test(int arg) { }
             public Task Test(string arg) => Task.CompletedTask;
         }
 
-        public class StubWithSyncAndAsync_DifferentName : StubWithExposedPickHandler
+        public class StubWithSyncAndAsyncDifferentName : StubWithExposedPickHandler
         {
             public void Test(int arg) { }
             public Task TestAsync(int arg) => Task.CompletedTask;
@@ -236,14 +236,14 @@ public class VerbStepTests
         {
         }
 
-        public class StubWithTwoHandlersSameNumberOfParameters_NoAsync : StubWithExposedPickHandler
+        public class StubWithTwoHandlersSameNumberOfParametersNoAsync : StubWithExposedPickHandler
         {
             public void Test(int arg) { }
 
             public void Test(string arg) { }
         }
 
-        public class StubWithTwoHandlers_SameNumberOfParameters_TwoAsync : StubWithExposedPickHandler
+        public class StubWithTwoHandlersSameNumberOfParametersTwoAsync : StubWithExposedPickHandler
         {
             public Task Test(string arg) => Task.CompletedTask;
 

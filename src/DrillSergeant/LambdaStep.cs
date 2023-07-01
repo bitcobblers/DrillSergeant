@@ -8,8 +8,8 @@ namespace DrillSergeant;
 /// </summary>
 public class LambdaStep : BaseStep
 {
-    private string? name;
-    private Delegate handler = () => { };
+    private string? _name;
+    private Delegate _handler = () => { };
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
@@ -26,11 +26,11 @@ public class LambdaStep : BaseStep
     /// <param name="name">The name of the step.</param>
     public LambdaStep(string? name)
     {
-        this.Named(name);
+        Named(name);
     }
 
     /// <inheritdoc />
-    public override string Name => this.name ?? this.handler?.Method?.GetType().FullName ?? nameof(LambdaStep);
+    public override string Name => _name ?? _handler?.Method?.GetType().FullName ?? nameof(LambdaStep);
 
     /// <summary>
     /// Sets the name of the step.
@@ -44,49 +44,49 @@ public class LambdaStep : BaseStep
             return this;
         }
 
-        this.name = name.Trim();
+        _name = name.Trim();
         return this;
     }
 
     public LambdaStep SetVerb(string? verb)
     {
-        if(string.IsNullOrWhiteSpace(verb))
+        if (string.IsNullOrWhiteSpace(verb))
         {
             return this;
         }
 
-        this.Verb = verb.Trim();
+        Verb = verb.Trim();
         return this;
     }
 
-    public LambdaStep Handle(Delegate handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Delegate handler) => SetHandler(handler);
 
     // ---
 
-    public LambdaStep Handle(Action? handler) => this.SetHandler(handler);
-    public LambdaStep Handle(Action<dynamic>? handler) => this.SetHandler(handler);
-    public LambdaStep Handle(Action<dynamic, dynamic>? handler) => this.SetHandler(handler);
-    public LambdaStep Handle<TContext>(Action<TContext>? handler) => this.SetHandler(handler);
-    public LambdaStep Handle<TInput>(Action<dynamic, TInput>? handler) => this.SetHandler(handler);
-    public LambdaStep Handle<TContext, TInput>(Action<TContext, TInput>? handler) => this.SetHandler(handler);
+    public LambdaStep Handle(Action? handler) => SetHandler(handler);
+    public LambdaStep Handle(Action<dynamic>? handler) => SetHandler(handler);
+    public LambdaStep Handle(Action<dynamic, dynamic>? handler) => SetHandler(handler);
+    public LambdaStep Handle<TContext>(Action<TContext>? handler) => SetHandler(handler);
+    public LambdaStep Handle<TInput>(Action<dynamic, TInput>? handler) => SetHandler(handler);
+    public LambdaStep Handle<TContext, TInput>(Action<TContext, TInput>? handler) => SetHandler(handler);
 
     // ---
 
-    public LambdaStep HandleAsync(Func<Task>? handler) => this.SetHandler(handler);
-    public LambdaStep HandleAsync(Func<dynamic, Task>? handler) => this.SetHandler(handler);
-    public LambdaStep HandleAsync(Func<dynamic, dynamic, Task>? handler) => this.SetHandler(handler);
-    public LambdaStep HandleAsync<TContext>(Func<TContext, Task>? handler) => this.SetHandler(handler);
-    public LambdaStep HandleAsync<TInput>(Func<dynamic, TInput, Task>? handler) => this.SetHandler(handler);
-    public LambdaStep HandleAsync<TContext, TInput>(Func<TContext, TInput, Task>? handler) => this.SetHandler(handler);
+    public LambdaStep HandleAsync(Func<Task>? handler) => SetHandler(handler);
+    public LambdaStep HandleAsync(Func<dynamic, Task>? handler) => SetHandler(handler);
+    public LambdaStep HandleAsync(Func<dynamic, dynamic, Task>? handler) => SetHandler(handler);
+    public LambdaStep HandleAsync<TContext>(Func<TContext, Task>? handler) => SetHandler(handler);
+    public LambdaStep HandleAsync<TInput>(Func<dynamic, TInput, Task>? handler) => SetHandler(handler);
+    public LambdaStep HandleAsync<TContext, TInput>(Func<TContext, TInput, Task>? handler) => SetHandler(handler);
 
     /// <inheritdoc />
-    protected override Delegate PickHandler() => this.handler;
+    protected override Delegate PickHandler() => _handler;
 
     private LambdaStep SetHandler(Delegate? handler)
     {
         if (handler != null)
         {
-            this.handler = handler;
+            _handler = handler;
         }
 
         return this;

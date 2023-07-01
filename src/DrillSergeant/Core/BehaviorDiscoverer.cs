@@ -6,6 +6,7 @@ using Xunit.Sdk;
 
 namespace DrillSergeant.Core;
 
+// ReSharper disable once UnusedType.Global
 internal class BehaviorDiscoverer : TheoryDiscoverer
 {
     public BehaviorDiscoverer(IMessageSink diagnosticMessageSink)

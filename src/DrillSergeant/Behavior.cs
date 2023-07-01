@@ -10,7 +10,7 @@ namespace DrillSergeant;
 /// </summary>
 public class Behavior : IBehavior
 {
-    protected readonly List<IStep> steps = new();
+    protected readonly List<IStep> _steps = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Behavior"/> class.
@@ -35,7 +35,7 @@ public class Behavior : IBehavior
             dict[property.Name] = property.GetValue(input);
         }
 
-        this.Input = dict;
+        Input = dict;
     }
 
     /// <inheritdoc cref="IBehavior.Context" />
@@ -54,7 +54,7 @@ public class Behavior : IBehavior
     /// <returns>The current behavior.</returns>
     public Behavior AddStep(IStep step)
     {
-        this.steps.Add(step);
+        _steps.Add(step);
         return this;
     }
 
@@ -65,7 +65,7 @@ public class Behavior : IBehavior
     /// <returns>The current behavior.</returns>
     public Behavior Background(Behavior background)
     {
-        this.steps.AddRange(background);
+        _steps.AddRange(background);
         return this;
     }
 
@@ -75,13 +75,13 @@ public class Behavior : IBehavior
     /// <returns>The current behavior.</returns>
     public Behavior EnableContextLogging()
     {
-        this.LogContext = true;
+        LogContext = true;
         return this;
     }
 
     /// <inheritdoc />
-    public IEnumerator<IStep> GetEnumerator() => steps.GetEnumerator();
+    public IEnumerator<IStep> GetEnumerator() => _steps.GetEnumerator();
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

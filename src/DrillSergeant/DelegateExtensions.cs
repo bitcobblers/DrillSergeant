@@ -19,7 +19,7 @@ public static class DelegateExtensions
     public static Delegate ToDelegate(this MethodInfo methodInfo, object target)
     {
         Func<Type[], Type> getType;
-        var isAction = methodInfo.ReturnType.Equals(typeof(void));
+        var isAction = methodInfo.ReturnType == typeof(void);
         var types = methodInfo.GetParameters().Select(p => p.ParameterType);
 
         if (isAction)
@@ -32,11 +32,8 @@ public static class DelegateExtensions
             types = types.Concat(new[] { methodInfo.ReturnType });
         }
 
-        if (methodInfo.IsStatic)
-        {
-            return Delegate.CreateDelegate(getType(types.ToArray()), methodInfo);
-        }
-
-        return Delegate.CreateDelegate(getType(types.ToArray()), target, methodInfo.Name);
+        return methodInfo.IsStatic ? 
+            Delegate.CreateDelegate(getType(types.ToArray()), methodInfo) : 
+            Delegate.CreateDelegate(getType(types.ToArray()), target, methodInfo.Name);
     }
 }

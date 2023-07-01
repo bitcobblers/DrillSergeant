@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace DrillSergeant.Generators;
 

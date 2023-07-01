@@ -28,13 +28,13 @@ public abstract class BaseStep : IStep
     [ExcludeFromCodeCoverage]
     ~BaseStep()
     {
-        this.Dispose(disposing: false);
+        Dispose(disposing: false);
     }
 
     [ExcludeFromCodeCoverage]
     public void Dispose()
     {
-        this.Dispose(disposing: true);
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
@@ -51,7 +51,7 @@ public abstract class BaseStep : IStep
             await result;
         }
 
-        if (object.ReferenceEquals(context, resolvedContext) == false)
+        if (ReferenceEquals(context, resolvedContext) == false)
         {
             UpdateContext(context, resolvedContext);
         }
@@ -64,6 +64,8 @@ public abstract class BaseStep : IStep
     protected abstract Delegate PickHandler();
 
     [ExcludeFromCodeCoverage]
+    // ReSharper disable once VirtualMemberNeverOverridden.Global
+    // ReSharper disable once UnusedParameter.Global
     protected virtual void Dispose(bool disposing)
     {
     }
@@ -130,6 +132,6 @@ public abstract class BaseStep : IStep
     }
 
     internal static bool IsAsync(MethodInfo method) =>
-        method.ReturnType.Name == typeof(Task).Name ||
+        method.ReturnType.Name == nameof(Task) ||
         method.ReturnType.Name == typeof(Task<>).Name;
 }

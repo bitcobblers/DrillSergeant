@@ -1,18 +1,10 @@
 ﻿using DrillSergeant.GWT;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace DrillSergeant.Tests.Features;
 
 public class BaseStepFeature
 {
-    private readonly ITestOutputHelper outputHelper;
-
-    public BaseStepFeature(ITestOutputHelper outputHelper)
-    {
-        this.outputHelper = outputHelper;
-    }
-
     [Behavior]
     public Behavior ModifyingInputFails()
     {
@@ -44,7 +36,7 @@ public class BaseStepFeature
     }
 
     [Behavior]
-    public Behavior ConsumingBackroundAutomaticallyExecutesSteps()
+    public Behavior ConsumingBackgroundAutomaticallyExecutesSteps()
     {
         return new Behavior()
             .EnableContextLogging()

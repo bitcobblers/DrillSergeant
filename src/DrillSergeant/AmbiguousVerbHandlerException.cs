@@ -16,18 +16,18 @@ public class AmbiguousVerbHandlerException : Exception, ISerializable
     /// <param name="verb">The verb for the handler.</param>
     public AmbiguousVerbHandlerException(string verb) : base($"Cannot pick an implementation for the verb ${verb}.  Two or more candidates have the same number of parameters.")
     {
-        this.Verb = verb;
+        Verb = verb;
     }
 
     protected AmbiguousVerbHandlerException(SerializationInfo info, StreamingContext context)
     {
-        this.Verb = info.GetString(nameof(this.Verb))!;
+        Verb = info.GetString(nameof(Verb))!;
     }
 
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);
-        info.AddValue(nameof(this.Verb), this.Verb);
+        info.AddValue(nameof(Verb), Verb);
     }
 
     /// <summary>

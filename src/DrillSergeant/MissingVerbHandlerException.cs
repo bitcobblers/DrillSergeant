@@ -16,18 +16,18 @@ public class MissingVerbHandlerException : Exception, ISerializable
     /// <param name="verb">The verb for the handler.</param>
     public MissingVerbHandlerException(string verb) : base($"Could not find any implementation for the verb ${verb}.")
     {
-        this.Verb = verb;
+        Verb = verb;
     }
 
     protected MissingVerbHandlerException(SerializationInfo info, StreamingContext context)
     {
-        this.Verb = info.GetString(nameof(this.Verb))!;
+        Verb = info.GetString(nameof(Verb))!;
     }
 
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);
-        info.AddValue(nameof(this.Verb), this.Verb);
+        info.AddValue(nameof(Verb), Verb);
     }
 
     /// <summary>
