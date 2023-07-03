@@ -9,8 +9,6 @@ namespace DrillSergeant;
 /// </summary>
 public class VerbStep : BaseStep
 {
-    private readonly string _name;
-
     private record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
     /// <summary>
@@ -26,10 +24,10 @@ public class VerbStep : BaseStep
     /// </summary>
     /// <param name="name">The name of the step.</param>
     protected VerbStep(string? name) => 
-        _name = string.IsNullOrWhiteSpace(name) ? GetType().Name : name.Trim();
+        Name = string.IsNullOrWhiteSpace(name) ? GetType().Name : name.Trim();
 
 
-    public override string Name => _name;
+    public override string Name { get; }
 
     /// <inheritdoc />
     protected override Delegate PickHandler()
