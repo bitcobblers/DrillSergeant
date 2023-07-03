@@ -9,12 +9,14 @@ namespace DrillSergeant;
 /// </summary>
 public class VerbStep : BaseStep
 {
-    public record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
+    private readonly string _name;
+
+    private record VerbMethod(MethodInfo Method, object Target, bool IsAsync);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VerbStep"/> class.
     /// </summary>
-    public VerbStep()
+    protected VerbStep()
         : this(null)
     {
     }
@@ -23,22 +25,23 @@ public class VerbStep : BaseStep
     /// Initializes a new instance of the <see cref="VerbStep"/> class.
     /// </summary>
     /// <param name="name">The name of the step.</param>
-    public VerbStep(string? name)
-    {
-        Name = string.IsNullOrWhiteSpace(name) ? GetType().Name : name.Trim();
-    }
+    protected VerbStep(string? name) => 
+        _name = string.IsNullOrWhiteSpace(name) ? GetType().Name : name.Trim();
+
+
+    public override string Name => _name;
 
     /// <inheritdoc />
     protected override Delegate PickHandler()
     {
-        var allCandidates = from m in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        var allCandidates = (from m in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                             where m.Name == Verb || m.Name == Verb + "Async"
                             let numParameters = m.GetParameters().Length
                             let returnsTask = IsAsync(m)
                             orderby numParameters descending, returnsTask descending
                             let verb = new VerbMethod(m, this, returnsTask)
                             group verb by numParameters into g
-                            select g;
+                            select g).ToArray();
 
 
         if (allCandidates.Any() == false)

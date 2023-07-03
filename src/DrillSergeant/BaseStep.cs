@@ -23,7 +23,7 @@ public abstract class BaseStep : IStep
     public virtual string Verb { get; protected set; } = "<unknown>";
 
     /// <inheritdoc />
-    public virtual string Name { get; protected set; } = "<untitled step>";
+    public virtual string Name => "<untitled step>";
 
     [ExcludeFromCodeCoverage]
     ~BaseStep()

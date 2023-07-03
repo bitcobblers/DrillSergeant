@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+// ReSharper disable UnusedMember.Global
 
 namespace DrillSergeant;
 
@@ -9,12 +10,12 @@ namespace DrillSergeant;
 public class LambdaStep : BaseStep
 {
     private string? _name;
-    private Delegate _handler = () => { };
+    private Delegate? _handler;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
     /// </summary>
-    /// <param name="verb">The verb for the step.</param>
+    // ReSharper disable once MemberCanBeProtected.Global
     public LambdaStep()
         : this(null)
     {
@@ -30,7 +31,7 @@ public class LambdaStep : BaseStep
     }
 
     /// <inheritdoc />
-    public override string Name => _name ?? _handler?.Method?.GetType().FullName ?? nameof(LambdaStep);
+    public override string Name => _name ?? _handler?.Method.Name ?? GetType().Name;
 
     /// <summary>
     /// Sets the name of the step.
@@ -48,6 +49,7 @@ public class LambdaStep : BaseStep
         return this;
     }
 
+    // ReSharper disable once UnusedMethodReturnValue.Global
     public LambdaStep SetVerb(string? verb)
     {
         if (string.IsNullOrWhiteSpace(verb))
@@ -80,7 +82,10 @@ public class LambdaStep : BaseStep
     public LambdaStep HandleAsync<TContext, TInput>(Func<TContext, TInput, Task>? handler) => SetHandler(handler);
 
     /// <inheritdoc />
-    protected override Delegate PickHandler() => _handler;
+    protected override Delegate PickHandler()
+    {
+        return _handler ?? new Action(() => { });
+    }
 
     private LambdaStep SetHandler(Delegate? handler)
     {

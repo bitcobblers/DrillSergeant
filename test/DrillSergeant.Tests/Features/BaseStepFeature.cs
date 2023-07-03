@@ -59,6 +59,18 @@ public class BaseStepFeature
             .Then("Check Value", c => Assert.Equal("expected", c.Value));
     }
 
+    [Behavior]
+    public Behavior CallingNullLambdaHandlerDoesNotStopExecution()
+    {
+        return new Behavior()
+            .Given(NullLambdaStep())
+            .When("Set context value", c => c.Success = true)
+            .Then("Check context", c => Assert.True(c.Success));
+    }
+
+    private LambdaStep NullLambdaStep() =>
+        new ("Null step");
+
     public Behavior SetupContext =>
         new Behavior()
             .Given("Background Step 1", c => c.A = 1)
