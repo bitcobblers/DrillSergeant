@@ -1,8 +1,8 @@
 # DrillSergeant
 .net behavior driven testing written by developers, for developers.
 
-![Build](https://github.com/BitCobblers/DrillSergeant/actions/workflows/test.yml/badge.svg)
-![Nuget](https://img.shields.io/nuget/v/DrillSergeant.svg)
+[![Build](https://github.com/BitCobblers/DrillSergeant/actions/workflows/test.yml/badge.svg)](https://github.com/bitcobblers/DrillSergeant/actions/workflows/test.yml)
+[![Nuget](https://img.shields.io/nuget/v/DrillSergeant.svg)](https://www.nuget.org/packages/DrillSergeant/)
 [![codecov](https://codecov.io/gh/bitcobblers/DrillSergeant/branch/main/graph/badge.svg?token=R9MKC6IJXE)](https://codecov.io/gh/bitcobblers/DrillSergeant)
 
 # Introduction
