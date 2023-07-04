@@ -12,11 +12,12 @@
 ## Getting Started
 
 For a complete example of a feature, see the following [example](https://github.com/bitcobblers/DrillSergeant/blob/main/test/DrillSergeant.Tests/Features/CalculatorFeature.cs).
+For something more complex, see the [DemoStore](https://github.com/bitcobblers/StoreDemo) repo.
 
 ## A Basic Calculator Service
 
 Lets say we have a `Calculator` service.  For this example we'll define it as a simple class.
-```
+```CSharp
 public class Calculator
 {
     public int Add(int a, int b) => a + b;
@@ -24,7 +25,7 @@ public class Calculator
 }
 ```
 We can write a behavior test like so:
-```
+```CSharp
 public class CalculatorTests
 {
     private readonly Calculator _calculator = new();
@@ -88,9 +89,9 @@ Unlike in normal unit tests, which are intended to test the correctness of indiv
 
 ## Why Not Use A 3rd Party Acceptance Testing Tool (e.g. SpecFlow, Fitnesse, Guage)?
 
-`DrillSergeant` was borne out of frustration of using 3rd party testing tools.  While tools such as SpecFlow and Guage have gotten easier to use over time, they require installing 3rd party plugins/runners in the developer environment.  Additionally they require separate files for authoring the tests themselves (`.feature` for Specflow, and `.md` for Gauge).  This relies on a mixture of code generation and reflection magic in order to bind the test specifications with the code that actually runs them, which adds a layer of complexity.
+`DrillSergeant` was borne out of frustration of using 3rd party testing tools.  While tools such as SpecFlow and Guage have gotten easier to use over time, they require installing 3rd party plugins/runners in the developer environment.  Additionally they require separate files for authoring the tests themselves (`.feature` for Specflow, '.wiki' for FitNesse, and `.md` for Gauge).  This relies on a mixture of code generation and reflection magic in order to bind the test specifications with the code that actually runs them, which adds a layer of complexity.
 
-`DrillSergeant` takes a different approach to this problem.  Rather than rely on DSLs and complex translation layers, it engrafts additional capabilities to the xunit framework to make it easy to write behavior-driven with familiar C# syntax.  No new DSLs to learn, no build-time generated C# code, no reflection shenanigans.  Just a simple API written 100% in C# code that can be tested/debugged the exact same way as all of your other unit tests.
+`DrillSergeant` takes a different approach to this problem.  Rather than rely on DSLs and complex translation layers, it engrafts additional capabilities to the xunit framework to make it easy to write behavior-driven with familiar C# syntax.  No new DSLs to learn, no build task fussiness, no reflection shenanigans.  Just a simple API written entirely in C# code that can be tested/debugged the exact same way as all of your other unit tests.
 
 For a longer-winded explanation, see the following [blog post](https://www.bitcobblers.com/b/behavior-driven-testing/).
 
