@@ -27,6 +27,26 @@ public class LambdaStepTests
         }
     }
 
+    public class SetVerbMethod : LambdaStepTests
+    {
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("\t")]
+        public void SettingBlankVerbDoesNotChangeExistingValue(string? blankValue)
+        {
+            // Arrange.
+            var step = new LambdaStep().SetVerb("expected");
+
+            // Act.
+            step.SetVerb(blankValue);
+
+            // Assert.
+            step.Verb.ShouldBe("expected");
+        }
+    }
+
     public class ExecuteMethod : LambdaStepTests
     {
         public record Context
