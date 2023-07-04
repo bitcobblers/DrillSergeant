@@ -1,6 +1,10 @@
 # DrillSergeant
 .net behavior driven testing written by developers, for developers.
 
+![Build](https://github.com/BitCobblers/DrillSergeant/actions/workflows/test.yml/badge.svg)
+![Nuget](https://img.shields.io/nuget/v/DrillSergeant.svg)
+[![codecov](https://codecov.io/gh/bitcobblers/DrillSergeant/branch/main/graph/badge.svg?token=R9MKC6IJXE)](https://codecov.io/gh/bitcobblers/DrillSergeant)
+
 # Introduction
 
 `DrillSergeant` is a behavior testing library that empowers developers to apply BDD practices with minimal amount of friction.  Simply import the package and write your behaviors in familiar C# syntax.
