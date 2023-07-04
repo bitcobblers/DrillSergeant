@@ -76,7 +76,7 @@ public class AsyncVariationsFeature
 
     public LambdaStep DelayAndSet(int milliseconds) =>
         new WhenLambdaStep()
-            .Named($"Adding delay of {milliseconds:N0}ms")
+            .SetName($"Adding delay of {milliseconds:N0}ms")
             .HandleAsync(async c =>
             {
                 await Task.Delay(milliseconds);

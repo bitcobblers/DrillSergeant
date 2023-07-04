@@ -185,7 +185,7 @@ public static partial class BehaviorExtensions_{verb}
     {{
         behavior.AddStep(
             new {verb}LambdaStep()
-                .Named(name)
+                .SetName(name)
                 .Handle(step));
 
         return behavior;

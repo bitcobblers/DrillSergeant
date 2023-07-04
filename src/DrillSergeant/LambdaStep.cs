@@ -27,7 +27,7 @@ public class LambdaStep : BaseStep
     /// <param name="name">The name of the step.</param>
     public LambdaStep(string? name)
     {
-        Named(name);
+        SetName(name);
     }
 
     /// <inheritdoc />
@@ -38,7 +38,7 @@ public class LambdaStep : BaseStep
     /// </summary>
     /// <param name="name">The name of the step.</param>
     /// <returns>The current step.</returns>
-    public LambdaStep Named(string? name)
+    public LambdaStep SetName(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {

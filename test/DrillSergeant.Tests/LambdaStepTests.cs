@@ -7,7 +7,7 @@ namespace DrillSergeant.Tests;
 
 public class LambdaStepTests
 {
-    public class NamedMethod : LambdaStepTests
+    public class SetNameMethod : LambdaStepTests
     {
         [Theory]
         [InlineData(null)]
@@ -17,10 +17,10 @@ public class LambdaStepTests
         public void SettingBlankNameDoesNotChangeExistingValue(string blankValue)
         {
             // Arrange.
-            var step = new LambdaStep("Test").Named("expected");
+            var step = new LambdaStep("Test").SetName("expected");
 
             // Act.
-            step.Named(blankValue);
+            step.SetName(blankValue);
 
             // Assert.
             step.Name.ShouldBe("expected");
