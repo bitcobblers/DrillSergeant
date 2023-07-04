@@ -10,7 +10,7 @@ namespace DrillSergeant;
 /// </summary>
 public class Behavior : IBehavior
 {
-    protected readonly List<IStep> _steps = new();
+    private readonly List<IStep> _steps = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Behavior"/> class.
@@ -26,7 +26,7 @@ public class Behavior : IBehavior
     /// <param name="input">The input to bind to the behavior.</param>
     public Behavior(object input)
     {
-        var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
         dynamic castedInput = new ExpandoObject();
         var dict = (IDictionary<string, object?>)castedInput;
 

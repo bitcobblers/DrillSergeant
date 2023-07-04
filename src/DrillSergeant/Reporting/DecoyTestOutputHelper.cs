@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using Xunit.Abstractions;
 
 namespace DrillSergeant.Reporting;
@@ -19,7 +20,7 @@ public class DecoyTestOutputHelper : ITestOutputHelper
 
     /// <inheritdoc />
     public void WriteLine(string format, params object[] args) =>
-        _buffer.AppendLine(string.Format(format, args));
+        _buffer.AppendLine(string.Format(CultureInfo.CurrentCulture, format, args));
 
     /// <summary>
     /// Gets the current buffer content, clearing it in the process.

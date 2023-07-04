@@ -23,7 +23,7 @@ public class VerbStep : BaseStep
     /// Initializes a new instance of the <see cref="VerbStep"/> class.
     /// </summary>
     /// <param name="name">The name of the step.</param>
-    protected VerbStep(string? name) => 
+    protected VerbStep(string? name) =>
         Name = string.IsNullOrWhiteSpace(name) ? GetType().Name : name.Trim();
 
 
@@ -33,13 +33,13 @@ public class VerbStep : BaseStep
     protected override Delegate PickHandler()
     {
         var allCandidates = (from m in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                            where m.Name == Verb || m.Name == Verb + "Async"
-                            let numParameters = m.GetParameters().Length
-                            let returnsTask = IsAsync(m)
-                            orderby numParameters descending, returnsTask descending
-                            let verb = new VerbMethod(m, this, returnsTask)
-                            group verb by numParameters into g
-                            select g).ToArray();
+                             where m.Name == Verb || m.Name == Verb + "Async"
+                             let numParameters = m.GetParameters().Length
+                             let returnsTask = IsAsync(m)
+                             orderby numParameters descending, returnsTask descending
+                             let verb = new VerbMethod(m, this, returnsTask)
+                             group verb by numParameters into g
+                             select g).ToArray();
 
 
         if (allCandidates.Any() == false)

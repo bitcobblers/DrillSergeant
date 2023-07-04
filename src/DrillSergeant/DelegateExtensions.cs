@@ -32,8 +32,8 @@ public static class DelegateExtensions
             types = types.Concat(new[] { methodInfo.ReturnType });
         }
 
-        return methodInfo.IsStatic ? 
-            Delegate.CreateDelegate(getType(types.ToArray()), methodInfo) : 
+        return methodInfo.IsStatic ?
+            Delegate.CreateDelegate(getType(types.ToArray()), methodInfo) :
             Delegate.CreateDelegate(getType(types.ToArray()), target, methodInfo.Name);
     }
 }

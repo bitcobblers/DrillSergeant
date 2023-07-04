@@ -4,7 +4,7 @@ namespace DrillSergeant.Generators;
 
 public static class VerbDefinitionParser
 {
-    private static readonly Regex ValidIdentifierPattern = new Regex(@"^[\w_]+[\w\d_]*$");
+    private static readonly Regex ValidIdentifierPattern = new(@"^[\w_]+[\w\d_]*$");
 
     public static IEnumerable<VerbGroup> Parse(string? content)
     {

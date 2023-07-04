@@ -29,8 +29,8 @@ public class ReflectionParameterCaster : IParameterCaster
         var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
 
         foreach (var property in from p in type.GetProperties(flags)
-                 where source.ContainsKey(p.Name)
-                 select p)
+                                 where source.ContainsKey(p.Name)
+                                 select p)
         {
             var value = source[property.Name]!;
 

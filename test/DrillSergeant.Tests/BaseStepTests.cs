@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
+// ReSharper disable UnusedParameter.Local
+// ReSharper disable UnusedMember.Local
+// ReSharper disable MemberCanBePrivate.Global
+#pragma warning disable IDE0060
+#pragma warning disable IDE0051
 
 namespace DrillSergeant.Tests;
 
@@ -225,9 +230,9 @@ public class BaseStepTests
         }
     }
 
-    private static MethodInfo GetMethod(Type type, string name)
+    private static MethodInfo GetMethod(IReflect type, string name)
     {
-        var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
         return type.GetMethod(name, flags)!;
     }
 }

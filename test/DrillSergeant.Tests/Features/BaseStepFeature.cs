@@ -69,7 +69,7 @@ public class BaseStepFeature
     }
 
     private LambdaStep NullLambdaStep() =>
-        new ("Null step");
+        new("Null step");
 
     public Behavior SetupContext =>
         new Behavior()
