@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 // ReSharper disable UnusedMember.Global
 
 namespace DrillSergeant;
@@ -11,6 +12,7 @@ public class LambdaStep : BaseStep
 {
     private string? _name;
     private Delegate? _handler;
+    private Action _teardown;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
@@ -85,6 +87,17 @@ public class LambdaStep : BaseStep
     protected override Delegate PickHandler()
     {
         return _handler ?? new Action(() => { });
+    }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+
+        if (disposing)
+        {
+            _teardown?.Invoke();
+        }
     }
 
     private LambdaStep SetHandler(Delegate? handler)

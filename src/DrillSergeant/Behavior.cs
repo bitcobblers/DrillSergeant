@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
@@ -11,6 +12,8 @@ namespace DrillSergeant;
 public class Behavior : IBehavior
 {
     private readonly List<IStep> _steps = new();
+
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Behavior"/> class.
@@ -37,6 +40,11 @@ public class Behavior : IBehavior
 
         Input = dict;
     }
+
+    /// <summary>
+    /// Finalizes an instance of the <see cref="Behavior"/> class.
+    /// </summary>
+    ~Behavior() => Dispose(disposing:false);
 
     /// <inheritdoc cref="IBehavior.Context" />
     public IDictionary<string, object?> Context { get; } = new ExpandoObject();
@@ -79,9 +87,28 @@ public class Behavior : IBehavior
         return this;
     }
 
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
     /// <inheritdoc />
     public IEnumerator<IStep> GetEnumerator() => _steps.GetEnumerator();
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            foreach (var step in _steps)
+            {
+                step.Dispose();
+            }
+        }
+
+        _disposed = true;
+    }
 }

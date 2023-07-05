@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using DrillSergeant.Reporting;
-using Xunit;
+﻿using DrillSergeant.Reporting;
 using FakeItEasy;
 using Shouldly;
+using System;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace DrillSergeant.Tests;
 
@@ -20,10 +20,11 @@ public class BehaviorExecutorTests
             var method = typeof(StubWithBehaviors).GetMethod("NotABehavior_Sync");
             var parameters = Array.Empty<object?>();
 
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
+            var executor = new BehaviorExecutor(reporter);
 
             // Act and assert.
-            await Assert.ThrowsAsync<InvalidOperationException>(() => executor.LoadBehavior());
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                () => executor.LoadBehavior(instance, method!, parameters));
         }
 
         [Fact]
@@ -35,10 +36,11 @@ public class BehaviorExecutorTests
             var method = typeof(StubWithBehaviors).GetMethod("NotABehavior_Async");
             var parameters = Array.Empty<object?>();
 
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
+            var executor = new BehaviorExecutor(reporter);
 
             // Act and assert.
-            await Assert.ThrowsAsync<InvalidOperationException>(() => executor.LoadBehavior());
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                () => executor.LoadBehavior(instance, method!, parameters));
         }
 
         [Fact]
@@ -50,13 +52,13 @@ public class BehaviorExecutorTests
             var method = typeof(StubWithBehaviors).GetMethod("AsyncBehavior");
             var parameters = Array.Empty<object?>();
 
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
+            var executor = new BehaviorExecutor(reporter);
 
             // Act.
-            await executor.LoadBehavior();
+            var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Assert.
-            executor.Behavior.ShouldNotBeNull();
+            behavior.ShouldNotBeNull();
         }
 
         [Fact]
@@ -68,13 +70,13 @@ public class BehaviorExecutorTests
             var method = typeof(StubWithBehaviors).GetMethod("SyncBehavior");
             var parameters = Array.Empty<object?>();
 
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
+            var executor = new BehaviorExecutor(reporter);
 
             // Act.
-            await executor.LoadBehavior();
+            var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Assert.
-            executor.Behavior.ShouldNotBeNull();
+            behavior.ShouldNotBeNull();
         }
 
         private class StubWithBehaviors
@@ -94,21 +96,6 @@ public class BehaviorExecutorTests
     public class ExecuteMethod : BehaviorExecutorTests
     {
         [Fact]
-        public async Task NullBehaviorThrowsInvalidOperationException()
-        {
-            // Arrange.
-            var reporter = A.Fake<ITestReporter>();
-            var instance = new StubWithBehaviors();
-            var method = typeof(StubWithBehaviors).GetMethod("UnknownMethod");
-            var parameters = Array.Empty<object?>();
-
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
-
-            // Act and assert.
-            await Assert.ThrowsAsync<InvalidOperationException>(() => executor.Execute());
-        }
-
-        [Fact]
         public async Task SuccessfulBehaviorSetsContext()
         {
             // Arrange.
@@ -117,14 +104,14 @@ public class BehaviorExecutorTests
             var method = typeof(StubWithBehaviors).GetMethod("SuccessfulBehavior");
             var parameters = Array.Empty<object?>();
 
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
+            var executor = new BehaviorExecutor(reporter);
+            var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.LoadBehavior();
-            await executor.Execute();
+            await executor.Execute(behavior);
 
             // Assert.
-            executor.Behavior!.Context["IsSuccess"].ShouldBe(true);
+            behavior!.Context["IsSuccess"].ShouldBe(true);
         }
 
         [Fact]
@@ -138,13 +125,13 @@ public class BehaviorExecutorTests
             var method = typeof(StubWithBehaviors).GetMethod("FailingBehavior");
             var parameters = Array.Empty<object?>();
 
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
+            var executor = new BehaviorExecutor(reporter);
+            var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             executor.StepFailed += (_, _) => errorCalled = true;
 
             // Act.
-            await executor.LoadBehavior();
-            await executor.Execute();
+            await executor.Execute(behavior);
 
             // Assert.
             errorCalled.ShouldBeTrue();
@@ -159,14 +146,14 @@ public class BehaviorExecutorTests
             var method = typeof(StubWithBehaviors).GetMethod("FailingBehaviorWithAdditionalSteps");
             var parameters = Array.Empty<object?>();
 
-            var executor = new BehaviorExecutor(reporter, instance, method!, parameters);
+            var executor = new BehaviorExecutor(reporter);
+            var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.LoadBehavior();
-            await executor.Execute();
+            await executor.Execute(behavior);
 
             // Assert.
-            executor.Behavior!.Context["IsSuccess"].ShouldBe(true);
+            behavior!.Context["IsSuccess"].ShouldBe(true);
         }
 
         private class StubWithBehaviors

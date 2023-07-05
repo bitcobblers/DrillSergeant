@@ -11,63 +11,53 @@ namespace DrillSergeant
         public event EventHandler<StepFailedEventArgs> StepFailed = delegate {};
 
         private readonly ITestReporter _reporter;
-        private readonly object _instance;
-        private readonly MethodInfo _method;
-        private readonly object?[] _parameters;
 
-        public BehaviorExecutor(ITestReporter reporter, object instance, MethodInfo method, object?[] parameters)
+        public BehaviorExecutor(ITestReporter reporter) => _reporter = reporter;
+
+        public async Task<IBehavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
         {
-            _reporter = reporter;
-            _instance = instance;
-            _method = method;
-            _parameters = parameters;
-        }
+            IBehavior? behavior = null;
 
-        /// <summary>
-        /// Gets the behavior to execute.
-        /// </summary>
-        public IBehavior? Behavior { get; private set; }
-
-        public async Task LoadBehavior()
-        {
-            if (IsAsync(_method))
+            if (IsAsync(method))
             {
-                var genericArguments = _method.ReturnType.GetGenericArguments();
+                var genericArguments = method.ReturnType.GetGenericArguments();
 
                 if (genericArguments.Length == 1 && genericArguments[0].IsAssignableTo(typeof(IBehavior)))
                 {
-                    dynamic asyncResult = _method.Invoke(_instance, _parameters)!;
-                    Behavior = (IBehavior)await asyncResult;
+                    dynamic asyncResult = method.Invoke(instance, parameters)!;
+                    behavior = (IBehavior?)await asyncResult;
                 }
             }
             else
             {
-                var returnType = _method.ReturnType;
+                var returnType = method.ReturnType;
 
                 if (returnType.IsAssignableTo(typeof(IBehavior)))
                 {
-                    Behavior = (IBehavior?)_method.Invoke(_instance, _parameters);
+                    behavior = (IBehavior?)method.Invoke(instance, parameters);
                 }
             }
 
-            if (Behavior == null)
+            if (behavior == null)
             {
                 throw new InvalidOperationException("Test method did not return a behavior.");
             }
+
+            return behavior;
         }
 
-        public async Task Execute()
+        public async Task Execute(IBehavior behavior)
         {
             bool previousStepFailed = false;
 
-            if (Behavior == null)
+            if (behavior == null)
             {
                 throw new InvalidOperationException("Attempted to execute an undefined behavior.");
             }
 
-            _reporter.WriteBlock("Input", Behavior.Input);
+            _reporter.WriteBlock("Input", behavior.Input);
 
-            foreach (var step in Behavior)
+            foreach (var step in behavior)
             {
                 if (previousStepFailed)
                 {
@@ -79,7 +69,7 @@ namespace DrillSergeant
                 {
                     try
                     {
-                        await step.Execute(Behavior.Context, Behavior.Input);
+                        await step.Execute(behavior.Context, behavior.Input);
                     }
                     catch (Exception ex)
                     {
@@ -88,7 +78,7 @@ namespace DrillSergeant
                     }
                 });
 
-                _reporter.WriteStepResult(step.Verb, step.Name, false, elapsed, !previousStepFailed, Behavior.LogContext ? Behavior.Context : null);
+                _reporter.WriteStepResult(step.Verb, step.Name, false, elapsed, !previousStepFailed, behavior.LogContext ? behavior.Context : null);
             }
         }
 

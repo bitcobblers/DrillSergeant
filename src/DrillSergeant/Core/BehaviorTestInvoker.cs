@@ -71,12 +71,11 @@ internal class BehaviorTestInvoker : XunitTestInvoker
 
     private async Task InvokeBehavior(object testClassInstance)
     {
-        var executor = new BehaviorExecutor(_reporter, testClassInstance, TestMethod, TestMethodArguments);
-
+        var executor = new BehaviorExecutor(_reporter);
+        using var behavior = await executor.LoadBehavior(testClassInstance, TestMethod, TestMethodArguments);
         executor.StepFailed += (_, e) => Aggregator.Add(e.Exception);
-
-        await executor.LoadBehavior();
-        await executor.Execute();
+        
+        await executor.Execute(behavior);
     }
 
     [SecuritySafeCritical]
