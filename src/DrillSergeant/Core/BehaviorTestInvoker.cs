@@ -71,67 +71,12 @@ internal class BehaviorTestInvoker : XunitTestInvoker
 
     private async Task InvokeBehavior(object testClassInstance)
     {
-        var behavior = await GetBehavior(testClassInstance, TestMethodArguments) ?? throw new InvalidOperationException("The test method did not return a valid behavior instance.");
-        bool previousStepFailed = false;
-
-        _reporter.WriteBlock("Input", behavior.Input);
-
-        foreach (var step in behavior)
-        {
-            var stepTimer = new ExecutionTimer();
-
-            if (previousStepFailed)
-            {
-                _reporter.WriteStepResult(step.Verb, step.Name, previousStepFailed, stepTimer.Total, success: false, context: null);
-                continue;
-            }
-
-            await stepTimer.AggregateAsync(async () =>
-            {
-                try
-                {
-                    await step.Execute(behavior.Context, behavior.Input);
-                }
-                catch (Exception ex)
-                {
-                    Aggregator.Add(ex);
-                    previousStepFailed = true;
-                }
-            });
-
-            _reporter.WriteStepResult(step.Verb, step.Name, false, stepTimer.Total, !previousStepFailed, behavior.LogContext ? behavior.Context : null);
-        }
-
-        await Task.CompletedTask;
+        var executor = new BehaviorExecutor(_reporter);
+        using var behavior = await executor.LoadBehavior(testClassInstance, TestMethod, TestMethodArguments);
+        executor.StepFailed += (_, e) => Aggregator.Add(e.Exception);
+        
+        await executor.Execute(behavior);
     }
-
-    private async Task<IBehavior?> GetBehavior(object testClassInstance, object?[] parameters)
-    {
-        if (IsAsync(TestMethod))
-        {
-            dynamic asyncResult = TestMethod.Invoke(testClassInstance, parameters)!;
-            object asyncBehavior = await asyncResult;
-
-            if (asyncBehavior is IBehavior behavior)
-            {
-                return behavior;
-            }
-        }
-        else
-        {
-            var syncResult = TestMethod.Invoke(testClassInstance, parameters);
-
-            if (syncResult is IBehavior behavior)
-            {
-                return behavior;
-            }
-        }
-
-        throw new InvalidOperationException("Test method did not return a behavior.");
-    }
-
-    internal static bool IsAsync(MethodInfo method) =>
-        method.ReturnType.Name == typeof(Task).Name || method.ReturnType.Name == typeof(Task<>).Name;
 
     [SecuritySafeCritical]
     static void SetSynchronizationContext(SynchronizationContext context)

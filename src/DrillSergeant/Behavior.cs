@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Reflection;
 
@@ -11,6 +13,9 @@ namespace DrillSergeant;
 public class Behavior : IBehavior
 {
     private readonly List<IStep> _steps = new();
+    private readonly HashSet<IDisposable> _ownedDisposables = new();
+
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Behavior"/> class.
@@ -37,6 +42,12 @@ public class Behavior : IBehavior
 
         Input = dict;
     }
+
+    /// <summary>
+    /// Finalizes an instance of the <see cref="Behavior"/> class.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    ~Behavior() => Dispose(disposing:false);
 
     /// <inheritdoc cref="IBehavior.Context" />
     public IDictionary<string, object?> Context { get; } = new ExpandoObject();
@@ -66,6 +77,14 @@ public class Behavior : IBehavior
     public Behavior Background(Behavior background)
     {
         _steps.AddRange(background);
+
+        foreach (var disposable in background._ownedDisposables)
+        {
+            _ownedDisposables.Add(disposable);
+        }
+
+        background._ownedDisposables.Clear();
+
         return this;
     }
 
@@ -79,9 +98,44 @@ public class Behavior : IBehavior
         return this;
     }
 
+    /// <summary>
+    /// Marks a disposable object as being owned by the behavior.
+    /// </summary>
+    /// <param name="instance">The object instance to take ownership of.</param>
+    /// <returns>The current behavior.</returns>
+    public Behavior Owns(IDisposable instance)
+    {
+        _ownedDisposables.Add(instance);
+        return this;
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
     /// <inheritdoc />
     public IEnumerator<IStep> GetEnumerator() => _steps.GetEnumerator();
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            foreach (var step in _steps)
+            {
+                step.Dispose();
+            }
+
+            foreach (var disposable in _ownedDisposables)
+            {
+                disposable.Dispose();
+            }
+        }
+
+        _disposed = true;
+    }
 }

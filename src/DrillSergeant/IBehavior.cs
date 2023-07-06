@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DrillSergeant;
 
@@ -10,7 +11,7 @@ namespace DrillSergeant;
 /// This is the base type for all behaviors.  In addition to providing common properties for all behaviors, it can also be enumerated for its associated steps.
 /// </para>
 /// </remarks>
-public interface IBehavior : IEnumerable<IStep>
+public interface IBehavior : IEnumerable<IStep>, IDisposable
 {
     /// <summary>
     /// Gets the context associated with the behavior.
