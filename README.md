@@ -33,7 +33,7 @@ public class CalculatorTests
     [Behavior]
     [InlineData(1,2,3)]
     [InlineData(2,3,5)]
-    public Behavior TestAdditionBehavior(int a, int b, int expected)
+    public void TestAdditionBehavior(int a, int b, int expected)
     {
         var input = new
         {
@@ -42,7 +42,7 @@ public class CalculatorTests
             Expected = expected
         };
 
-        return new Behavior(input)
+        BehaviorBuilder.New(input)
             .Given(SetFirstNumber)
             .Given(SetSecondNumber)
             .When(AddNumbers)
@@ -52,7 +52,7 @@ public class CalculatorTests
     [Behavior]
     [InlineData(3,2,1)]
     [InlineData(5,2,3)]
-    public Behavior TestSubtractionBehavior(int a, int b, int expected)
+    public void TestSubtractionBehavior(int a, int b, int expected)
     {
         var input = new
         {
@@ -61,7 +61,7 @@ public class CalculatorTests
             Expected = expected
         };
 
-        return new Behavior(input)
+        BehaviorBuilder.New(input)
             .Given(SetFirstNumber)
             .Given(SetSecondNumber)
             .When(SubtractNumbers)
@@ -81,7 +81,7 @@ public class CalculatorTests
 }
 ```
 
-Behaviors are written in same fashion as a normal xunit `[Fact]` or `[Theory]` test.  The only difference is that it is marked using the `[Behavior]` attribute and must return an instance of type `Behavior`.
+Behaviors are written in same fashion as a normal xunit `[Fact]` or `[Theory]` test.  The only difference is that it is marked using the `[Behavior]` attribute.
 
 ## Why Write Tests This Way?
 
