@@ -1,8 +1,7 @@
-﻿using System;
-using Xunit.Abstractions;
+﻿using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Reporting;
+namespace DrillSergeant.Xunit.Reporting;
 
 /// <summary>
 /// Defines the base type for test output reporters.

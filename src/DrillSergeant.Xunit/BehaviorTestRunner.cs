@@ -1,13 +1,9 @@
-﻿using DrillSergeant.Reporting;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using DrillSergeant.Xunit.Reporting;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Core;
+namespace DrillSergeant.Xunit;
 
 internal class BehaviorTestRunner : XunitTestRunner
 {

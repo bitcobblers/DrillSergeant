@@ -1,5 +1,4 @@
-﻿using DrillSergeant.Reporting;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;

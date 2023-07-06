@@ -2,7 +2,7 @@
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Reporting;
+namespace DrillSergeant.Xunit.Reporting;
 
 /// <summary>
 /// Defines a test output reporter that writes raw text to the output.

@@ -2,7 +2,7 @@
 using System.Text;
 using Xunit.Abstractions;
 
-namespace DrillSergeant.Reporting;
+namespace DrillSergeant.Xunit.Reporting;
 
 /// <summary>
 /// Defines a decoy output helper for xunit.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DrillSergeant.Reporting;
+namespace DrillSergeant;
 
 public interface ITestReporter : IDisposable
 {

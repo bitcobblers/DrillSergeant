@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
+﻿using System.Reflection;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Core;
+namespace DrillSergeant.Xunit;
 
 internal class BehaviorTheoryTestCaseRunner : XunitTheoryTestCaseRunner
 {
