@@ -2,6 +2,7 @@
 using FakeItEasy;
 using Shouldly;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -177,6 +178,25 @@ public class BehaviorExecutorTests
             obj.DisposeCount.ShouldBe(1);
         }
 
+        [Fact]
+        public async Task SkipsDisabledSteps()
+        {
+            // Arrange.
+            var reporter = A.Fake<ITestReporter>();
+            var instance = new StubWithBehaviors();
+            var method = typeof(StubWithBehaviors).GetMethod("BehaviorWithSkippedStep");
+            var parameters = Array.Empty<object?>();
+
+            var executor = new BehaviorExecutor(reporter);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
+
+            // Act.
+            await executor.Execute(behavior);
+
+            // Assert.
+            behavior!.Context["IsSuccess"].ShouldBe(true);
+        }
+
         private class StubDisposable : IDisposable
         {
             public int DisposeCount { get; private set; }
@@ -209,6 +229,16 @@ public class BehaviorExecutorTests
                     .AddStep(
                         new LambdaStep("Set context to false")
                             .Handle(c => c.IsSuccess = false));
+
+            public Behavior BehaviorWithSkippedStep() =>
+                BehaviorBuilder.New()
+                    .AddStep(
+                        new LambdaStep("Successful step")
+                            .Handle(c => c.IsSuccess = true))
+                    .AddStep(
+                        new LambdaStep("Skipped step")
+                            .Handle(c => c.IsSuccess = false)
+                            .Skip(() => true));
         }
     }
 }

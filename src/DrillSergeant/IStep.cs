@@ -20,6 +20,11 @@ public interface IStep : IDisposable
     string Name { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the step should be skipped.
+    /// </summary>
+    bool ShouldSkip { get; }
+
+    /// <summary>
     /// Executes the step.
     /// </summary>
     /// <param name="context">The context to bind to the step handler.</param>

@@ -25,6 +25,9 @@ public abstract class BaseStep : IStep
     /// <inheritdoc />
     public virtual string Name => "<untitled step>";
 
+    /// <inheritdoc />
+    public virtual bool ShouldSkip { get; protected set; }
+
     [ExcludeFromCodeCoverage]
     ~BaseStep()
     {

@@ -47,6 +47,50 @@ public class LambdaStepTests
         }
     }
 
+    public class SkipMethod : LambdaStepTests
+    {
+        [Fact]
+        public void SkipDisabledByDefault()
+        {
+            // Arrange.
+            var step = new LambdaStep();
+
+            // Act.
+            var result = step.ShouldSkip;
+
+            // Assert.
+            result.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void NullPredicateDisablesSkip()
+        {
+            // Arrange.
+            var step = new LambdaStep();
+
+            // Act.
+            step.Skip();
+            var result = step.ShouldSkip;
+
+            // Assert.
+            result.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void NotNullPredicateEnablesSkip()
+        {
+            // Arrange.
+            var step = new LambdaStep();
+
+            // Act.
+            step.Skip(() => true);
+            var result = step.ShouldSkip;
+
+            // Assert.
+            result.ShouldBeTrue();
+        }
+    }
+
     public class ExecuteMethod : LambdaStepTests
     {
         public record Context

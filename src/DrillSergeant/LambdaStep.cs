@@ -12,6 +12,7 @@ public class LambdaStep : BaseStep
 {
     private string? _name;
     private Delegate? _handler;
+    private Func<bool> _shouldSkip = () => false;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LambdaStep"/> class.
@@ -33,6 +34,9 @@ public class LambdaStep : BaseStep
 
     /// <inheritdoc />
     public override string Name => _name ?? _handler?.Method.Name ?? GetType().Name;
+
+    /// <inheritdoc />
+    public override bool ShouldSkip => _shouldSkip();
 
     /// <summary>
     /// Sets the name of the step.
@@ -59,6 +63,16 @@ public class LambdaStep : BaseStep
         }
 
         Verb = verb.Trim();
+        return this;
+    }
+
+    public LambdaStep Skip(Func<bool>? shouldSkip = null)
+    {
+        if (shouldSkip != null)
+        {
+            _shouldSkip = shouldSkip;
+        }
+
         return this;
     }
 
