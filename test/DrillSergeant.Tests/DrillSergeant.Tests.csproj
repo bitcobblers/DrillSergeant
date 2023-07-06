@@ -15,7 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoFixture.Xunit2" Version="4.18.0" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,10 +31,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\DrillSergeant.Generators\DrillSergeant.Generators.csproj" />
-	  <ProjectReference Include="..\..\src\DrillSergeant.Xunit\DrillSergeant.Xunit.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
 	</ItemGroup>
-
-	<Import Project="..\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems" Label="Shared" />
 
 </Project>
