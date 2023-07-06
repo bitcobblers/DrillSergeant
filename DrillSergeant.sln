@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant", "src\DrillS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests", "test\DrillSergeant.Tests\DrillSergeant.Tests.csproj", "{B1019442-4A52-4274-8C3E-11296123C884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.Generators", "src\DrillSergeant.Generators\DrillSergeant.Generators.csproj", "{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Generators", "src\DrillSergeant.Generators\DrillSergeant.Generators.csproj", "{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DrillSergeant.Tests.Shared", "test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.shproj", "{EA885484-0EAB-47C2-AC8C-99CA3A0D0FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,8 +46,13 @@ Global
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 		{B1019442-4A52-4274-8C3E-11296123C884} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
+		{EA885484-0EAB-47C2-AC8C-99CA3A0D0FB4} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35E642DB-4DFA-4054-B035-03F437C3F8BD}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{b1019442-4a52-4274-8c3e-11296123c884}*SharedItemsImports = 5
+		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{ea885484-0eab-47c2-ac8c-99ca3a0d0fb4}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
