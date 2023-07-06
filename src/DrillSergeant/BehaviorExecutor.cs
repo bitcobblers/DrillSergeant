@@ -32,7 +32,7 @@ namespace DrillSergeant
                    throw new InvalidOperationException("Test method did not return a behavior.");
         }
 
-        public async Task Execute(IBehavior behavior)
+        public async Task Execute(IBehavior? behavior)
         {
             bool previousStepFailed = false;
 
@@ -48,6 +48,12 @@ namespace DrillSergeant
                 if (previousStepFailed)
                 {
                     _reporter.WriteStepResult(step.Verb, step.Name, previousStepFailed, elapsed: 0, success: false, context: null);
+                    continue;
+                }
+
+                if (step.ShouldSkip)
+                {
+                    _reporter.WriteStepResult(step.Verb, step.Name, skipped: true, elapsed: 0, success: true, context: null);
                     continue;
                 }
 
