@@ -87,9 +87,9 @@ public class BehaviorExecutorTests
 
             public Task NotABehavior_Async() => Task.CompletedTask;
 
-            public Behavior SyncBehavior() => new();
+            public Behavior SyncBehavior() => BehaviorBuilder.New();
 
-            public Task<Behavior> AsyncBehavior() => Task.FromResult(new Behavior());
+            public Task<Behavior> AsyncBehavior() => Task.FromResult(BehaviorBuilder.New());
         }
     }
 
@@ -159,19 +159,19 @@ public class BehaviorExecutorTests
         private class StubWithBehaviors
         {
             public Behavior SuccessfulBehavior() =>
-                new Behavior()
+                BehaviorBuilder.New()
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true));
 
             public Behavior FailingBehavior() =>
-                new Behavior()
+                BehaviorBuilder.New()
                     .AddStep(
                         new LambdaStep("Failing step")
                             .Handle(() => throw new Exception("Failed")));
 
             public Behavior FailingBehaviorWithAdditionalSteps() =>
-                new Behavior()
+                BehaviorBuilder.New()
                     .AddStep(
                         new LambdaStep("Set context to true")
                             .Handle(c => c.IsSuccess = true))

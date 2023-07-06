@@ -30,7 +30,7 @@ public class CalculatorFeature
     [Behavior]
     [InlineAutoData]
     [InlineAutoData]
-    public Behavior AdditionBehaviorWithAutoData(int a, int b)
+    public void AdditionBehaviorWithAutoData(int a, int b)
     {
         var input = new Input
         {
@@ -39,7 +39,7 @@ public class CalculatorFeature
             Expected = a + b
         };
 
-        return new Behavior(input)
+        BehaviorBuilder.New(input)
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .And<Input>(SetSecondNumber)
@@ -48,7 +48,7 @@ public class CalculatorFeature
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Task<Behavior> AsyncAdditionBehavior(int a, int b, int expected)
+    public void AsyncAdditionBehavior(int a, int b, int expected)
     {
         var input = new Input
         {
@@ -57,17 +57,15 @@ public class CalculatorFeature
             Expected = expected
         };
 
-        var behavior = new Behavior(input)
+        BehaviorBuilder.New(input)
             .Given("Set first number", (c, i) => c.A = i.A)
             .GivenAsync(SetSecondNumberAsync)
             .When(AddNumbersAsync(_calculator))
             .Then<CheckResultStepAsync>();
-
-        return Task.FromResult(behavior);
     }
 
     [Behavior, MemberData(nameof(AdditionInputs))]
-    public Behavior AdditionBehavior(int a, int b, int expected)
+    public void AdditionBehavior(int a, int b, int expected)
     {
         var input = new Input
         {
@@ -76,7 +74,7 @@ public class CalculatorFeature
             Expected = expected
         };
 
-        return new Behavior(input)
+        BehaviorBuilder.New(input)
             .EnableContextLogging()
             .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
             .And<Input>(SetSecondNumber)

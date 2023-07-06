@@ -16,34 +16,20 @@ namespace DrillSergeant
 
         public async Task<IBehavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
         {
-            IBehavior? behavior = null;
+            BehaviorBuilder.Clear();
 
             if (IsAsync(method))
             {
-                var genericArguments = method.ReturnType.GetGenericArguments();
-
-                if (genericArguments.Length == 1 && genericArguments[0].IsAssignableTo(typeof(IBehavior)))
-                {
-                    dynamic asyncResult = method.Invoke(instance, parameters)!;
-                    behavior = (IBehavior?)await asyncResult;
-                }
+                dynamic asyncResult = method.Invoke(instance, parameters)!;
+                await asyncResult;
             }
             else
             {
-                var returnType = method.ReturnType;
-
-                if (returnType.IsAssignableTo(typeof(IBehavior)))
-                {
-                    behavior = (IBehavior?)method.Invoke(instance, parameters);
-                }
+                method.Invoke(instance, parameters);
             }
 
-            if (behavior == null)
-            {
-                throw new InvalidOperationException("Test method did not return a behavior.");
-            }
-
-            return behavior;
+            return BehaviorBuilder.CurrentBehavior ??
+                   throw new InvalidOperationException("Test method did not return a behavior.");
         }
 
         public async Task Execute(IBehavior behavior)
@@ -82,8 +68,8 @@ namespace DrillSergeant
             }
         }
 
-        private static bool IsAsync(MethodInfo method) =>
-            method.ReturnType.Name == nameof(Task) || method.ReturnType.Name == typeof(Task<>).Name;
+        private static bool IsAsync(MethodInfo method) => 
+            method.ReturnType.IsAssignableTo(typeof(Task));
 
         private static async Task<decimal> TimedCall(Func<Task> task)
         {
