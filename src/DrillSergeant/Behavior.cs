@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Reflection;
 
@@ -12,6 +13,7 @@ namespace DrillSergeant;
 public class Behavior : IBehavior
 {
     private readonly List<IStep> _steps = new();
+    private readonly HashSet<IDisposable> _ownedDisposables = new();
 
     private bool _disposed;
 
@@ -44,6 +46,7 @@ public class Behavior : IBehavior
     /// <summary>
     /// Finalizes an instance of the <see cref="Behavior"/> class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     ~Behavior() => Dispose(disposing:false);
 
     /// <inheritdoc cref="IBehavior.Context" />
@@ -74,6 +77,14 @@ public class Behavior : IBehavior
     public Behavior Background(Behavior background)
     {
         _steps.AddRange(background);
+
+        foreach (var disposable in background._ownedDisposables)
+        {
+            _ownedDisposables.Add(disposable);
+        }
+
+        background._ownedDisposables.Clear();
+
         return this;
     }
 
@@ -84,6 +95,17 @@ public class Behavior : IBehavior
     public Behavior EnableContextLogging()
     {
         LogContext = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Marks a disposable object as being owned by the behavior.
+    /// </summary>
+    /// <param name="instance">The object instance to take ownership of.</param>
+    /// <returns>The current behavior.</returns>
+    public Behavior Owns(IDisposable instance)
+    {
+        _ownedDisposables.Add(instance);
         return this;
     }
 
@@ -106,6 +128,11 @@ public class Behavior : IBehavior
             foreach (var step in _steps)
             {
                 step.Dispose();
+            }
+
+            foreach (var disposable in _ownedDisposables)
+            {
+                disposable.Dispose();
             }
         }
 

@@ -22,6 +22,42 @@ public class BehaviorTests
             step.DisposeCalled.ShouldBeTrue();
         }
 
+        [Fact]
+        public void OwnedObjectsAreDisposedWithBehavior()
+        {
+            // Arrange.
+            var obj = new StepWithDispose();
+            var behavior = 
+                new Behavior()
+                    .Owns(obj);
+
+            // Act.
+            behavior.Dispose();
+
+            // Assert.
+            obj.DisposeCalled.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void BehaviorTakesOwnershipOfBackgroundObjects()
+        {
+            // Arrange.
+            var obj = new StepWithDispose();
+            var background = 
+                new Behavior()
+                    .Owns(obj);
+
+            var behavior =
+                new Behavior()
+                    .Background(background);
+
+            // Act.
+            behavior.Dispose();
+
+            // Assert.
+            obj.DisposeCalled.ShouldBeTrue();
+        }
+
         private class StepWithDispose : VerbStep
         {
             public bool DisposeCalled { get; private set; }

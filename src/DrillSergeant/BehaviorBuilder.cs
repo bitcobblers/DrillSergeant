@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace DrillSergeant
 {
@@ -30,8 +31,21 @@ namespace DrillSergeant
         }
 
         /// <summary>
+        /// Marks an object as being owned by the current behavior.
+        /// </summary>
+        /// <param name="instance">The object to take ownership of.</param>
+        public static void Owns(IDisposable instance)
+        {
+            Instance.Value?.Owns(instance);
+        }
+
+        /// <summary>
         /// Clears the current behavior.
         /// </summary>
-        internal static void Clear() => Instance.Value = null;
+        internal static void Clear()
+        {
+            Instance.Value?.Dispose();
+            Instance.Value = null;
+        }
     }
 }

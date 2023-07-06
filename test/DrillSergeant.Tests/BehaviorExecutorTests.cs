@@ -55,7 +55,7 @@ public class BehaviorExecutorTests
             var executor = new BehaviorExecutor(reporter);
 
             // Act.
-            var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Assert.
             behavior.ShouldNotBeNull();
@@ -73,7 +73,7 @@ public class BehaviorExecutorTests
             var executor = new BehaviorExecutor(reporter);
 
             // Act.
-            var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Assert.
             behavior.ShouldNotBeNull();
@@ -105,7 +105,7 @@ public class BehaviorExecutorTests
             var parameters = Array.Empty<object?>();
 
             var executor = new BehaviorExecutor(reporter);
-            var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
             await executor.Execute(behavior);
@@ -126,7 +126,7 @@ public class BehaviorExecutorTests
             var parameters = Array.Empty<object?>();
 
             var executor = new BehaviorExecutor(reporter);
-            var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             executor.StepFailed += (_, _) => errorCalled = true;
 
@@ -147,13 +147,41 @@ public class BehaviorExecutorTests
             var parameters = Array.Empty<object?>();
 
             var executor = new BehaviorExecutor(reporter);
-            var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
             await executor.Execute(behavior);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);
+        }
+
+        [Fact]
+        public async Task OwnedObjectsSetByExtensionAreDisposedWithBehavior()
+        {
+            // Arrange.
+            var reporter = A.Fake<ITestReporter>();
+            var executor = new BehaviorExecutor(reporter);
+
+            var obj = new StubDisposable();
+            var behavior = BehaviorBuilder.New()
+                .AddStep(
+                    new LambdaStep("Registers disposable")
+                        .Handle(c => c.Obj = obj.OwnedByBehavior()));
+
+            // Act.
+            await executor.Execute(behavior);
+            behavior.Dispose();
+
+            // Assert.
+            obj.DisposeCount.ShouldBe(1);
+        }
+
+        private class StubDisposable : IDisposable
+        {
+            public int DisposeCount { get; private set; }
+
+            public void Dispose() => DisposeCount++;
         }
 
         private class StubWithBehaviors
