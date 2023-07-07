@@ -9,7 +9,6 @@
 		<Nullable>enable</Nullable>
 		<Version>0.1.0-beta</Version>
 		<PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
 		<PackageTags>xunit;unit testing; behavior testing; acceptance testing</PackageTags>
 		<RepositoryType>git</RepositoryType>
