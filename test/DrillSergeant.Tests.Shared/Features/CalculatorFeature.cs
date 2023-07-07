@@ -1,8 +1,5 @@
 ﻿using DrillSergeant.GWT;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Shouldly;
-
 
 #if NUNIT
 using AutoFixture.NUnit3;
@@ -60,6 +57,7 @@ public class CalculatorFeature
     [MemberData(nameof(AdditionInputs))]
 #endif
 #if NUNIT
+    [TestCaseSource(nameof(AdditionInputs))]
 #endif
     public void AsyncAdditionBehavior(int a, int b, int expected)
     {
@@ -82,6 +80,7 @@ public class CalculatorFeature
     [MemberData(nameof(AdditionInputs))]
 #endif
 #if NUNIT
+    [TestCaseSource(nameof(AdditionInputs))]
 #endif
     public void AdditionBehavior(int a, int b, int expected)
     {
