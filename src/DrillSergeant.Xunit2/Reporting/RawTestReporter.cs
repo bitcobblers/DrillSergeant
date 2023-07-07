@@ -2,7 +2,7 @@
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Reporting;
+namespace DrillSergeant.Xunit.Reporting;
 
 /// <summary>
 /// Defines a test output reporter that writes raw text to the output.
@@ -26,10 +26,7 @@ public class RawTestReporter : BaseTestReporter
         var serializationSettings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
-            Error = (s, e) =>
-            {
-                e.ErrorContext.Handled = true;
-            }
+            Error = (s, e) => e.ErrorContext.Handled = true
         };
 
         var serializedContent = JsonConvert.SerializeObject(content, serializationSettings);

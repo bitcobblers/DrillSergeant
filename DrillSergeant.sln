@@ -16,7 +16,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant", "src\DrillS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests", "test\DrillSergeant.Tests\DrillSergeant.Tests.csproj", "{B1019442-4A52-4274-8C3E-11296123C884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.Generators", "src\DrillSergeant.Generators\DrillSergeant.Generators.csproj", "{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Generators", "src\DrillSergeant.Generators\DrillSergeant.Generators.csproj", "{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DrillSergeant.Tests.Shared", "test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.shproj", "{EA885484-0EAB-47C2-AC8C-99CA3A0D0FB4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Xunit2", "src\DrillSergeant.Xunit2\DrillSergeant.Xunit2.csproj", "{F8CB0602-27E4-45DA-BCC9-44215ABE9964}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.NUnit3", "src\DrillSergeant.NUnit3\DrillSergeant.NUnit3.csproj", "{99E31B7B-AE5C-46E9-848D-3DE6FFA23864}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests.NUnit3", "test\DrillSergeant.Tests.NUnit3\DrillSergeant.Tests.NUnit3.csproj", "{ACB0FA68-FC24-4F90-979B-7651FC667E5E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests.Xunit2", "test\DrillSergeant.Tests.Xunit2\DrillSergeant.Tests.Xunit2.csproj", "{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +46,22 @@ Global
 		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8CB0602-27E4-45DA-BCC9-44215ABE9964}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8CB0602-27E4-45DA-BCC9-44215ABE9964}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8CB0602-27E4-45DA-BCC9-44215ABE9964}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8CB0602-27E4-45DA-BCC9-44215ABE9964}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99E31B7B-AE5C-46E9-848D-3DE6FFA23864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99E31B7B-AE5C-46E9-848D-3DE6FFA23864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99E31B7B-AE5C-46E9-848D-3DE6FFA23864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99E31B7B-AE5C-46E9-848D-3DE6FFA23864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACB0FA68-FC24-4F90-979B-7651FC667E5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACB0FA68-FC24-4F90-979B-7651FC667E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACB0FA68-FC24-4F90-979B-7651FC667E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACB0FA68-FC24-4F90-979B-7651FC667E5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,8 +70,18 @@ Global
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 		{B1019442-4A52-4274-8C3E-11296123C884} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 		{9DE0D5A7-DE33-4635-B1F7-1EF34C715A96} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
+		{EA885484-0EAB-47C2-AC8C-99CA3A0D0FB4} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
+		{F8CB0602-27E4-45DA-BCC9-44215ABE9964} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
+		{99E31B7B-AE5C-46E9-848D-3DE6FFA23864} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
+		{ACB0FA68-FC24-4F90-979B-7651FC667E5E} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
+		{E0D70886-43AA-48F0-85C7-2AC1722CD3E2} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35E642DB-4DFA-4054-B035-03F437C3F8BD}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{acb0fa68-fc24-4f90-979b-7651fc667e5e}*SharedItemsImports = 5
+		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{e0d70886-43aa-48f0-85c7-2ac1722cd3e2}*SharedItemsImports = 5
+		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{ea885484-0eab-47c2-ac8c-99ca3a0d0fb4}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

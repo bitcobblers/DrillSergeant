@@ -1,8 +1,8 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Reporting;
+namespace DrillSergeant.Xunit.Reporting;
 
 /// <summary>
 /// Defines the base type for test output reporters.
@@ -31,6 +31,7 @@ public abstract class BaseTestReporter : ITestReporter
     /// <summary>
     /// Finalizes an instance of the <see cref="BaseTestReporter"/> class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     ~BaseTestReporter()
     {
         Dispose(disposing: false);

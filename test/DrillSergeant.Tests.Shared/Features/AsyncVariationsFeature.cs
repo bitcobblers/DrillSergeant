@@ -1,6 +1,5 @@
 ﻿using DrillSergeant.GWT;
-using System.Threading.Tasks;
-using Xunit;
+using Shouldly;
 
 namespace DrillSergeant.Tests.Features;
 
@@ -23,7 +22,7 @@ public class AsyncVariationsFeature
                 await Task.Delay(10);
                 c.IsSuccess = true;
             })
-            .Then("Check result", c => Assert.True(c.IsSuccess));
+            .Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
     }
 
     [Behavior]
@@ -36,7 +35,7 @@ public class AsyncVariationsFeature
                 await Task.Delay(10);
                 c.IsSuccess = true;
             })
-            .Then("Check result", c => Assert.True(c.IsSuccess));
+            .Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
     }
 
     [Behavior]
@@ -49,7 +48,7 @@ public class AsyncVariationsFeature
                 await Task.Delay(10);
                 c.IsSuccess = true;
             })
-            .Then("Check result", c => Assert.True(c.IsSuccess));
+            .Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
     }
 
     [Behavior]
@@ -62,7 +61,7 @@ public class AsyncVariationsFeature
                 await Task.Delay(10);
                 c.IsSuccess = true;
             })
-            .Then("Check result", c => Assert.True(c.IsSuccess));
+            .Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
     }
 
     [Behavior]
@@ -71,7 +70,7 @@ public class AsyncVariationsFeature
         BehaviorBuilder.New()
             .Given("Set context", c => c.IsSuccess = false)
             .When(DelayAndSet(10))
-            .Then("Check result", c => Assert.True(c.IsSuccess));
+            .Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
     }
 
     public LambdaStep DelayAndSet(int milliseconds) =>

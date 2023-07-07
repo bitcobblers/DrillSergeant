@@ -2,23 +2,19 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-		<ImplicitUsings>disable</ImplicitUsings>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
 		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefineConstants>XUNIT</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="TestResults\**" />
-	  <EmbeddedResource Remove="TestResults\**" />
-	  <None Remove="TestResults\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="coverlet.collector" Version="6.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="AutoFixture.Xunit2" Version="4.18.0" />
 		<PackageReference Include="FakeItEasy" Version="7.4.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
 		<PackageReference Include="Shouldly" Version="4.2.1" />
@@ -27,11 +23,17 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="6.0.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\DrillSergeant.Generators\DrillSergeant.Generators.csproj" />
-	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
+		<ProjectReference Include="..\..\src\DrillSergeant.Xunit2\DrillSergeant.Xunit2.csproj" />
+		<ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
 	</ItemGroup>
+
+	<Import Project="..\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems" Label="Shared" />
 
 </Project>

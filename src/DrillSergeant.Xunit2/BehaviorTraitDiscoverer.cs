@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Xunit.Abstractions;
+﻿using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Core;
+namespace DrillSergeant.Xunit;
 
 // ReSharper disable once UnusedType.Global
 internal class BehaviorTraitDiscoverer : TraitDiscoverer

@@ -1,13 +1,22 @@
-﻿using AutoFixture.Xunit2;
-using DrillSergeant.GWT;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
+﻿using DrillSergeant.GWT;
+using Shouldly;
+
+#if NUNIT
+using AutoFixture.NUnit3;
+#endif
+
+#if XUNIT
+using AutoFixture.Xunit2;
+using Xunit.Abstractions;
+#endif
 
 namespace DrillSergeant.Tests.Features;
 
 public class CalculatorFeature
 {
+#if XUNIT
+    private readonly ITestOutputHelper _outputHelper;
+#endif
     private readonly Calculator _calculator = new();
 
     public record Input
@@ -16,6 +25,10 @@ public class CalculatorFeature
         public int B { get; init; }
         public int Expected { get; init; }
     }
+
+#if XUNIT
+    public CalculatorFeature(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+#endif
 
     public static IEnumerable<object[]> AdditionInputs
     {
@@ -27,7 +40,7 @@ public class CalculatorFeature
         };
     }
 
-    [Behavior]
+    [Behavior(Feature = "Calculator")]
     [InlineAutoData]
     [InlineAutoData]
     public void AdditionBehaviorWithAutoData(int a, int b)
@@ -47,7 +60,13 @@ public class CalculatorFeature
             .Then<CheckResultStep>();
     }
 
-    [Behavior, MemberData(nameof(AdditionInputs))]
+    [Behavior]
+#if XUNIT
+    [MemberData(nameof(AdditionInputs))]
+#endif
+#if NUNIT
+    [TestCaseSource(nameof(AdditionInputs))]
+#endif
     public void AsyncAdditionBehavior(int a, int b, int expected)
     {
         var input = new Input
@@ -64,7 +83,13 @@ public class CalculatorFeature
             .Then<CheckResultStepAsync>();
     }
 
-    [Behavior, MemberData(nameof(AdditionInputs))]
+    [Behavior]
+#if XUNIT
+    [MemberData(nameof(AdditionInputs))]
+#endif
+#if NUNIT
+    [TestCaseSource(nameof(AdditionInputs))]
+#endif
     public void AdditionBehavior(int a, int b, int expected)
     {
         var input = new Input
@@ -112,7 +137,11 @@ public class CalculatorFeature
     {
         public void Then(dynamic context, Input input)
         {
-            Assert.Equal(input.Expected, context.Result);
+            int expected = input.Expected;
+            int result = context.Result;
+
+            expected.ShouldBe(result);
+
         }
     }
 
@@ -121,7 +150,10 @@ public class CalculatorFeature
     {
         public Task ThenAsync(dynamic context, Input input)
         {
-            Assert.Equal(input.Expected, context.Result);
+            int expected = input.Expected;
+            int result = context.Result;
+
+            expected.ShouldBe(result);
             return Task.CompletedTask;
         }
     }

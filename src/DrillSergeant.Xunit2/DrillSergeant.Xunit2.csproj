@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>DrillSergeant.Xunit2</AssemblyName>
+		<Company>BitCobblers</Company>
+		<Authors>BitCobblers</Authors>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Version>0.1.0-beta</Version>
+		<PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
+		<PackageTags>xunit;unit testing; behavior testing; acceptance testing</PackageTags>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Title>Drill Sergeant</Title>
+		<Description>Write acceptance tests in pure C#.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="xunit.extensibility.execution" Version="2.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DrillSergeant\DrillSergeant.csproj" />
+	</ItemGroup>
+
+</Project>

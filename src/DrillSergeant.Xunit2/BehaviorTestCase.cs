@@ -1,9 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
+﻿using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Core;
+namespace DrillSergeant.Xunit;
 
 internal class BehaviorTestCase : XunitTestCase
 {
