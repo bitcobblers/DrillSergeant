@@ -21,15 +21,15 @@ public class BehaviorCommand : TestCommand
         var method = context.CurrentTest.Method!.MethodInfo;
         var args = context.CurrentTest.Arguments;
 
-        executor.StepFailed += (_, e) => { context.CurrentResult.RecordException(e.Exception); };
+        executor.StepFailed += (_, e) =>
+        {
+            context.CurrentResult.RecordException(e.Exception, FailureSite.Test);
+        };
+
+        context.CurrentResult.SetResult(ResultState.Success);
 
         using var behavior = executor.LoadBehavior(obj, method, args).GetAwaiter().GetResult();
         executor.Execute(behavior).Wait();
-
-        context.CurrentResult.SetResult(
-            context.CurrentResult.FailCount == 0 || context.CurrentResult.PendingFailures > 0
-                ? ResultState.Success
-                : ResultState.Failure);
 
         if (context.CurrentResult.AssertionResults.Count > 0)
         {
