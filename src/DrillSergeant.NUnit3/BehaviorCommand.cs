@@ -21,10 +21,8 @@ public class BehaviorCommand : TestCommand
         var method = context.CurrentTest.Method!.MethodInfo;
         var args = context.CurrentTest.Arguments;
 
-        executor.StepFailed += (_, e) =>
-        {
+        executor.StepFailed += (_, e) => 
             context.CurrentResult.RecordException(e.Exception, FailureSite.Test);
-        };
 
         context.CurrentResult.SetResult(ResultState.Success);
 

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 
 namespace DrillSergeant.NUnit3.Reporting
 {
@@ -8,8 +9,10 @@ namespace DrillSergeant.NUnit3.Reporting
 
         public RawTestReporter(TextWriter writer) => _writer = writer;
 
+        [ExcludeFromCodeCoverage]
         public string Output => string.Empty;
 
+        [ExcludeFromCodeCoverage]
         public void Dispose()
         {
         }
@@ -19,10 +22,7 @@ namespace DrillSergeant.NUnit3.Reporting
             var serializationSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
-                Error = (_, e) =>
-                {
-                    e.ErrorContext.Handled = true;
-                }
+                Error = (_, e) => e.ErrorContext.Handled = true
             };
 
             var serializedContent = JsonConvert.SerializeObject(content, serializationSettings);

@@ -32,7 +32,7 @@ public class CalculatorFeature
         };
     }
 
-    [Behavior]
+    [Behavior(Feature = "Calculator")]
     [InlineAutoData]
     [InlineAutoData]
     public void AdditionBehaviorWithAutoData(int a, int b)
