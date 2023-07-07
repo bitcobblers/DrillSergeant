@@ -3,6 +3,9 @@ using Shouldly;
 
 namespace DrillSergeant.Tests.Features;
 
+#if MSTEST
+[TestClass]
+#endif
 public class AsyncVariationsFeature
 {
     public class Context
@@ -26,6 +29,9 @@ public class AsyncVariationsFeature
     }
 
     [Behavior]
+#if MSTEST
+    [TestCategory("SAMPLE_CAT")]
+#endif
     public void WaitUsingInlineDelay_WithContext()
     {
         BehaviorBuilder.New()

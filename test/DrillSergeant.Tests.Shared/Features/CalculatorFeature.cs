@@ -12,6 +12,9 @@ using Xunit.Abstractions;
 
 namespace DrillSergeant.Tests.Features;
 
+#if MSTEST
+[TestClass]
+#endif
 public class CalculatorFeature
 {
 #if XUNIT
@@ -40,6 +43,7 @@ public class CalculatorFeature
         };
     }
 
+#if !MSTEST // AutoFixture does not support MSTest.
     [Behavior(Feature = "Calculator")]
     [InlineAutoData]
     [InlineAutoData]
@@ -59,6 +63,7 @@ public class CalculatorFeature
             .When(AddNumbers(_calculator))
             .Then<CheckResultStep>();
     }
+#endif
 
     [Behavior]
 #if XUNIT
@@ -66,6 +71,9 @@ public class CalculatorFeature
 #endif
 #if NUNIT
     [TestCaseSource(nameof(AdditionInputs))]
+#endif
+#if MSTEST
+    [DynamicData(nameof(AdditionInputs))]
 #endif
     public void AsyncAdditionBehavior(int a, int b, int expected)
     {
@@ -89,6 +97,9 @@ public class CalculatorFeature
 #endif
 #if NUNIT
     [TestCaseSource(nameof(AdditionInputs))]
+#endif
+#if MSTEST
+    [DynamicData(nameof(AdditionInputs))]
 #endif
     public void AdditionBehavior(int a, int b, int expected)
     {

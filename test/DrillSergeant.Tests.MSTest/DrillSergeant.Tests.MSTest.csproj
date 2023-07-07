@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DefineConstants>NUNIT</DefineConstants>
+		<DefineConstants>MSTEST</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,10 +21,14 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Shouldly" Version="4.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\src\DrillSergeant.MSTest\DrillSergeant.MSTest.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
 	</ItemGroup>
+
+	<Import Project="..\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems" Label="Shared" />
 
 </Project>

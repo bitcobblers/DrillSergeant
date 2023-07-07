@@ -97,5 +97,6 @@ Global
 		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{acb0fa68-fc24-4f90-979b-7651fc667e5e}*SharedItemsImports = 5
 		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{e0d70886-43aa-48f0-85c7-2ac1722cd3e2}*SharedItemsImports = 5
 		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{ea885484-0eab-47c2-ac8c-99ca3a0d0fb4}*SharedItemsImports = 13
+		test\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems*{f6874c05-bbf0-4327-9aae-a3637887f0c0}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
