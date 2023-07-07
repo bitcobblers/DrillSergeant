@@ -26,10 +26,7 @@ public class RawTestReporter : BaseTestReporter
         var serializationSettings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
-            Error = (s, e) =>
-            {
-                e.ErrorContext.Handled = true;
-            }
+            Error = (s, e) => e.ErrorContext.Handled = true
         };
 
         var serializedContent = JsonConvert.SerializeObject(content, serializationSettings);

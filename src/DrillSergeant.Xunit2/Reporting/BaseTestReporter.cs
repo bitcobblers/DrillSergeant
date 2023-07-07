@@ -1,4 +1,5 @@
-﻿using Xunit.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace DrillSergeant.Xunit.Reporting;
@@ -30,6 +31,7 @@ public abstract class BaseTestReporter : ITestReporter
     /// <summary>
     /// Finalizes an instance of the <see cref="BaseTestReporter"/> class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     ~BaseTestReporter()
     {
         Dispose(disposing: false);

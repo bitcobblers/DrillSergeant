@@ -7,12 +7,16 @@ using AutoFixture.NUnit3;
 
 #if XUNIT
 using AutoFixture.Xunit2;
+using Xunit.Abstractions;
 #endif
 
 namespace DrillSergeant.Tests.Features;
 
 public class CalculatorFeature
 {
+#if XUNIT
+    private readonly ITestOutputHelper _outputHelper;
+#endif
     private readonly Calculator _calculator = new();
 
     public record Input
@@ -21,6 +25,10 @@ public class CalculatorFeature
         public int B { get; init; }
         public int Expected { get; init; }
     }
+
+#if XUNIT
+    public CalculatorFeature(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+#endif
 
     public static IEnumerable<object[]> AdditionInputs
     {
