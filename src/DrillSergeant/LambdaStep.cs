@@ -68,11 +68,7 @@ public class LambdaStep : BaseStep
 
     public LambdaStep Skip(Func<bool>? shouldSkip = null)
     {
-        if (shouldSkip != null)
-        {
-            _shouldSkip = shouldSkip;
-        }
-
+        _shouldSkip = shouldSkip ?? new Func<bool>(() => true);
         return this;
     }
 
