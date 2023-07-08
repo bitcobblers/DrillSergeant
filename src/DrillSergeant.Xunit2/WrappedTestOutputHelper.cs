@@ -25,6 +25,11 @@ namespace DrillSergeant.Xunit2
         /// <inheritdoc />
         public override Encoding Encoding => Encoding.UTF8;
 
+        /// <summary>
+        /// Gets the current output from the sink.
+        /// </summary>
+        public string Output => _outputHelper.Output;
+
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {

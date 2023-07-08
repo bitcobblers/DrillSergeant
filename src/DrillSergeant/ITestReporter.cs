@@ -2,13 +2,11 @@
 
 namespace DrillSergeant;
 
+/// <summary>
+/// Defines a reporter used to output behavior results to the test runner.
+/// </summary>
 public interface ITestReporter : IDisposable
 {
-    /// <summary>
-    /// Gets the output of the test.
-    /// </summary>
-    string Output { get; }
-
     /// <summary>
     /// Writes a block of content to the report.
     /// </summary>
@@ -19,11 +17,6 @@ public interface ITestReporter : IDisposable
     /// <summary>
     /// Writes the result for a single step to the report.
     /// </summary>
-    /// <param name="verb">The verb of the step.</param>
-    /// <param name="name">The name of the step.</param>
-    /// <param name="skipped">True if the step was skipped.</param>
-    /// <param name="elapsed">The duration of the step (in ms).</param>
-    /// <param name="success">True if the step executed successfully.</param>
-    /// <param name="context">The current context of the behavior.</param>
-    void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context);
+    /// <param name="result">The step result to write.</param>
+    void WriteStepResult(StepResult result);
 }

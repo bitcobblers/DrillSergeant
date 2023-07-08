@@ -46,13 +46,28 @@ namespace DrillSergeant
             {
                 if (previousStepFailed)
                 {
-                    _reporter.WriteStepResult(step.Verb, step.Name, previousStepFailed, elapsed: 0, success: false, context: null);
+                    _reporter.WriteStepResult(new StepResult
+                    {
+                        Verb = step.Verb,
+                        Name = step.Name,
+                        PreviousStepsFailed = true,
+                        Skipped = true,
+                        Success = false
+                    });
+
                     continue;
                 }
 
                 if (step.ShouldSkip)
                 {
-                    _reporter.WriteStepResult(step.Verb, step.Name, skipped: true, elapsed: 0, success: true, context: null);
+                    _reporter.WriteStepResult(new StepResult
+                    {
+                        Verb = step.Verb,
+                        Name = step.Name,
+                        Skipped = true,
+                        Success = true,
+                        PreviousStepsFailed = false
+                    });
                     continue;
                 }
 
@@ -69,7 +84,16 @@ namespace DrillSergeant
                     }
                 });
 
-                _reporter.WriteStepResult(step.Verb, step.Name, false, elapsed, !previousStepFailed, behavior.LogContext ? behavior.Context : null);
+                _reporter.WriteStepResult(new StepResult
+                {
+                    Verb = step.Verb,
+                    Name = step.Name,
+                    Skipped = false,
+                    Context = behavior.LogContext ? behavior.Context : null,
+                    Elapsed = elapsed,
+                    PreviousStepsFailed = previousStepFailed,
+                    Success = !previousStepFailed,
+                });
             }
         }
 

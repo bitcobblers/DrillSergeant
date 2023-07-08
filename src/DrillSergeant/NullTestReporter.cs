@@ -22,26 +22,7 @@ public class NullTestReporter : ITestReporter
     }
 
     /// <inheritdoc />
-    public void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context)
+    public void WriteStepResult(StepResult result)
     {
-    }
-}
-
-public class BaseTestReporter : ITestReporter
-{
-    public void Dispose()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public string Output { get; }
-    public void WriteBlock(string label, object content)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context)
-    {
-        throw new System.NotImplementedException();
     }
 }

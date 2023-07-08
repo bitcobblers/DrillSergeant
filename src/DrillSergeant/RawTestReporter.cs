@@ -4,10 +4,17 @@ using Newtonsoft.Json;
 
 namespace DrillSergeant;
 
+/// <summary>
+/// Defines a test reporter that writes unstructured text to the writer provided.
+/// </summary>
 public class RawTestReporter : ITestReporter
 {
     private readonly TextWriter _writer;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RawTestReporter"/> class.
+    /// </summary>
+    /// <param name="writer">The writer to write test output to.</param>
     public RawTestReporter(TextWriter writer) => _writer = writer;
 
     ~RawTestReporter() => Dispose(disposing: false);
@@ -17,9 +24,6 @@ public class RawTestReporter : ITestReporter
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
-
-    /// <inheritdoc />
-    public virtual string Output => string.Empty;
 
     /// <inheritdoc />
     public virtual void WriteBlock(string label, object content)
@@ -35,22 +39,23 @@ public class RawTestReporter : ITestReporter
         _writer.WriteLine(string.Empty);
     }
 
-    /// <inheritdoc />
-    public virtual void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context)
-    {
-        WriteStepResult(new StepResult
-        {
-            Verb = verb,
-            Name = name,
-            Skipped = skipped,
-            Success = success,
-            PreviousStepsFailed = false,
-            Elapsed = elapsed,
-            Context = context
-        });
-    }
+    ///// <inheritdoc />
+    //public virtual void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context)
+    //{
+    //    WriteStepResult(new StepResult
+    //    {
+    //        Verb = verb,
+    //        Name = name,
+    //        Skipped = skipped,
+    //        Success = success,
+    //        PreviousStepsFailed = false,
+    //        Elapsed = elapsed,
+    //        Context = context
+    //    });
+    //}
 
-    protected virtual void WriteStepResult(StepResult result)
+    /// <inheritdoc />
+    public virtual void WriteStepResult(StepResult result)
     {
         var icon = result.Success ? "✅" : "❎";
 

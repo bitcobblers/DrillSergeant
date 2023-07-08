@@ -4,7 +4,7 @@ namespace DrillSergeant.Xunit2;
 
 public class XunitRawTestReporter : RawTestReporter
 {
-    private readonly TextWriter _sink;
+    private readonly WrappedTestOutputHelper _sink;
     private readonly DecoyTestOutputHelper _decoy;
 
     /// <summary>
@@ -17,14 +17,20 @@ public class XunitRawTestReporter : RawTestReporter
     {
     }
 
-    private XunitRawTestReporter(TextWriter sink, DecoyTestOutputHelper decoy)
+    private XunitRawTestReporter(WrappedTestOutputHelper sink, DecoyTestOutputHelper decoy)
         : base(sink)
     {
         _sink = sink;
         _decoy = decoy;
     }
 
-    protected override void WriteStepResult(StepResult result)
+    /// <summary>
+    /// Gets the current output from the sink.
+    /// </summary>
+    public string Output => _sink.Output;
+
+    /// <inheritdoc />
+    public override void WriteStepResult(StepResult result)
     {
         base.WriteStepResult(result with
         {
@@ -32,6 +38,7 @@ public class XunitRawTestReporter : RawTestReporter
         });
     }
 
+    /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
