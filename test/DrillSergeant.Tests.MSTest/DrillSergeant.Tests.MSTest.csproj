@@ -29,4 +29,6 @@
 	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
 	</ItemGroup>
 
+	<Import Project="..\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems" Label="Shared" />
+
 </Project>

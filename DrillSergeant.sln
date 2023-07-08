@@ -28,9 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests.NUnit3"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests.Xunit2", "test\DrillSergeant.Tests.Xunit2\DrillSergeant.Tests.Xunit2.csproj", "{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.Tests.MSTest", "test\DrillSergeant.Tests.MSTest\DrillSergeant.Tests.MSTest.csproj", "{F6874C05-BBF0-4327-9AAE-A3637887F0C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests.MSTest", "test\DrillSergeant.Tests.MSTest\DrillSergeant.Tests.MSTest.csproj", "{F6874C05-BBF0-4327-9AAE-A3637887F0C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.MSTest", "src\DrillSergeant.MSTest\DrillSergeant.MSTest.csproj", "{4E047335-5497-4401-8C6D-DAC3F63AE668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.MSTest", "src\DrillSergeant.MSTest\DrillSergeant.MSTest.csproj", "{4E047335-5497-4401-8C6D-DAC3F63AE668}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

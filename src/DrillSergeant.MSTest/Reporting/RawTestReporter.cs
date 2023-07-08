@@ -1,15 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DrillSergeant.MSTest.Reporting;
 
 public class RawTestReporter : ITestReporter
 {
-    private readonly TestContext _context;
-
-    public RawTestReporter(TestContext context) => _context = context;
-
     [ExcludeFromCodeCoverage]
     public void Dispose()
     {
@@ -27,8 +22,8 @@ public class RawTestReporter : ITestReporter
         };
 
         var serializedContent = JsonConvert.SerializeObject(content, serializationSettings);
-        _context.WriteLine($"{label}: {serializedContent}");
-        _context.WriteLine(string.Empty);
+        Console.WriteLine($"{label}: {serializedContent}");
+        Console.WriteLine(string.Empty);
     }
 
     public void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context)
@@ -37,11 +32,11 @@ public class RawTestReporter : ITestReporter
 
         if (skipped)
         {
-            _context.WriteLine($"⏩ {verb} (skipped due to previous failure): {name}");
+            Console.WriteLine($"⏩ {verb} (skipped due to previous failure): {name}");
         }
         else
         {
-            _context.WriteLine($"{icon} {verb}: {name} took {elapsed:N2}s");
+            Console.WriteLine($"{icon} {verb}: {name} took {elapsed:N2}s");
 
             if (context != null)
             {

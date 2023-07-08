@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using DrillSergeant.MSTest;
+﻿using DrillSergeant.MSTest;
 using DrillSergeant.MSTest.Reporting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 // ReSharper disable once CheckNamespace
 namespace DrillSergeant;
@@ -23,34 +23,38 @@ public sealed class BehaviorAttribute : TestMethodAttribute
     {
         var options = testMethod
             .GetPrivateProperty("TestMethodOptions")
-            ?.CoerceCast<TestMethodOptions>();
+            ?.CoerceCast<TestMethodOptions>()!;
 
+        var reporter = new RawTestReporter();
+        var classType = testMethod.MethodInfo.DeclaringType;
+        var method = testMethod.MethodInfo;
+        var arguments = testMethod.Arguments;
+        var timeout = options?.Timeout ?? 0;
+        var cancelToken = options?.TestContext.CancellationTokenSource.Token ?? CancellationToken.None;
         dynamic context = options?.TestContext!;
-        var reporter = GetReporter(options?.TestContext);
+
         using var listener = new LogListener();
 
         var (elapsed, result) = TimedCall(() =>
         {
             object? classInstance;
-            var method = testMethod.MethodInfo;
-            var arguments = testMethod.Arguments;
-            var timeout = options?.Timeout ?? 0;
-            var cancelToken = options?.TestContext.CancellationTokenSource.Token ?? CancellationToken.None;
 
             try
             {
-                classInstance = CreateTestClassInstance(testMethod.MethodInfo.DeclaringType);
+                classInstance = CreateTestClassInstance(classType);
             }
             catch (TestFailedException ex)
             {
-                return new TestResult
-                {
-                    Outcome = UnitTestOutcome.Failed,
-                    TestFailureException = ex
-                };
+                return TestResultFailed(ex);
             }
 
-            return ExecuteInternal(classInstance, method, arguments, timeout, cancelToken);
+            return ExecuteInternal(
+                reporter, 
+                classInstance, 
+                method, 
+                arguments ?? Array.Empty<object?>(), 
+                timeout, 
+                cancelToken);
         });
 
         result.Duration = elapsed;
@@ -62,69 +66,52 @@ public sealed class BehaviorAttribute : TestMethodAttribute
 
         context.ClearDiagnosticMessages();
 
-        return new []
+        return new[]
         {
             result
         };
     }
 
-    private TestResult ExecuteInternal(object classInstance, MethodInfo method, object?[]? arguments, int timeout, CancellationToken cancelToken)
+    internal static TestResult ExecuteInternal(ITestReporter reporter, object classInstance, MethodInfo method, object?[] arguments, int timeout,
+        CancellationToken cancelToken)
     {
-        var waitTimeout = timeout == 0 ? Int32.MaxValue : timeout;
-        var cancellationTokenSource = new CancellationTokenSource();
-
-        var task = Task.Run(() =>
-        {
-            method.Invoke(classInstance, arguments);
-        }, cancelToken);
+        var waitTimeout = timeout == 0 ? int.MaxValue : timeout;
+        using var cancellationTokenSource = new CancellationTokenSource();
 
         try
         {
             cancellationTokenSource.CancelAfter(waitTimeout);
+            
+            var task = Task.Run(async () =>
+            {
+                Exception? failureException = null;
+
+                var executor = new BehaviorExecutor(reporter);
+                var behavior = await executor.LoadBehavior(classInstance, method, arguments);
+
+                executor.StepFailed += (_, e) => failureException = e.Exception;
+
+                await executor.Execute(behavior);
+
+                return failureException == null ? 
+                    TestResultPassed() : 
+                    TestResultFailed(failureException);
+
+            }, cancelToken);
+
             task.Wait(cancellationTokenSource.Token);
+
+            return task.Result;
         }
         catch (OperationCanceledException ex)
         {
-            if (cancelToken.IsCancellationRequested)
-            {
-                return new TestResult
-                {
-                    Outcome = UnitTestOutcome.Aborted,
-                    TestFailureException = ex,
-                };
-            }
-
-            return new TestResult
-            {
-                Outcome = UnitTestOutcome.Timeout,
-                TestFailureException = ex,
-            };
+            return cancelToken.IsCancellationRequested ? TestResultAborted(ex) : TestResultTimeout(ex);
         }
         catch (Exception ex)
         {
-            return new TestResult
-            {
-                Outcome = UnitTestOutcome.Failed,
-                TestFailureException = ex,
-            };
+            return TestResultFailed(ex);
         }
-
-        return new TestResult
-        {
-            Outcome = UnitTestOutcome.Passed
-        };
     }
-
-    private static (TimeSpan, TestResult) TimedCall(Func<TestResult> action)
-    {
-        var stopwatch = Stopwatch.StartNew();
-        var result = action();
-        
-        return (stopwatch.Elapsed, result);
-    }
-
-    private static ITestReporter GetReporter(TestContext? context) =>
-        context != null ? new RawTestReporter(context) : new NullTestReporter();
 
     internal static object CreateTestClassInstance(Type? type)
     {
@@ -133,29 +120,39 @@ public sealed class BehaviorAttribute : TestMethodAttribute
             throw new TestFailedException("The declaring type for the test method could not be determined.");
         }
 
-        var ctor = type.GetConstructor(Array.Empty<Type>());
-
-        if (ctor == null)
-        {
-            throw new TestFailedException("Unable to find a constructor with zero parameters for the test class.");
-        }
-
         try
         {
-            return ctor.Invoke(null);
+            return Activator.CreateInstance(type)!;
         }
         catch (Exception ex)
         {
             throw new TestFailedException("Unable to instantiate new test class instance.", ex);
         }
     }
-}
 
-[Serializable]
-public class TestFailedException : Exception
-{
-    public TestFailedException(string message, Exception? innerException = null)
-        : base(message, innerException)
+    private static (TimeSpan, TestResult) TimedCall(Func<TestResult> action)
     {
+        var stopwatch = Stopwatch.StartNew();
+        var result = action();
+
+        return (stopwatch.Elapsed, result);
     }
+
+    private static TestResult TestResultPassed() =>
+        NewResult(UnitTestOutcome.Passed);
+
+    private static TestResult TestResultFailed(Exception? exception = null) =>
+        NewResult(UnitTestOutcome.Failed, exception);
+
+    private static TestResult TestResultTimeout(Exception? exception = null) =>
+        NewResult(UnitTestOutcome.Timeout, exception);
+
+    private static TestResult TestResultAborted(Exception? exception = null) =>
+        NewResult(UnitTestOutcome.Aborted, exception);
+
+    private static TestResult NewResult(UnitTestOutcome outcome, Exception? exception = null) => new()
+    {
+        Outcome = outcome,
+        TestFailureException = exception
+    };
 }
