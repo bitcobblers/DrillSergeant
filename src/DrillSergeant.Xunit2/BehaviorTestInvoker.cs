@@ -70,7 +70,7 @@ internal class BehaviorTestInvoker : XunitTestInvoker
         using var behavior = await executor.LoadBehavior(testClassInstance, TestMethod, TestMethodArguments);
         executor.StepFailed += (_, e) => Aggregator.Add(e.Exception);
 
-        await executor.Execute(behavior);
+        await executor.Execute(behavior, CancellationTokenSource.Token);
     }
 
     [SecuritySafeCritical]

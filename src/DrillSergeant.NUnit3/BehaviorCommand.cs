@@ -26,7 +26,7 @@ public class BehaviorCommand : TestCommand
         context.CurrentResult.SetResult(ResultState.Success);
 
         using var behavior = executor.LoadBehavior(obj, method, args).GetAwaiter().GetResult();
-        executor.Execute(behavior).Wait();
+        executor.Execute(behavior, CancellationToken.None).Wait();
 
         if (context.CurrentResult.AssertionResults.Count > 0)
         {

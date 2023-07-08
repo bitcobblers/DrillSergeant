@@ -10,6 +10,7 @@ namespace DrillSergeant
         public bool Skipped { get; init; }
         public bool Success { get; init; }
         public bool PreviousStepsFailed { get; init; }
+        public bool CancelPending { get; init; }
         public decimal Elapsed { get; init; }
         public string AdditionalOutput { get; init; } = string.Empty;
         public object? Context { get; init; }

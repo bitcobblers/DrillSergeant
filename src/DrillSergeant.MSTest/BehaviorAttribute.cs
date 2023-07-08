@@ -94,7 +94,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
 
                 executor.StepFailed += (_, e) => exceptions.Add(e.Exception);
 
-                await executor.Execute(behavior);
+                await executor.Execute(behavior, cancelToken);
 
                 return exceptions.Any()
                     ? TestResultFailed(new AggregateException(exceptions))
