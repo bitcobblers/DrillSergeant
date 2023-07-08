@@ -34,8 +34,8 @@ namespace DrillSergeant
 
         public Task Execute(IBehavior? behavior, CancellationToken cancellationToken, int timeout = 0)
         {
-            return timeout == 0 ? 
-                ExecuteInternalNoTimeout(behavior, cancellationToken) : 
+            return timeout == 0 ?
+                ExecuteInternalNoTimeout(behavior, cancellationToken) :
                 ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
         }
 
