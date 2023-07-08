@@ -51,6 +51,9 @@ public class LogListener : IDisposable
     [ExcludeFromCodeCoverage]
     ~LogListener() => Dispose(disposing: false);
 
+    public ThreadSafeStringWriter StdOut => _redirectStdOut;
+    public ThreadSafeStringWriter StdErr => _redirectStdErr;
+
     public string GetAndClearStdOut() => _redirectStdOut.ToStringAndClear();
     public string GetAndClearStdErr() => _redirectStdErr.ToStringAndClear();
     public string GetAndClearTrace() => _redirectTraceDebug?.ToStringAndClear() ?? string.Empty;

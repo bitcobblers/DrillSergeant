@@ -63,7 +63,7 @@ public class LambdaStepTests
         }
 
         [Fact]
-        public void NullPredicateDisablesSkip()
+        public void NullPredicateEnablesSkip()
         {
             // Arrange.
             var step = new LambdaStep();
@@ -73,7 +73,7 @@ public class LambdaStepTests
             var result = step.ShouldSkip;
 
             // Assert.
-            result.ShouldBeFalse();
+            result.ShouldBeTrue();
         }
 
         [Fact]

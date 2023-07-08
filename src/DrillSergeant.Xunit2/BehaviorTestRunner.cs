@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
-using DrillSergeant.Xunit.Reporting;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Xunit;
+namespace DrillSergeant.Xunit2;
 
 internal class BehaviorTestRunner : XunitTestRunner
 {
@@ -15,7 +14,7 @@ internal class BehaviorTestRunner : XunitTestRunner
     protected override async Task<Tuple<decimal, string>> InvokeTestAsync(ExceptionAggregator aggregator)
     {
         var (sink, decoy) = GetOutputHelper();
-        using var reporter = new RawTestReporter(sink, decoy, Test);
+        using var reporter = new XunitRawTestReporter(sink, decoy);
         var executionTime = await InvokeTestMethodAsync(aggregator, reporter);
         var output = reporter.Output;
 

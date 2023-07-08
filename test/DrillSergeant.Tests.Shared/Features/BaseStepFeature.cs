@@ -99,8 +99,21 @@ public class BaseStepFeature
             .Then("Check context", c => ((bool)c.Success).ShouldBeTrue());
     }
 
+    [Behavior]
+    public void SkippingStepPreventsItFromExecuting()
+    {
+        BehaviorBuilder.New()
+            .Given(SkippedStep())
+            .Then("should execute", () => { });
+    }
+
     private LambdaStep NullLambdaStep() =>
         new("Null step");
+
+    private LambdaStep SkippedStep() =>
+        new LambdaStep("Skipped step")
+            .Handle(() => throw new Exception("I SHOULD NOT HAVE EXECUTED"))
+            .Skip();
 
     public Behavior SetupContext =>
         new Behavior()
