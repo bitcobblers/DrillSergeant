@@ -1,40 +1,39 @@
 ﻿using System.Text;
 using Xunit.Sdk;
 
-namespace DrillSergeant.Xunit2
+namespace DrillSergeant.Xunit2;
+
+/// <summary>
+/// Defines a wrapper for the xunit <see cref="TestOutputHelper" /> that implements <see cref="TextWriter"/>
+/// </summary>
+public class WrappedTestOutputHelper : TextWriter
 {
+    private readonly TestOutputHelper _outputHelper;
+
     /// <summary>
-    /// Defines a wrapper for the xunit <see cref="TestOutputHelper" /> that implements <see cref="TextWriter"/>
+    /// Initializes a new instance of the <see cref="WrappedTestOutputHelper"/> class.
     /// </summary>
-    public class WrappedTestOutputHelper : TextWriter
+    /// <param name="outputHelper">The xunit output sink to write to.</param>
+    public WrappedTestOutputHelper(TestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+    /// <inheritdoc />
+    public override void WriteLine(string? value)
     {
-        private readonly TestOutputHelper _outputHelper;
+        _outputHelper.WriteLine(value);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WrappedTestOutputHelper"/> class.
-        /// </summary>
-        /// <param name="outputHelper">The xunit output sink to write to.</param>
-        public WrappedTestOutputHelper(TestOutputHelper outputHelper) => _outputHelper = outputHelper;
+    /// <inheritdoc />
+    public override Encoding Encoding => Encoding.UTF8;
 
-        /// <inheritdoc />
-        public override void WriteLine(string? value)
-        {
-            _outputHelper.WriteLine(value);
-        }
+    /// <summary>
+    /// Gets the current output from the sink.
+    /// </summary>
+    public string Output => _outputHelper.Output;
 
-        /// <inheritdoc />
-        public override Encoding Encoding => Encoding.UTF8;
-
-        /// <summary>
-        /// Gets the current output from the sink.
-        /// </summary>
-        public string Output => _outputHelper.Output;
-
-        /// <inheritdoc />
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            _outputHelper.Uninitialize();
-        }
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        _outputHelper.Uninitialize();
     }
 }

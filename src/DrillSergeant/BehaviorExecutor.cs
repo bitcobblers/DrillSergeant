@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DrillSergeant
@@ -31,7 +32,25 @@ namespace DrillSergeant
                    throw new InvalidOperationException("Test method did not return a behavior.");
         }
 
-        public async Task Execute(IBehavior? behavior)
+        public Task Execute(IBehavior? behavior, CancellationToken cancellationToken, int timeout = 0)
+        {
+            return timeout == 0 ?
+                ExecuteInternalNoTimeout(behavior, cancellationToken) :
+                ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        }
+
+        private async Task ExecuteInternalWithTimeout(IBehavior? behavior, int timeout, CancellationToken cancellationToken)
+        {
+            var executeTask = ExecuteInternalNoTimeout(behavior, cancellationToken);
+            var resultTask = await Task.WhenAny(executeTask, Task.Delay(timeout, cancellationToken));
+
+            if (resultTask != executeTask)
+            {
+                throw new BehaviorTimeoutException(timeout);
+            }
+        }
+
+        private async Task ExecuteInternalNoTimeout(IBehavior? behavior, CancellationToken cancellationToken)
         {
             bool previousStepFailed = false;
 
@@ -44,15 +63,16 @@ namespace DrillSergeant
 
             foreach (var step in behavior)
             {
-                if (previousStepFailed)
+                if (cancellationToken.IsCancellationRequested)
                 {
                     _reporter.WriteStepResult(new StepResult
                     {
                         Verb = step.Verb,
                         Name = step.Name,
-                        PreviousStepsFailed = true,
+                        PreviousStepsFailed = previousStepFailed,
+                        CancelPending = true,
                         Skipped = true,
-                        Success = false
+                        Success = true
                     });
 
                     continue;
@@ -67,6 +87,20 @@ namespace DrillSergeant
                         Skipped = true,
                         Success = true,
                         PreviousStepsFailed = false
+                    });
+
+                    continue;
+                }
+
+                if (previousStepFailed)
+                {
+                    _reporter.WriteStepResult(new StepResult
+                    {
+                        Verb = step.Verb,
+                        Name = step.Name,
+                        PreviousStepsFailed = true,
+                        Skipped = true,
+                        Success = false
                     });
 
                     continue;

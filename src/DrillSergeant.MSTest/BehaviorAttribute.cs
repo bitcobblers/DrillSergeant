@@ -94,7 +94,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
 
                 executor.StepFailed += (_, e) => exceptions.Add(e.Exception);
 
-                await executor.Execute(behavior);
+                await executor.Execute(behavior, cancelToken, timeout);
 
                 return exceptions.Any()
                     ? TestResultFailed(new AggregateException(exceptions))
@@ -106,9 +106,16 @@ public sealed class BehaviorAttribute : TestMethodAttribute
 
             return task.Result;
         }
-        catch (OperationCanceledException ex)
+        catch (AggregateException aggregate)
         {
-            return cancelToken.IsCancellationRequested ? TestResultAborted(ex) : TestResultTimeout(ex);
+            var inner = aggregate.InnerExceptions.First();
+
+            return inner switch
+            {
+                BehaviorTimeoutException => TestResultTimeout(inner),
+                OperationCanceledException => TestResultAborted(inner),
+                _ => TestResultFailed(inner)
+            };
         }
         catch (Exception ex)
         {
