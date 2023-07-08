@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using Shouldly;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -107,7 +108,7 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);
@@ -130,7 +131,7 @@ public class BehaviorExecutorTests
             executor.StepFailed += (_, _) => errorCalled = true;
 
             // Act.
-            await executor.Execute(behavior);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
             errorCalled.ShouldBeTrue();
@@ -149,7 +150,7 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);
@@ -169,7 +170,7 @@ public class BehaviorExecutorTests
                         .Handle(c => c.Obj = obj.OwnedByBehavior()));
 
             // Act.
-            await executor.Execute(behavior);
+            await executor.Execute(behavior, CancellationToken.None);
             behavior.Dispose();
 
             // Assert.
@@ -189,7 +190,7 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);

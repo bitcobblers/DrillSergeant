@@ -55,6 +55,10 @@ public class RawTestReporter : ITestReporter
         {
             _writer.WriteLine($"⏩ {result.Verb} (skipped): {result.Name}");
         }
+        else if (result.CancelPending)
+        {
+            _writer.WriteLine($"⏩ {result.Verb} (skipped due to test abort): {result.Name}");
+        }
         else
         {
             _writer.WriteLine($"{icon} {result.Verb}: {result.Name} took {result.Elapsed:N2}s");

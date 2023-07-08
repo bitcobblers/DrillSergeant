@@ -11,7 +11,10 @@ public class BehaviorCommand : TestCommand
     {
     }
 
-    public override TestResult Execute(TestExecutionContext context)
+    public override TestResult Execute(TestExecutionContext context) =>
+        ExecuteAsync(context).GetAwaiter().GetResult();
+
+    private async Task<TestResult> ExecuteAsync(TestExecutionContext context)
     {
         var reporter = new RawTestReporter(context.OutWriter);
         var executor = new BehaviorExecutor(reporter);
@@ -25,8 +28,17 @@ public class BehaviorCommand : TestCommand
 
         context.CurrentResult.SetResult(ResultState.Success);
 
-        using var behavior = executor.LoadBehavior(obj, method, args).GetAwaiter().GetResult();
-        executor.Execute(behavior, CancellationToken.None).Wait();
+        using var behavior = await executor.LoadBehavior(obj, method, args);
+
+        try
+        {
+            await executor.Execute(behavior, CancellationToken.None, context.TestCaseTimeout);
+        }
+        catch (BehaviorTimeoutException ex)
+        {
+            context.CurrentResult.SetResult(ResultState.Error, ex.Message);
+            context.CurrentResult.RecordException(ex);
+        }
 
         if (context.CurrentResult.AssertionResults.Count > 0)
         {

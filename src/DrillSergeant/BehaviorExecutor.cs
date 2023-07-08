@@ -32,9 +32,25 @@ namespace DrillSergeant
                    throw new InvalidOperationException("Test method did not return a behavior.");
         }
 
-        public Task Execute(IBehavior? behavior) => Execute(behavior, CancellationToken.None);
+        public Task Execute(IBehavior? behavior, CancellationToken cancellationToken, int timeout = 0)
+        {
+            return timeout == 0 ? 
+                ExecuteInternalNoTimeout(behavior, cancellationToken) : 
+                ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        }
 
-        public async Task Execute(IBehavior? behavior, CancellationToken cancellationToken)
+        private async Task ExecuteInternalWithTimeout(IBehavior? behavior, int timeout, CancellationToken cancellationToken)
+        {
+            var executeTask = ExecuteInternalNoTimeout(behavior, cancellationToken);
+            var resultTask = await Task.WhenAny(executeTask, Task.Delay(timeout, cancellationToken));
+
+            if (resultTask != executeTask)
+            {
+                throw new BehaviorTimeoutException(timeout);
+            }
+        }
+
+        private async Task ExecuteInternalNoTimeout(IBehavior? behavior, CancellationToken cancellationToken)
         {
             bool previousStepFailed = false;
 
