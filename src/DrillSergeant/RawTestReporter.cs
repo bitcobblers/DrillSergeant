@@ -47,17 +47,17 @@ public class RawTestReporter : ITestReporter
     {
         var icon = result.Success ? "✅" : "❎";
 
-        if (result is { Skipped: true, PreviousStepsFailed: true })
+        if (result.CancelPending)
+        {
+            _writer.WriteLine($"⏩ {result.Verb} (skipped due to test abort): {result.Name}");
+        }
+        else if (result is { Skipped: true, PreviousStepsFailed: true })
         {
             _writer.WriteLine($"⏩ {result.Verb} (skipped due to previous failure): {result.Name}");
         }
         else if (result is { Skipped: true, PreviousStepsFailed: false })
         {
             _writer.WriteLine($"⏩ {result.Verb} (skipped): {result.Name}");
-        }
-        else if (result.CancelPending)
-        {
-            _writer.WriteLine($"⏩ {result.Verb} (skipped due to test abort): {result.Name}");
         }
         else
         {
