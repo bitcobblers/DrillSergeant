@@ -23,7 +23,7 @@ public class BehaviorAttributeTests
         public void NullTypeThrowsTestFailedException()
         {
             // Assert.
-            Assert.ThrowsException<TestFailedException>(() => 
+            Assert.ThrowsException<TestFailedException>(() =>
                 BehaviorAttribute.CreateTestClassInstance(null));
         }
 

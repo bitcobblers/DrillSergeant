@@ -27,7 +27,7 @@ public class BehaviorTests
         {
             // Arrange.
             var obj = new StepWithDispose();
-            var behavior = 
+            var behavior =
                 new Behavior()
                     .Owns(obj);
 
@@ -43,7 +43,7 @@ public class BehaviorTests
         {
             // Arrange.
             var obj = new StepWithDispose();
-            var background = 
+            var background =
                 new Behavior()
                     .Owns(obj);
 

@@ -10,11 +10,11 @@ public class LogListener : IDisposable
     private static ThreadSafeStringWriter? _redirectTraceDebug;
     private static BehaviorTraceListener? _traceListener;
     private static int _traceCount = 0;
-    private static readonly object TraceLock = new ();
+    private static readonly object TraceLock = new();
 
     private readonly TextWriter _originalStdOut;
     private readonly TextWriter _originalStdErr;
-    
+
     private readonly ThreadSafeStringWriter _redirectStdOut = new(CultureInfo.InvariantCulture, "stdout");
     private readonly ThreadSafeStringWriter _redirectStdErr = new(CultureInfo.InvariantCulture, "stderr");
 
@@ -79,7 +79,7 @@ public class LogListener : IDisposable
                     _traceListener?.Dispose();
                     _redirectTraceDebug?.Dispose();
                 }
-                
+
                 _traceCount--;
             }
         }

@@ -51,10 +51,10 @@ public sealed class BehaviorAttribute : TestMethodAttribute
 
             return ExecuteInternal(
                 new BehaviorExecutor(reporter),
-                classInstance, 
-                method, 
-                arguments ?? Array.Empty<object?>(), 
-                timeout, 
+                classInstance,
+                method,
+                arguments ?? Array.Empty<object?>(),
+                timeout,
                 cancelToken);
         });
 
@@ -74,11 +74,11 @@ public sealed class BehaviorAttribute : TestMethodAttribute
     }
 
     internal static TestResult ExecuteInternal(
-        BehaviorExecutor executor, 
-        object classInstance, 
-        MethodInfo method, 
-        object?[] arguments, 
-        int timeout, 
+        BehaviorExecutor executor,
+        object classInstance,
+        MethodInfo method,
+        object?[] arguments,
+        int timeout,
         CancellationToken cancelToken)
     {
         var waitTimeout = timeout == 0 ? int.MaxValue : timeout * 1000;
