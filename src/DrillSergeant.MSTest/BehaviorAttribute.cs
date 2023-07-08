@@ -142,15 +142,19 @@ public sealed class BehaviorAttribute : TestMethodAttribute
         return (stopwatch.Elapsed, result);
     }
 
+    [ExcludeFromCodeCoverage]
     private static TestResult TestResultPassed() =>
         NewResult(UnitTestOutcome.Passed);
 
+    [ExcludeFromCodeCoverage]
     private static TestResult TestResultFailed(Exception? exception = null) =>
         NewResult(UnitTestOutcome.Failed, exception);
 
+    [ExcludeFromCodeCoverage]
     private static TestResult TestResultTimeout(Exception? exception = null) =>
         NewResult(UnitTestOutcome.Timeout, exception);
 
+    [ExcludeFromCodeCoverage]
     private static TestResult TestResultAborted(Exception? exception = null) =>
         NewResult(UnitTestOutcome.Aborted, exception);
 
