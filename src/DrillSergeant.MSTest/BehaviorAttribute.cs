@@ -1,5 +1,4 @@
 ﻿using DrillSergeant.MSTest;
-using DrillSergeant.MSTest.Reporting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -25,7 +24,6 @@ public sealed class BehaviorAttribute : TestMethodAttribute
             .GetPrivateProperty("TestMethodOptions")
             ?.CoerceCast<TestMethodOptions>()!;
 
-        var reporter = new RawTestReporter();
         var classType = testMethod.MethodInfo.DeclaringType;
         var method = testMethod.MethodInfo;
         var arguments = testMethod.Arguments;
@@ -35,6 +33,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
         dynamic context = options?.TestContext!;
 
         using var listener = new LogListener(captureTrace);
+        var reporter = new RawTestReporter(listener.StdOut);
 
         var (elapsed, result) = TimedCall(() =>
         {
