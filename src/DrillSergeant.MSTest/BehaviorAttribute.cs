@@ -30,10 +30,11 @@ public sealed class BehaviorAttribute : TestMethodAttribute
         var method = testMethod.MethodInfo;
         var arguments = testMethod.Arguments;
         var timeout = options?.Timeout ?? 0;
+        var captureTrace = options?.CaptureDebugTraces ?? false;
         var cancelToken = options?.TestContext.CancellationTokenSource.Token ?? CancellationToken.None;
         dynamic context = options?.TestContext!;
 
-        using var listener = new LogListener();
+        using var listener = new LogListener(captureTrace);
 
         var (elapsed, result) = TimedCall(() =>
         {
@@ -49,7 +50,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
             }
 
             return ExecuteInternal(
-                reporter, 
+                new BehaviorExecutor(reporter),
                 classInstance, 
                 method, 
                 arguments ?? Array.Empty<object?>(), 
@@ -72,30 +73,33 @@ public sealed class BehaviorAttribute : TestMethodAttribute
         };
     }
 
-    internal static TestResult ExecuteInternal(ITestReporter reporter, object classInstance, MethodInfo method, object?[] arguments, int timeout,
+    internal static TestResult ExecuteInternal(
+        BehaviorExecutor executor, 
+        object classInstance, 
+        MethodInfo method, 
+        object?[] arguments, 
+        int timeout, 
         CancellationToken cancelToken)
     {
-        var waitTimeout = timeout == 0 ? int.MaxValue : timeout;
+        var waitTimeout = timeout == 0 ? int.MaxValue : timeout * 1000;
         using var cancellationTokenSource = new CancellationTokenSource();
 
         try
         {
             cancellationTokenSource.CancelAfter(waitTimeout);
-            
+
             var task = Task.Run(async () =>
             {
-                Exception? failureException = null;
-
-                var executor = new BehaviorExecutor(reporter);
+                var exceptions = new List<Exception>();
                 var behavior = await executor.LoadBehavior(classInstance, method, arguments);
 
-                executor.StepFailed += (_, e) => failureException = e.Exception;
+                executor.StepFailed += (_, e) => exceptions.Add(e.Exception);
 
                 await executor.Execute(behavior);
 
-                return failureException == null ? 
-                    TestResultPassed() : 
-                    TestResultFailed(failureException);
+                return exceptions.Any()
+                    ? TestResultFailed(new AggregateException(exceptions))
+                    : TestResultPassed();
 
             }, cancelToken);
 

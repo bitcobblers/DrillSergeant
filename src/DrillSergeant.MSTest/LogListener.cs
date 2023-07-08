@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
@@ -19,7 +20,7 @@ public class LogListener : IDisposable
 
     private bool _disposed;
 
-    public LogListener()
+    public LogListener(bool captureTraceLogs)
     {
         Logger.OnLogMessage += _redirectStdOut.WriteLine;
 
@@ -28,6 +29,11 @@ public class LogListener : IDisposable
 
         Console.SetOut(_redirectStdOut);
         Console.SetError(_redirectStdErr);
+
+        if (captureTraceLogs == false)
+        {
+            return;
+        }
 
         lock (TraceLock)
         {
@@ -42,6 +48,7 @@ public class LogListener : IDisposable
         }
     }
 
+    [ExcludeFromCodeCoverage]
     ~LogListener() => Dispose(disposing: false);
 
     public string GetAndClearStdOut() => _redirectStdOut.ToStringAndClear();

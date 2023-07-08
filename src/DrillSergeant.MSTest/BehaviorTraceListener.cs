@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DrillSergeant.MSTest;
 
+[ExcludeFromCodeCoverage]
 public class BehaviorTraceListener : TraceListener
 {
     private readonly TextWriter _target;

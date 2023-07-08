@@ -1,5 +1,5 @@
-﻿using System.Xml;
-using DrillSergeant.MSTest;
+﻿using DrillSergeant.MSTest;
+using FakeItEasy;
 using Shouldly;
 
 namespace DrillSergeant.Tests.MSTest;
@@ -43,6 +43,61 @@ public class BehaviorAttributeTests
         {
             public StubWithNonEmptyCtor(int ignored)
             {
+            }
+        }
+    }
+
+    [TestClass]
+    public class ExecuteInternalMethod : BehaviorAttributeTests
+    {
+        [TestMethod]
+        public void BehaviorWithNoErrorsPasses()
+        {
+            // Arrange.
+            var instance = new StubWithBehaviors();
+            var method = typeof(StubWithBehaviors).GetMethod("EmptyBehavior");
+            var arguments = Array.Empty<object?>();
+            var token = CancellationToken.None;
+            var executor = new BehaviorExecutor(A.Fake<ITestReporter>());
+
+            // Act.
+            var result = BehaviorAttribute.ExecuteInternal(executor, instance, method!, arguments, 0, token);
+
+            // Assert.
+            result.Outcome.ShouldBe(UnitTestOutcome.Passed);
+        }
+
+        [TestMethod]
+        public void BehaviorThatThrowsExceptionFails()
+        {
+            // Arrange.
+            var instance = new StubWithBehaviors();
+            var method = typeof(StubWithBehaviors).GetMethod("BehaviorThatThrowsException");
+            var arguments = Array.Empty<object?>();
+            var token = CancellationToken.None;
+            var executor = new BehaviorExecutor(A.Fake<ITestReporter>());
+
+            // Act.
+            var result = BehaviorAttribute.ExecuteInternal(executor, instance, method!, arguments, 0, token);
+
+            // Assert.
+            result.Outcome.ShouldBe(UnitTestOutcome.Failed);
+        }
+
+        private class StubWithBehaviors
+        {
+            [Behavior]
+            public void EmptyBehavior()
+            {
+                BehaviorBuilder.New();
+            }
+
+            [Behavior]
+            public void BehaviorThatThrowsException()
+            {
+                BehaviorBuilder
+                    .New()
+                    .AddStep(new LambdaStep().Handle(() => throw new Exception("ERROR")));
             }
         }
     }
