@@ -14,7 +14,7 @@ namespace DrillSergeant;
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class BehaviorAttribute : NUnitAttribute, IWrapTestMethod, ISimpleTestBuilder, IApplyToTest, IImplyFixture
 {
-    private readonly NUnitTestCaseBuilder _builder = new ();
+    private readonly NUnitTestCaseBuilder _builder = new();
 
     public string? Feature { get; set; }
 

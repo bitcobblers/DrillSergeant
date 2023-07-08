@@ -3,6 +3,9 @@ using Shouldly;
 
 namespace DrillSergeant.Tests.Features;
 
+#if MSTEST
+[TestClass]
+#endif
 public class BaseStepFeature
 {
     [Behavior]

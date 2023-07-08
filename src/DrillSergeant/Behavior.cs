@@ -47,7 +47,7 @@ public class Behavior : IBehavior
     /// Finalizes an instance of the <see cref="Behavior"/> class.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    ~Behavior() => Dispose(disposing:false);
+    ~Behavior() => Dispose(disposing: false);
 
     /// <inheritdoc cref="IBehavior.Context" />
     public IDictionary<string, object?> Context { get; } = new ExpandoObject();

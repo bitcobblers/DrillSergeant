@@ -7,7 +7,7 @@ namespace DrillSergeant
 {
     public class BehaviorExecutor
     {
-        public event EventHandler<StepFailedEventArgs> StepFailed = delegate {};
+        public event EventHandler<StepFailedEventArgs> StepFailed = delegate { };
 
         private readonly ITestReporter _reporter;
 
@@ -73,7 +73,7 @@ namespace DrillSergeant
             }
         }
 
-        private static bool IsAsync(MethodInfo method) => 
+        private static bool IsAsync(MethodInfo method) =>
             method.ReturnType.IsAssignableTo(typeof(Task));
 
         private static async Task<decimal> TimedCall(Func<Task> task)
