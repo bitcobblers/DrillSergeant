@@ -19,6 +19,9 @@ public class RawTestReporter : ITestReporter
 
     ~RawTestReporter() => Dispose(disposing: false);
 
+    /// <summary>
+    /// Disposes resources used by the instance.
+    /// </summary>
     public void Dispose()
     {
         Dispose(disposing: true);
@@ -39,29 +42,18 @@ public class RawTestReporter : ITestReporter
         _writer.WriteLine(string.Empty);
     }
 
-    ///// <inheritdoc />
-    //public virtual void WriteStepResult(string verb, string name, bool skipped, decimal elapsed, bool success, object? context)
-    //{
-    //    WriteStepResult(new StepResult
-    //    {
-    //        Verb = verb,
-    //        Name = name,
-    //        Skipped = skipped,
-    //        Success = success,
-    //        PreviousStepsFailed = false,
-    //        Elapsed = elapsed,
-    //        Context = context
-    //    });
-    //}
-
     /// <inheritdoc />
     public virtual void WriteStepResult(StepResult result)
     {
         var icon = result.Success ? "✅" : "❎";
 
-        if (result.Skipped)
+        if (result is { Skipped: true, PreviousStepsFailed: true })
         {
             _writer.WriteLine($"⏩ {result.Verb} (skipped due to previous failure): {result.Name}");
+        }
+        else if (result is { Skipped: true, PreviousStepsFailed: false })
+        {
+            _writer.WriteLine($"⏩ {result.Verb} (skipped): {result.Name}");
         }
         else
         {

@@ -68,6 +68,7 @@ namespace DrillSergeant
                         Success = true,
                         PreviousStepsFailed = false
                     });
+
                     continue;
                 }
 
