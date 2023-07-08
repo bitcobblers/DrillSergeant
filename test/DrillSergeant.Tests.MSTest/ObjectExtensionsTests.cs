@@ -16,7 +16,7 @@ public class ObjectExtensionsTests
     public void MyBehavior()
     {
         Console.Out.WriteLine("OUT LINE");
-        MyContext.WriteLine("FOO");
+        MyContext?.WriteLine("FOO");
         Console.Error.WriteLine("ERR LINE");
         Trace.WriteLine("TRACE LINE");
         Trace.WriteLine("TRACE LINE2");

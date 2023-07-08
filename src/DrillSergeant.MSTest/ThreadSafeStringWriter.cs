@@ -46,6 +46,15 @@ public class ThreadSafeStringWriter : StringWriter
         }
     }
 
+    protected override void Dispose(bool disposing)
+    {
+        lock (GlobalSync)
+        {
+            State.Value?.Remove(_kind);
+            base.Dispose(disposing);
+        }
+    }
+
     private ThreadSafeStringBuilder GetOrAdd()
     {
         lock (GlobalSync)

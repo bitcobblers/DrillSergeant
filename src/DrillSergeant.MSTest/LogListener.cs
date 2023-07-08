@@ -66,16 +66,14 @@ public class LogListener : IDisposable
 
             lock (TraceLock)
             {
-                if (_traceCount == 0)
+                if (_traceCount == 1)
                 {
                     Trace.Listeners.Remove(_traceListener);
                     _traceListener?.Dispose();
                     _redirectTraceDebug?.Dispose();
                 }
-                else
-                {
-                    _traceCount--;
-                }
+                
+                _traceCount--;
             }
         }
 
