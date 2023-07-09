@@ -25,27 +25,30 @@ public class ReflectionParameterCaster : IParameterCaster
             throw new InvalidOperationException("Cannot cast to a primitive type.");
         }
 
-        return IsRecord(type)
-            ? InstantiateRecord(source, type)
-            : InstantiateClass(source, type);
+        return InstantiateInstance(source, type);
     }
 
-    internal static object InstantiateClass(IDictionary<string, object?> source, Type type)
+    internal static object InstantiateInstance(IDictionary<string, object?> source, Type type)
     {
-        var ctor = type.GetConstructor(Array.Empty<Type>());
-        var target = ctor == null
-            ? throw new InvalidOperationException(
-                $"The target type {type.FullName} does not have an empty constructor and cannot be used for parameter resolution.")
-            : ctor.Invoke(Array.Empty<object?>());
+        var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
 
-        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
+        if (constructors.Length is 0 or > 1)
+        {
+            throw new InvalidOperationException($"The target type {type.FullName} must have exactly one constructor.");
+        }
 
-        foreach (var property in from p in type.GetProperties(flags)
+        var ctor = constructors[0];
+        var ctorArguments = GetConstructorParameters(source, ctor);
+        var properties = GetProperties(source, type, ctor);
+        var target = ctor.Invoke(ctorArguments)!;
+
+        foreach (var property in from p in properties
                  where source.ContainsKey(p.Name)
                  select p)
         {
             var value = source[property.Name]!;
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (value == null)
             {
                 continue;
@@ -60,9 +63,17 @@ public class ReflectionParameterCaster : IParameterCaster
         return target;
     }
 
-    internal static object InstantiateRecord(IDictionary<string, object?> source, Type type)
+    internal static PropertyInfo[] GetProperties(IDictionary<string, object?> source, Type type, ConstructorInfo ctor)
     {
-        var ctor = type.GetConstructors()[0];
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
+        var ctorParameters = ctor.GetParameters();
+        var properties = type.GetProperties(flags);
+
+        return properties.Where(p => ctorParameters.Any(x => x.Name == p.Name) == false).ToArray();
+    }
+
+    internal static object?[] GetConstructorParameters(IDictionary<string, object?> source, ConstructorInfo ctor)
+    {
         var ctorParameters = ctor.GetParameters();
         var arguments = new List<object?>();
 
@@ -82,36 +93,6 @@ public class ReflectionParameterCaster : IParameterCaster
             }
         }
 
-        return ctor.Invoke(arguments.ToArray());
-    }
-
-    internal static bool IsRecord(Type type)
-    {
-        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
-        var constructors = type.GetConstructors(flags);
-
-        if (type.IsValueType || constructors.Length != 1)
-        {
-            return false;
-        }
-
-        var ctor = constructors[0];
-        var ctorParameters = ctor.GetParameters().ToDictionary(k => k.Name!, v => v.ParameterType);
-        var properties = type.GetProperties(flags).ToDictionary(k => k.Name, v => v.PropertyType);
-
-        if (ctorParameters.Count == 0)
-        {
-            return false;
-        }
-
-        return ctorParameters.All(x =>
-        {
-            if (properties.TryGetValue(x.Key, out var propType))
-            {
-                return propType == x.Value;
-            }
-
-            return false;
-        });
+        return arguments.ToArray();
     }
 }

@@ -38,119 +38,7 @@ public class ReflectionParameterCasterTests
         }
     }
 
-    public class InstantiateClassMethod : ReflectionParameterCasterTests
-    {
-        [Fact]
-        public void ThrowsInvalidOperationExceptionIfTypeDoesNotContainAnEmptyConstructor()
-        {
-            // Arrange.
-            var source = new Dictionary<string, object?>();
-
-            // Assert.
-            Assert.Throws<InvalidOperationException>(
-                () => ReflectionParameterCaster.InstantiateClass(source, typeof(TargetWithoutEmptyConstructor)));
-        }
-
-        [Fact]
-        public void MatchingTypesAreMappedAutomatically()
-        {
-            // Arrange.
-            var caster = new ReflectionParameterCaster();
-            var source = new Dictionary<string, object?>
-            {
-                ["IntValue"] = 1
-            };
-
-            // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateClass(source, typeof(TargetWithParameters));
-
-            // Assert.
-            result.IntValue.ShouldBe(1);
-        }
-
-        [Fact]
-        public void MisMatchedTypesAreIgnoredWhenMapping()
-        {
-            // Arrange.
-            var caster = new ReflectionParameterCaster();
-            var source = new Dictionary<string, object?>
-            {
-                ["StringValue"] = 1
-            };
-
-            // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateClass(source, typeof(TargetWithParameters));
-
-            // Assert.
-            result.StringValue.ShouldBeNull();
-        }
-
-        [Fact]
-        public void MatchingSupportsCovariantTypes()
-        {
-            // Arrange.
-            var caster = new ReflectionParameterCaster();
-            var source = new Dictionary<string, object?>
-            {
-                ["CovariantTypeValue"] = new StubDerivedType()
-            };
-
-            // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateClass(source, typeof(TargetWithParameters));
-
-            // Assert.
-            result.CovariantTypeValue.ShouldNotBeNull();
-        }
-
-        [Fact]
-        public void MatchingDoesNotSupportContravariantTypes()
-        {
-            // Arrange.
-            var caster = new ReflectionParameterCaster();
-            var source = new Dictionary<string, object?>
-            {
-                ["ContravariantTypeValue"] = new StubBaseType()
-            };
-
-            // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateClass(source, typeof(TargetWithParameters));
-
-            // Assert.
-            result.CovariantTypeValue.ShouldBeNull();
-        }
-
-        [Fact]
-        public void NullPropertyIsUnset()
-        {
-            // Arrange.
-            var caster = new ReflectionParameterCaster();
-            var source = new Dictionary<string, object?>
-            {
-                ["StringValue"] = null
-            };
-
-            // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateClass(source, typeof(TargetWithParameters));
-
-            // Assert.
-            result.CovariantTypeValue.ShouldBeNull();
-        }
-
-        public record TargetWithoutEmptyConstructor(int Ignored);
-
-        public class TargetWithParameters
-        {
-            public int IntValue { get; init; }
-            public string? StringValue { get; init; }
-            public StubBaseType? CovariantTypeValue { get; init; }
-            public StubDerivedType? ContravariantTypeValue { get; init; }
-        }
-
-        public class StubBaseType { }
-        public class StubDerivedType : StubBaseType { }
-    }
-
-    public class InstantiateRecordMethod : ReflectionParameterCasterTests
+    public class InstantiateInstanceMethod : ReflectionParameterCasterTests
     {
         [Fact]
         public void InstantiatesRecordWithParameters()
@@ -163,7 +51,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (RecordWithParameters)ReflectionParameterCaster.InstantiateRecord(source, typeof(RecordWithParameters));
+            var result = (RecordWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(RecordWithParameters));
 
             // Assert.
             result.IntValue.ShouldBe(1);
@@ -180,10 +68,42 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (RecordWithOptionalParameters)ReflectionParameterCaster.InstantiateRecord(source, typeof(RecordWithOptionalParameters));
+            var result = (RecordWithOptionalParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(RecordWithOptionalParameters));
 
             // Assert.
             result.IntValue.ShouldBe(1);
+            result.StringValue.ShouldBeNull();
+        }
+
+        [Fact]
+        public void MatchingTypesAreMappedAutomatically()
+        {
+            // Arrange.
+            var source = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1
+            };
+
+            // Act.
+            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+
+            // Assert.
+            result.IntValue.ShouldBe(1);
+        }
+
+        [Fact]
+        public void MisMatchedTypesAreIgnoredWhenMapping()
+        {
+            // Arrange.
+            var source = new Dictionary<string, object?>
+            {
+                ["StringValue"] = 1
+            };
+
+            // Act.
+            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+
+            // Assert.
             result.StringValue.ShouldBeNull();
         }
 
@@ -197,7 +117,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateRecord(source, typeof(TargetWithParameters));
+            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
 
             // Assert.
             result.CovariantTypeValue.ShouldNotBeNull();
@@ -213,69 +133,41 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateRecord(source, typeof(TargetWithParameters));
+            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
 
             // Assert.
             result.CovariantTypeValue.ShouldBeNull();
         }
 
+        [Fact]
+        public void NullPropertyIsUnset()
+        {
+            // Arrange.
+            var source = new Dictionary<string, object?>
+            {
+                ["StringValue"] = null
+            };
+
+            // Act.
+            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+
+            // Assert.
+            result.CovariantTypeValue.ShouldBeNull();
+        }
 
         public record RecordWithParameters(int IntValue, string StringValue);
-        
+
         public record RecordWithOptionalParameters(int IntValue, string? StringValue);
 
-        public record TargetWithParameters(
-            int IntValue,
-            string? StringValue,
-            StubBaseType? CovariantTypeValue,
-            StubDerivedType? ContravariantTypeValue);
-
-        public record StubBaseType { }
-        public record StubDerivedType : StubBaseType { }
-    }
-
-    public class IsRecordMethod : ReflectionParameterCasterTests
-    {
-        [Theory]
-        [InlineData(typeof(CompleteRecord))]
-        [InlineData(typeof(PartialRecord))]
-        public void ValidScenarios(Type type)
+        public class TargetWithParameters
         {
-            // Act.
-            bool result = ReflectionParameterCaster.IsRecord(type);
-
-            // Assert.
-            result.ShouldBeTrue();
-        }
-
-        [Theory]
-        [InlineData(typeof(EmptyRecord))]
-        [InlineData(typeof(NonRecord))]
-        public void InvalidScenarios(Type type)
-        {            
-            // Act.
-            bool result = ReflectionParameterCaster.IsRecord(type);
-
-            // Assert.
-            result.ShouldBeFalse();
-        }
-
-        public record CompleteRecord(int IntValue, string StringValue);
-
-        public record PartialRecord(int IntValue)
-        {
+            public int IntValue { get; init; }
             public string? StringValue { get; init; }
+            public StubBaseType? CovariantTypeValue { get; init; }
+            public StubDerivedType? ContravariantTypeValue { get; init; }
         }
 
-        public record EmptyRecord();
-
-        public class NonRecord
-        {
-            public NonRecord(string stringValue)
-            {
-            }
-
-            public int IntValue { get; set; }
-        }
+        public class StubBaseType { }
+        public class StubDerivedType : StubBaseType { }
     }
 }
