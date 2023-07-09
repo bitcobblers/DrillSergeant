@@ -4,14 +4,15 @@
 [![Build](https://github.com/BitCobblers/DrillSergeant/actions/workflows/test.yml/badge.svg)](https://github.com/bitcobblers/DrillSergeant/actions/workflows/test.yml)
 [![Nuget](https://img.shields.io/nuget/v/DrillSergeant.svg)](https://www.nuget.org/packages/DrillSergeant/)
 [![codecov](https://codecov.io/gh/bitcobblers/DrillSergeant/branch/main/graph/badge.svg?token=R9MKC6IJXE)](https://codecov.io/gh/bitcobblers/DrillSergeant)
+[![CodeQL](https://github.com/bitcobblers/DrillSergeant/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bitcobblers/DrillSergeant/actions/workflows/github-code-scanning/codeql)
 
 # Introduction
 
-DrillSergeant is a behavior testing library that empowers developers to apply BDD practices with minimal amount of friction.  Simply import the package and write your behaviors in familiar C# syntax.
+DrillSergeant is a behavior testing library that empowers developers to apply BDD practices with minimal amount of friction.  Simply import the package and write your behaviors in familiar C# syntax.  Unlike other behavior testing frameworks which rely on external feature files to write scenarios, DrillSergeant lets you write behavior tests 100% in C# code.
 
 ## Getting Started
 
-For a complete example of a feature, see the following [example](https://github.com/bitcobblers/DrillSergeant/blob/main/test/DrillSergeant.Tests/Features/CalculatorFeature.cs).
+For a complete example of a feature, see the following [example](https://github.com/bitcobblers/DrillSergeant/blob/main/test/DrillSergeant.Tests.Shared/Features/CalculatorFeature.cs).
 For something more complex, see the [DemoStore](https://github.com/bitcobblers/StoreDemo) repo.
 
 ## A Basic Calculator Service
@@ -31,7 +32,7 @@ public class CalculatorTests
     private readonly Calculator _calculator = new();
 
     [Behavior]
-    [InlineData(1,2,3)]
+    [InlineData(1,2,3)] // [TestCase] for NUnit or [DataRow] for MSTest.
     [InlineData(2,3,5)]
     public void TestAdditionBehavior(int a, int b, int expected)
     {
@@ -81,7 +82,7 @@ public class CalculatorTests
 }
 ```
 
-Behaviors are written in same fashion as a normal xunit `[Fact]` or `[Theory]` test.  The only difference is that it is marked using the `[Behavior]` attribute.
+Behaviors are written in same fashion as a normal unit test.  The only difference is that it is marked using the `[Behavior]` attribute.
 
 ## Why Write Tests This Way?
 
@@ -95,10 +96,31 @@ DrillSergeant takes a different approach to this problem.  Rather than rely on D
 
 For a longer-winded explanation, see the following [blog post](https://www.bitcobblers.com/b/behavior-driven-testing/).
 
-## Current Limitations
+## Support 
 
-Currently DrillSergeant is only compatible with `xunit` 2.4.x.  Support for `nunit` and `mstest` is planned for future releases.
+|Framework|Support|Major Version|Notes               |
+|---------|-------|-------------|--------------------|
+|Xunit    |Yes    |2            |Full support        |
+|NUnit    |Yes    |3            |Mostly supported    |
+|MSTest   |Yes    |2            |Experimental support|
+
+Originally DrillSergeant was built around xunit and has been well tested with it.  As of version 0.2.0 support has been added for NUnit and MSTest.  
+
+The NUnit integration is likely to be fairly stable since the framework was designed with extensibility support in mind.  This made adding hooks for DrillSergeant fairly trivial.
+
+The MSTest integration on the other hand should be considered experimental.  This is because that framework has very limited support for extensibility and needed several somewhat invasive hacks to get working.  If anyone has experience with MSTest and would like to help with this please let us know!
+
+## Installation
+
+DrillSergeant is a regular library and can be installed via package manager with either the `Install-Package` or `dotnet add package` commands.  Note that because DrillSergeant is still in beta that you will need check the 'Include Prelease' checkbox to find it in nuget manager.
+
+|Framework|Package             |Example                                                        |
+|---------|--------------------|---------------------------------------------------------------|
+|Xunit    |DrillSergeant.Xunit2|`dotnet add package DrillSergeant.Xunit2 --version 0.2.0-beta` |
+|NUnit    |DrillSergeant.NUnit3|`dotnet add package DrillSergeant.NUnit3 --version 0.2.0-beta` |
+|MSTest   |DrillSergeant.MSTest|`dotnet add package DrillSergeant.MSTest --version 0.2.0-beta` |
 
 ## More Information
 
-For more information, please see the [wikis](https://github.com/bitcobblers/DrillSergeant/wiki).
+For more information, please see the [wikis](https://github.com/bitcobblers/DrillSergeant/wiki).  
+For an introduction, please see this [Medium](https://medium.com/@michael.vastarelli/behavior-testing-with-drill-sergeant-cd9e747688da) article.
