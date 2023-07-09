@@ -11,8 +11,6 @@ on:
           - patch
           - minor
           - major
-env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   bump:
@@ -21,6 +19,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
      
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
