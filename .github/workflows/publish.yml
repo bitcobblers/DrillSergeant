@@ -29,5 +29,5 @@ jobs:
         run: |
           dotnet nuget push src/DrillSergeant/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
           dotnet nuget push src/DrillSergeant.MSTest/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
-          dotnet nuget push src/DrillSergeant.Xunit/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
-          dotnet nuget push src/DrillSergeant.NUnit/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
+          dotnet nuget push src/DrillSergeant.Xunit2/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
+          dotnet nuget push src/DrillSergeant.NUnit3/bin/Release/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
