@@ -41,6 +41,28 @@ public class ReflectionParameterCasterTests
     public class InstantiateInstanceMethod : ReflectionParameterCasterTests
     {
         [Fact]
+        public void NoPublicConstructorsThrowsInvalidOperationException()
+        {
+            // Arrange.
+            var source = new Dictionary<string, object?>();
+
+            // Assert.
+            Assert.Throws<InvalidOperationException>(() =>
+                ReflectionParameterCaster.InstantiateInstance(source, typeof(ClassWithoutPublicConstructors)));
+        }
+
+        [Fact]
+        public void MultipleConstructorsThrowsInvalidOperationException()
+        {
+            // Arrange.
+            var source = new Dictionary<string, object?>();
+
+            // Assert.
+            Assert.Throws<InvalidOperationException>(() =>
+                ReflectionParameterCaster.InstantiateInstance(source, typeof(ClassWithMultipleConstructors)));
+        }
+
+        [Fact]
         public void InstantiatesRecordWithParameters()
         {
             // Arrange.
@@ -108,6 +130,23 @@ public class ReflectionParameterCasterTests
         }
 
         [Fact]
+        public void MisMatchedTypesAreIgnoredOnConstructor()
+        {
+            // Arrange.
+            var source = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1,
+                ["StringValue"] = 1
+            };
+
+            // Act.
+            var result = (RecordWithOptionalParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(RecordWithOptionalParameters));
+
+            // Assert.
+            result.StringValue.ShouldBeNull();
+        }
+
+        [Fact]
         public void MatchingSupportsCovariantTypes()
         {
             // Arrange.
@@ -166,6 +205,26 @@ public class ReflectionParameterCasterTests
             public StubBaseType? CovariantTypeValue { get; init; }
             public StubDerivedType? ContravariantTypeValue { get; init; }
         }
+
+        public class ClassWithoutPublicConstructors
+        {
+            protected ClassWithoutPublicConstructors()
+            {
+                
+            }
+        }
+
+        public class ClassWithMultipleConstructors
+        {
+            public ClassWithMultipleConstructors()
+            {
+            }
+
+            public ClassWithMultipleConstructors(int ignored)
+            {
+            }
+        }
+
 
         public class StubBaseType { }
         public class StubDerivedType : StubBaseType { }
