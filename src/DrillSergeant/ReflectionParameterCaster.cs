@@ -43,8 +43,8 @@ public class ReflectionParameterCaster : IParameterCaster
         var target = ctor.Invoke(ctorArguments)!;
 
         foreach (var property in from p in properties
-                 where source.ContainsKey(p.Name)
-                 select p)
+                                 where source.ContainsKey(p.Name)
+                                 select p)
         {
             var value = source[property.Name]!;
 
