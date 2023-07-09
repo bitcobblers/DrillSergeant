@@ -22,12 +22,8 @@ public class CalculatorFeature
 #endif
     private readonly Calculator _calculator = new();
 
-    public record Input
-    {
-        public int A { get; init; }
-        public int B { get; init; }
-        public int Expected { get; init; }
-    }
+    public record Input(int A, int B, int Expected);
+
 
 #if XUNIT
     public CalculatorFeature(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
@@ -49,12 +45,7 @@ public class CalculatorFeature
     [InlineAutoData]
     public void AdditionBehaviorWithAutoData(int a, int b)
     {
-        var input = new Input
-        {
-            A = a,
-            B = b,
-            Expected = a + b
-        };
+        var input = new Input(a, b, a + b);
 
         BehaviorBuilder.New(input)
             .EnableContextLogging()
@@ -77,12 +68,7 @@ public class CalculatorFeature
 #endif
     public void AsyncAdditionBehavior(int a, int b, int expected)
     {
-        var input = new Input
-        {
-            A = a,
-            B = b,
-            Expected = expected
-        };
+        var input = new Input(a, b, expected);
 
         BehaviorBuilder.New(input)
             .Given("Set first number", (c, i) => c.A = i.A)
@@ -103,12 +89,7 @@ public class CalculatorFeature
 #endif
     public void AdditionBehavior(int a, int b, int expected)
     {
-        var input = new Input
-        {
-            A = a,
-            B = b,
-            Expected = expected
-        };
+        var input = new Input(a, b, expected);
 
         BehaviorBuilder.New(input)
             .EnableContextLogging()
@@ -130,10 +111,7 @@ public class CalculatorFeature
     // Step implemented as a lambda step for greater flexibility.
     public LambdaStep AddNumbers(Calculator calculator) =>
         new LambdaStep("Add numbers")
-            .Handle((c) =>
-            {
-                c.Result = calculator.Add(c.A, c.B);
-            });
+            .Handle((c) => { c.Result = calculator.Add(c.A, c.B); });
 
     public LambdaStep AddNumbersAsync(Calculator calculator) =>
         new LambdaStep("Add numbers")

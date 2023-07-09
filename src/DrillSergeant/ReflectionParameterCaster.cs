@@ -25,15 +25,30 @@ public class ReflectionParameterCaster : IParameterCaster
             throw new InvalidOperationException("Cannot cast to a primitive type.");
         }
 
-        var target = InstantiateTarget(type);
-        var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
+        return InstantiateInstance(source, type);
+    }
 
-        foreach (var property in from p in type.GetProperties(flags)
+    internal static object InstantiateInstance(IDictionary<string, object?> source, Type type)
+    {
+        var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
+        if (constructors.Length is 0 or > 1)
+        {
+            throw new InvalidOperationException($"The target type {type.FullName} must have exactly one constructor.");
+        }
+
+        var ctor = constructors[0];
+        var ctorArguments = GetConstructorParameters(source, ctor);
+        var properties = GetProperties(source, type, ctor);
+        var target = ctor.Invoke(ctorArguments)!;
+
+        foreach (var property in from p in properties
                                  where source.ContainsKey(p.Name)
                                  select p)
         {
             var value = source[property.Name]!;
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (value == null)
             {
                 continue;
@@ -48,13 +63,36 @@ public class ReflectionParameterCaster : IParameterCaster
         return target;
     }
 
-    private static object InstantiateTarget(Type type)
+    internal static PropertyInfo[] GetProperties(IDictionary<string, object?> source, Type type, ConstructorInfo ctor)
     {
-        var ctor = type.GetConstructor(Array.Empty<Type>());
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
+        var ctorParameters = ctor.GetParameters();
+        var properties = type.GetProperties(flags);
 
-        return ctor == null
-            ? throw new InvalidOperationException(
-                $"The target type {type.FullName} does not have a parameterless constructor and cannot be used for parameter resolution.")
-            : ctor.Invoke(Array.Empty<object?>());
+        return properties.Where(p => ctorParameters.Any(x => x.Name == p.Name) == false).ToArray();
+    }
+
+    internal static object?[] GetConstructorParameters(IDictionary<string, object?> source, ConstructorInfo ctor)
+    {
+        var ctorParameters = ctor.GetParameters();
+        var arguments = new List<object?>();
+
+        foreach (var parameter in ctorParameters)
+        {
+            if (source.TryGetValue(parameter.Name!, out var value) == false)
+            {
+                arguments.Add(null);
+            }
+            else if (value != null && value.GetType().IsAssignableTo(parameter.ParameterType))
+            {
+                arguments.Add(value);
+            }
+            else
+            {
+                arguments.Add(null);
+            }
+        }
+
+        return arguments.ToArray();
     }
 }
