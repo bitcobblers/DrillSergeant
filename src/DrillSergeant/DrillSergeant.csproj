@@ -11,11 +11,11 @@
     <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
-    <PackageTags>xunit;unit testing; behavior testing; acceptance testing</PackageTags>
+    <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Title>Drill Sergeant</Title>
-    <Description>Write acceptance tests in pure C#.</Description>
+    <Description>Write behavior tests in pure C#.</Description>
   </PropertyGroup>
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>

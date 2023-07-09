@@ -36,6 +36,9 @@ jobs:
         run: |
           dotnet tool install --global Frogvall.DotnetBumpVersion
           bump-version ${{ github.event.inputs.version }} src/DrillSergeant/DrillSergeant.csproj
+          bump-version ${{ github.event.inputs.version }} src/DrillSergeant.MSTest/DrillSergeant.MSTest.csproj
+          bump-version ${{ github.event.inputs.version }} src/DrillSergeant.NUnit3/DrillSergeant.NUnit3.csproj
+          bump-version ${{ github.event.inputs.version }} src/DrillSergeant.Xunit2/DrillSergeant.Xunit2.csproj
       
       - name: Push Latest
         env:

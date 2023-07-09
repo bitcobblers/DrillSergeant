@@ -9,12 +9,13 @@
 		<Nullable>enable</Nullable>
 		<Version>0.1.0-beta</Version>
 		<PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
-		<PackageTags>xunit;unit testing; behavior testing; acceptance testing</PackageTags>
+		<PackageTags>nunit;unit testing;behavior testing;acceptance testing;bdd</PackageTags>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Title>Drill Sergeant</Title>
-		<Description>Write acceptance tests in pure C#.</Description>
+		<Description>Write behavior tests in pure C#.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,5 +25,13 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DrillSergeant\DrillSergeant.csproj" />
 	</ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
