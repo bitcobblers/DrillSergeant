@@ -26,12 +26,14 @@ public class BehaviorExecutorTests
             var executor = new BehaviorExecutor(reporter);
 
             // Act and assert.
-            await Assert.ThrowsAsync<InvalidOperationException>(
-                () => executor.LoadBehavior(instance, method!, parameters));
+            var behavior = await executor.LoadBehavior(instance, method!, parameters);
+
+            // Assert.
+            behavior.ShouldBeNull();
         }
 
         [Fact]
-        public async Task NoReturnedBehaviorThrowsInvalidOperationException_Async()
+        public async Task NoReturnedBehaviorReturnsNull_Async()
         {
             // Arrange.
             var reporter = A.Fake<ITestReporter>();
@@ -41,9 +43,11 @@ public class BehaviorExecutorTests
 
             var executor = new BehaviorExecutor(reporter);
 
-            // Act and assert.
-            await Assert.ThrowsAsync<InvalidOperationException>(
-                () => executor.LoadBehavior(instance, method!, parameters));
+            // Act.
+            var behavior = await executor.LoadBehavior(instance, method!, parameters);
+
+            // Assert.
+            behavior.ShouldBeNull();
         }
 
         [Fact]
@@ -119,7 +123,7 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior, CancellationToken.None);
+            await executor.Execute(behavior!, CancellationToken.None);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);
@@ -141,7 +145,7 @@ public class BehaviorExecutorTests
             executor.StepFailed += (_, _) => errorCalled = true;
 
             // Act.
-            await executor.Execute(behavior, CancellationToken.None);
+            await executor.Execute(behavior!, CancellationToken.None);
 
             // Assert.
             errorCalled.ShouldBeTrue();
@@ -159,7 +163,7 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior, CancellationToken.None);
+            await executor.Execute(behavior!, CancellationToken.None);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);
@@ -197,7 +201,7 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior, CancellationToken.None);
+            await executor.Execute(behavior!, CancellationToken.None);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);
@@ -217,7 +221,7 @@ public class BehaviorExecutorTests
 
             // Act.
             tokenSource.CancelAfter(100);
-            await executor.Execute(behavior, tokenSource.Token);
+            await executor.Execute(behavior!, tokenSource.Token);
 
             // Assert.
             behavior!.Context["IsSuccess"].ShouldBe(true);
@@ -236,7 +240,7 @@ public class BehaviorExecutorTests
 
             // Act and assert.
             await Assert.ThrowsAsync<BehaviorTimeoutException>(
-                () => executor.Execute(behavior, CancellationToken.None, 100));
+                () => executor.Execute(behavior!, CancellationToken.None, 100));
         }
 
         private class StubDisposable : IDisposable

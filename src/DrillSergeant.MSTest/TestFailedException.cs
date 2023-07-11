@@ -1,6 +1,8 @@
-﻿namespace DrillSergeant.MSTest;
+﻿using System.Diagnostics.CodeAnalysis;
 
-[Serializable]
+namespace DrillSergeant.MSTest;
+
+[Serializable, ExcludeFromCodeCoverage]
 public class TestFailedException : Exception
 {
     public TestFailedException(string message, Exception? innerException = null)

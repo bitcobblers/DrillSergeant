@@ -14,7 +14,8 @@ public class MissingVerbHandlerException : Exception, ISerializable
     /// Initializes a new instance of the <see cref="MissingVerbHandlerException"/> class.
     /// </summary>
     /// <param name="verb">The verb for the handler.</param>
-    public MissingVerbHandlerException(string verb) : base($"Could not find any implementation for the verb ${verb}.")
+    public MissingVerbHandlerException(string verb) 
+        : base($"Could not find any implementation for the verb ${verb}.")
     {
         Verb = verb;
     }

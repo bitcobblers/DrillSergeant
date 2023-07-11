@@ -14,7 +14,7 @@ namespace DrillSergeant
 
         public BehaviorExecutor(ITestReporter reporter) => _reporter = reporter;
 
-        public async Task<IBehavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
+        public async Task<IBehavior?> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
         {
             BehaviorBuilder.Clear();
 
@@ -28,18 +28,17 @@ namespace DrillSergeant
                 method.Invoke(instance, parameters);
             }
 
-            return BehaviorBuilder.CurrentBehavior ??
-                   throw new InvalidOperationException("Test method did not return a behavior.");
+            return BehaviorBuilder.CurrentBehavior;
         }
 
-        public Task Execute(IBehavior? behavior, CancellationToken cancellationToken, int timeout = 0)
+        public Task Execute(IBehavior behavior, CancellationToken cancellationToken, int timeout = 0)
         {
             return timeout == 0 ?
                 ExecuteInternalNoTimeout(behavior, cancellationToken) :
                 ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
         }
 
-        private async Task ExecuteInternalWithTimeout(IBehavior? behavior, int timeout, CancellationToken cancellationToken)
+        private async Task ExecuteInternalWithTimeout(IBehavior behavior, int timeout, CancellationToken cancellationToken)
         {
             var executeTask = ExecuteInternalNoTimeout(behavior, cancellationToken);
             var resultTask = await Task.WhenAny(executeTask, Task.Delay(timeout, cancellationToken));
@@ -50,14 +49,9 @@ namespace DrillSergeant
             }
         }
 
-        private async Task ExecuteInternalNoTimeout(IBehavior? behavior, CancellationToken cancellationToken)
+        private async Task ExecuteInternalNoTimeout(IBehavior behavior, CancellationToken cancellationToken)
         {
             bool previousStepFailed = false;
-
-            if (behavior == null)
-            {
-                throw new InvalidOperationException("Attempted to execute an undefined behavior.");
-            }
 
             _reporter.WriteBlock("Input", behavior.Input);
 
