@@ -41,6 +41,13 @@ internal class BehaviorTestInvoker : XunitTestInvoker
                     {
                         var executor = new BehaviorExecutor(_reporter);
                         using var behavior = await executor.LoadBehavior(testClassInstance, TestMethod, TestMethodArguments);
+
+                        if (behavior == null)
+                        {
+                            Aggregator.Add(new TestFailedException($"Unable to load the behavior for {TestMethod.Name}."));
+                            return;
+                        }
+
                         executor.StepFailed += (_, e) => Aggregator.Add(e.Exception);
 
                         await executor.Execute(behavior, CancellationTokenSource.Token, TestCase.Timeout);

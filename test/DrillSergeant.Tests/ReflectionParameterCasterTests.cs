@@ -27,38 +27,38 @@ public class ReflectionParameterCasterTests
         [InlineData(typeof(int))]
         [InlineData(typeof(string))]
         [InlineData(typeof(int[]))]
-        public void CastingToPrimitiveThrowsInvalidOperationException(Type type)
+        public void CastingToPrimitiveThrowsParameterCastFailedException(Type type)
         {
             // Arrange.
             var caster = new ReflectionParameterCaster();
             var source = new Dictionary<string, object?>();
 
             // Assert.
-            Assert.Throws<InvalidOperationException>(() => caster.Cast(source, type));
+            Assert.Throws<ParameterCastFailedException>(() => caster.Cast(source, type));
         }
     }
 
     public class InstantiateInstanceMethod : ReflectionParameterCasterTests
     {
         [Fact]
-        public void NoPublicConstructorsThrowsInvalidOperationException()
+        public void NoPublicConstructorsParameterCastFailedException()
         {
             // Arrange.
             var source = new Dictionary<string, object?>();
 
             // Assert.
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.Throws<ParameterCastFailedException>(() =>
                 ReflectionParameterCaster.InstantiateInstance(source, typeof(ClassWithoutPublicConstructors)));
         }
 
         [Fact]
-        public void MultipleConstructorsThrowsInvalidOperationException()
+        public void MultipleConstructorsThrowsParameterCastFailedException()
         {
             // Arrange.
             var source = new Dictionary<string, object?>();
 
             // Assert.
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.Throws<ParameterCastFailedException>(() =>
                 ReflectionParameterCaster.InstantiateInstance(source, typeof(ClassWithMultipleConstructors)));
         }
 

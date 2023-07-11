@@ -22,7 +22,7 @@ public class ReflectionParameterCaster : IParameterCaster
             type.IsArray ||
             type == typeof(string))
         {
-            throw new InvalidOperationException("Cannot cast to a primitive type.");
+            throw new ParameterCastFailedException(type, "Cannot cast to a primitive type.");
         }
 
         return InstantiateInstance(source, type);
@@ -34,12 +34,12 @@ public class ReflectionParameterCaster : IParameterCaster
 
         if (constructors.Length is 0 or > 1)
         {
-            throw new InvalidOperationException($"The target type {type.FullName} must have exactly one constructor.");
+            throw new ParameterCastFailedException(type, $"The target type {type.FullName} must have exactly one constructor.");
         }
 
         var ctor = constructors[0];
         var ctorArguments = GetConstructorParameters(source, ctor);
-        var properties = GetProperties(source, type, ctor);
+        var properties = GetProperties(type, ctor);
         var target = ctor.Invoke(ctorArguments)!;
 
         foreach (var property in from p in properties
@@ -63,7 +63,7 @@ public class ReflectionParameterCaster : IParameterCaster
         return target;
     }
 
-    internal static PropertyInfo[] GetProperties(IDictionary<string, object?> source, Type type, ConstructorInfo ctor)
+    internal static PropertyInfo[] GetProperties(Type type, ConstructorInfo ctor)
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
         var ctorParameters = ctor.GetParameters();

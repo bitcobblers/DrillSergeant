@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
@@ -26,7 +25,7 @@ public abstract class BaseStep : IStep
     public virtual string Name => "<untitled step>";
 
     /// <inheritdoc />
-    public virtual bool ShouldSkip { get; protected set; }
+    public virtual bool ShouldSkip => false;
 
     [ExcludeFromCodeCoverage]
     ~BaseStep()
@@ -102,26 +101,6 @@ public abstract class BaseStep : IStep
         }
 
         return copy;
-    }
-
-    internal static object DynamicCast(IDictionary<string, object?> source, Type type)
-    {
-        if (type == typeof(object))
-        {
-            return source;
-        }
-
-        if (type.IsPrimitive ||
-            type.IsArray ||
-            type == typeof(string))
-        {
-            throw new InvalidOperationException("Cannot cast to a primitive type.");
-        }
-
-        var serialized = JsonConvert.SerializeObject(source);
-        var converted = JsonConvert.DeserializeObject(serialized, type)!;
-
-        return converted;
     }
 
     internal static void UpdateContext(IDictionary<string, object?> context, object changedContext)

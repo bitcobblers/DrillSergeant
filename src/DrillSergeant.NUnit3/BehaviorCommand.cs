@@ -30,6 +30,12 @@ public class BehaviorCommand : TestCommand
 
         using var behavior = await executor.LoadBehavior(obj, method, args);
 
+        if (behavior == null)
+        {
+            context.CurrentResult.SetResult(ResultState.Error, $"Unable to load the behavior {method.Name}.");
+            return context.CurrentResult;
+        }
+
         try
         {
             await executor.Execute(behavior, CancellationToken.None, context.TestCaseTimeout);

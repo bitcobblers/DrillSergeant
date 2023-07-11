@@ -8,7 +8,7 @@ namespace DrillSergeant;
 /// Defines an exception that is thrown when DrillSergeant is unable to determine which handler to execute.
 /// </summary>
 [Serializable, ExcludeFromCodeCoverage]
-public class AmbiguousVerbHandlerException : Exception, ISerializable
+public class AmbiguousVerbHandlerException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AmbiguousVerbHandlerException"/> class.

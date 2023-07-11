@@ -123,64 +123,6 @@ public class BaseStepTests
         }
     }
 
-    public class DynamicCastMethod : BaseStepTests
-    {
-        [Fact]
-        public void CallingWithObjectTypeReturnsSource()
-        {
-            // Arrange.
-            var source = new Dictionary<string, object?>();
-
-            // Act.
-            var result = BaseStep.DynamicCast(source, typeof(object));
-
-            // Assert.
-            source.ShouldBeSameAs(result);
-        }
-
-        [Fact]
-        public void PopulatesPropertiesOfObjectType()
-        {
-            // Arrange.
-            var expected = new StubWithProperties
-            {
-                IntValue = 1,
-                StringValue = "expected"
-            };
-
-            var source = new Dictionary<string, object?>
-            {
-                ["IntValue"] = expected.IntValue,
-                ["StringValue"] = expected.StringValue
-            };
-
-            // Act.
-            var result = BaseStep.DynamicCast(source, typeof(StubWithProperties));
-
-            // Assert.
-            result.ShouldBe(expected);
-        }
-
-        [Theory]
-        [InlineData(typeof(int))]
-        [InlineData(typeof(string))]
-        [InlineData(typeof(int[]))]
-        public void CastingToPrimitiveThrowsInvalidOperationException(Type type)
-        {
-            // Arrange.
-            var source = new Dictionary<string, object?>();
-
-            // Act and Assert.
-            Assert.Throws<InvalidOperationException>(() => BaseStep.DynamicCast(source, type));
-        }
-
-        public record StubWithProperties
-        {
-            public int IntValue { get; set; }
-            public string? StringValue { get; set; }
-        }
-    }
-
     public class UpdateContextMethod : BaseStepTests
     {
         [Fact]

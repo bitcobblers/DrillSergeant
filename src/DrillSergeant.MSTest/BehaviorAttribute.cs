@@ -29,7 +29,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
         var arguments = testMethod.Arguments;
         var timeout = options?.Timeout ?? 0;
         var captureTrace = options?.CaptureDebugTraces ?? false;
-        var cancelToken = options?.TestContext.CancellationTokenSource.Token ?? CancellationToken.None;
+        var cancelToken = options?.TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
         dynamic context = options?.TestContext!;
 
         using var listener = new LogListener(captureTrace);
@@ -91,6 +91,11 @@ public sealed class BehaviorAttribute : TestMethodAttribute
             {
                 var exceptions = new List<Exception>();
                 var behavior = await executor.LoadBehavior(classInstance, method, arguments);
+
+                if (behavior == null)
+                {
+                    return TestResultFailed(new TestFailedException($"Unable to load the behavior for {method.Name}."));
+                }
 
                 executor.StepFailed += (_, e) => exceptions.Add(e.Exception);
 
