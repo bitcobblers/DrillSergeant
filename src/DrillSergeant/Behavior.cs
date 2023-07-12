@@ -29,11 +29,13 @@ public class Behavior : IBehavior
     /// Initializes a new instance of the <see cref="Behavior"/> class.
     /// </summary>
     /// <param name="input">The input to bind to the behavior.</param>
-    public Behavior(object input)
+    public Behavior(object? input)
     {
         const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
         dynamic castedInput = new ExpandoObject();
         var dict = (IDictionary<string, object?>)castedInput;
+
+        input ??= new { };
 
         foreach (var property in input.GetType().GetProperties(flags))
         {
@@ -58,14 +60,20 @@ public class Behavior : IBehavior
     /// <inheritdoc cref="IBehavior.LogContext" />
     public bool LogContext { get; private set; }
 
+    internal ISet<IDisposable> OwnedDisposables => _ownedDisposables;
+
     /// <summary>
     /// Adds a new step to the behavior.
     /// </summary>
     /// <param name="step">An instance of the step to add.</param>
     /// <returns>The current behavior.</returns>
-    public Behavior AddStep(IStep step)
+    public Behavior AddStep(IStep? step)
     {
-        _steps.Add(step);
+        if (step != null)
+        {
+            _steps.Add(step);
+        }
+
         return this;
     }
 
@@ -74,8 +82,13 @@ public class Behavior : IBehavior
     /// </summary>
     /// <param name="background">The background behavior to add.</param>
     /// <returns>The current behavior.</returns>
-    public Behavior Background(Behavior background)
+    public Behavior Background(Behavior? background)
     {
+        if (background == null)
+        {
+            return this;
+        }
+
         _steps.AddRange(background);
 
         foreach (var disposable in background._ownedDisposables)
@@ -103,9 +116,13 @@ public class Behavior : IBehavior
     /// </summary>
     /// <param name="instance">The object instance to take ownership of.</param>
     /// <returns>The current behavior.</returns>
-    public Behavior Owns(IDisposable instance)
+    public Behavior Owns(IDisposable? instance)
     {
-        _ownedDisposables.Add(instance);
+        if (instance != null)
+        {
+            _ownedDisposables.Add(instance);
+        }
+        
         return this;
     }
 

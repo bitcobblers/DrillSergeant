@@ -43,7 +43,7 @@ public static class Extensions
     /// <typeparam name="T">The type of object to take ownership of.</typeparam>
     /// <param name="instance">The object instance.</param>
     /// <returns>The object passed in.</returns>
-    public static T OwnedByBehavior<T>(this T instance) where T : IDisposable
+    public static T? OwnedByBehavior<T>(this T? instance) where T : IDisposable
     {
         BehaviorBuilder.Owns(instance);
         return instance;

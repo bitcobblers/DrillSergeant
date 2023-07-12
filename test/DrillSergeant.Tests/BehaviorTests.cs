@@ -5,6 +5,55 @@ namespace DrillSergeant.Tests;
 
 public class BehaviorTests
 {
+    public class AddStepMethod : BehaviorTests
+    {
+        [Fact]
+        public void AddingNullStepDoesNotChangeStepCollection()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            behavior.AddStep(null);
+
+            // Assert.
+            behavior.ShouldBeEmpty();
+        }
+    }
+
+    public class BackgroundMethod : BehaviorTests
+    {
+        [Fact]
+        public void AddingNullBackgroundDoesNotChangeStepCollection()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            behavior.Background(null);
+
+            // Assert.
+            behavior.ShouldBeEmpty();
+        }
+    }
+
+    public class OwnsMethod : BehaviorTests
+    {
+        [Fact]
+        public void AddingNullOwnershipDoesNotUpdateDisposablesCollection()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            behavior.Owns(null);
+
+            // Assert.
+            behavior.OwnedDisposables.ShouldBeEmpty();
+        }
+    }
+
+
     public class DisposeMethod : BehaviorTests
     {
         [Fact]

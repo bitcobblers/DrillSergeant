@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace DrillSergeant;
 
 [Serializable, ExcludeFromCodeCoverage]
-public class BehaviorTimeoutException : Exception, ISerializable
+public class BehaviorTimeoutException : Exception
 {
     public BehaviorTimeoutException(int timeout)
         : base($"The behavior timed out after {timeout:N0}ms")
