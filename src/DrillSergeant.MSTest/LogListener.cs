@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 namespace DrillSergeant.MSTest;
 
-public class LogListener : IDisposable
+internal class LogListener : IDisposable
 {
     private static ThreadSafeStringWriter? _redirectTraceDebug;
     private static BehaviorTraceListener? _traceListener;

@@ -2,7 +2,7 @@
 
 namespace DrillSergeant.MSTest;
 
-public static class ObjectExtensions
+internal static class ObjectExtensions
 {
     public static object? GetPrivateProperty(this object instance, string property)
     {

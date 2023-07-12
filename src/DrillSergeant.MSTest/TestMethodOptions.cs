@@ -2,7 +2,7 @@
 
 namespace DrillSergeant.MSTest;
 
-public class TestMethodOptions
+internal class TestMethodOptions
 {
     public int Timeout { get; set; }
     public TestContext? TestContext { get; set; }

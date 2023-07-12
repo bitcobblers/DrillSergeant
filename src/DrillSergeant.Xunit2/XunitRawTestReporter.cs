@@ -2,7 +2,7 @@
 
 namespace DrillSergeant.Xunit2;
 
-public class XunitRawTestReporter : RawTestReporter
+internal class XunitRawTestReporter : RawTestReporter
 {
     private readonly WrappedTestOutputHelper _sink;
     private readonly DecoyTestOutputHelper _decoy;
