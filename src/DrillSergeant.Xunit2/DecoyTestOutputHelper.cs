@@ -10,7 +10,7 @@ namespace DrillSergeant.Xunit2;
 /// <remarks>
 /// By default the output to an instance of <see cref="ITestOutputHelper"/> is written to a messagebus.  The decoy is used to cache output at the step level so that it can be aggregated in the report.
 /// </remarks>
-public class DecoyTestOutputHelper : ITestOutputHelper
+internal class DecoyTestOutputHelper : ITestOutputHelper
 {
     private readonly StringBuilder _buffer = new();
 

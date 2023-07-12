@@ -2,7 +2,7 @@
 
 namespace DrillSergeant.Xunit2;
 
-public class XunitRawTestReporter : RawTestReporter
+internal class XunitRawTestReporter : RawTestReporter
 {
     private readonly WrappedTestOutputHelper _sink;
     private readonly DecoyTestOutputHelper _decoy;
@@ -30,8 +30,13 @@ public class XunitRawTestReporter : RawTestReporter
     public string Output => _sink.Output;
 
     /// <inheritdoc />
-    public override void WriteStepResult(StepResult result)
+    public override void WriteStepResult(StepResult? result)
     {
+        if (result == null)
+        {
+            return;
+        }
+
         base.WriteStepResult(result with
         {
             AdditionalOutput = _decoy.GetAndClear()

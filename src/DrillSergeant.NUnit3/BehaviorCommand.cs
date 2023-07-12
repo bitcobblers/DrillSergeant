@@ -4,7 +4,7 @@ using NUnit.Framework.Internal.Commands;
 
 namespace DrillSergeant.NUnit3;
 
-public class BehaviorCommand : TestCommand
+internal class BehaviorCommand : TestCommand
 {
     public BehaviorCommand(Test test)
         : base(test)

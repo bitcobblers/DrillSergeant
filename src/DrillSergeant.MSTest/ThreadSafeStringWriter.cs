@@ -1,6 +1,6 @@
 ﻿namespace DrillSergeant.MSTest;
 
-public class ThreadSafeStringWriter : StringWriter
+internal class ThreadSafeStringWriter : StringWriter
 {
     private static readonly AsyncLocal<Dictionary<string, ThreadSafeStringBuilder>> State = new();
 

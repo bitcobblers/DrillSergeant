@@ -29,7 +29,7 @@ public class RawTestReporter : ITestReporter
     }
 
     /// <inheritdoc />
-    public virtual void WriteBlock(string label, object content)
+    public virtual void WriteBlock(string? label, object? content)
     {
         var serializationSettings = new JsonSerializerSettings
         {
@@ -43,8 +43,13 @@ public class RawTestReporter : ITestReporter
     }
 
     /// <inheritdoc />
-    public virtual void WriteStepResult(StepResult result)
+    public virtual void WriteStepResult(StepResult? result)
     {
+        if (result == null)
+        {
+            return;
+        }
+
         var icon = result.Success ? "✅" : "❎";
 
         if (result.CancelPending)

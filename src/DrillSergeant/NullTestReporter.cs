@@ -17,12 +17,12 @@ public class NullTestReporter : ITestReporter
     public string Output => string.Empty;
 
     /// <inheritdoc />
-    public void WriteBlock(string label, object content)
+    public void WriteBlock(string? label, object? content)
     {
     }
 
     /// <inheritdoc />
-    public void WriteStepResult(StepResult result)
+    public void WriteStepResult(StepResult? result)
     {
     }
 }

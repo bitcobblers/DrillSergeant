@@ -12,11 +12,11 @@ public interface ITestReporter : IDisposable
     /// </summary>
     /// <param name="label">The label for the content.</param>
     /// <param name="content">The content to write.</param>
-    void WriteBlock(string label, object content);
+    void WriteBlock(string? label, object? content);
 
     /// <summary>
     /// Writes the result for a single step to the report.
     /// </summary>
     /// <param name="result">The step result to write.</param>
-    void WriteStepResult(StepResult result);
+    void WriteStepResult(StepResult? result);
 }

@@ -6,7 +6,7 @@ namespace DrillSergeant.Xunit2;
 /// <summary>
 /// Defines a wrapper for the xunit <see cref="TestOutputHelper" /> that implements <see cref="TextWriter"/>
 /// </summary>
-public class WrappedTestOutputHelper : TextWriter
+internal class WrappedTestOutputHelper : TextWriter
 {
     private readonly TestOutputHelper _outputHelper;
 
