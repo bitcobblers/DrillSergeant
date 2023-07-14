@@ -117,9 +117,9 @@ DrillSergeant is a regular library and can be installed via package manager with
 
 |Framework|Package             |Example                                                        |
 |---------|--------------------|---------------------------------------------------------------|
-|Xunit    |DrillSergeant.Xunit2|`dotnet add package DrillSergeant.Xunit2 --version 0.2.0-beta` |
-|NUnit    |DrillSergeant.NUnit3|`dotnet add package DrillSergeant.NUnit3 --version 0.2.0-beta` |
-|MSTest   |DrillSergeant.MSTest|`dotnet add package DrillSergeant.MSTest --version 0.2.0-beta` |
+|Xunit    |DrillSergeant.Xunit2|`dotnet add package DrillSergeant.Xunit2 --version 0.3.0-beta` |
+|NUnit    |DrillSergeant.NUnit3|`dotnet add package DrillSergeant.NUnit3 --version 0.3.0-beta` |
+|MSTest   |DrillSergeant.MSTest|`dotnet add package DrillSergeant.MSTest --version 0.3.0-beta` |
 
 ## More Information
 
