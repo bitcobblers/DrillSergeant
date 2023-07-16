@@ -18,6 +18,7 @@
     <Description>Write behavior tests in pure C#.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="xunit.extensibility.execution" Version="2.5.0" />
   </ItemGroup>
   <ItemGroup>

@@ -11,9 +11,15 @@ internal class BehaviorCommand : TestCommand
     {
     }
 
+    /// <inheritdoc />
     public override TestResult Execute(TestExecutionContext context) =>
         ExecuteAsync(context).GetAwaiter().GetResult();
 
+    /// <summary>
+    /// Executes the command in an async context.
+    /// </summary>
+    /// <param name="context">The test execution context.</param>
+    /// <returns>The result from running the test.</returns>
     private async Task<TestResult> ExecuteAsync(TestExecutionContext context)
     {
         var reporter = new RawTestReporter(context.OutWriter);

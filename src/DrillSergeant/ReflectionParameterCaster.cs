@@ -8,7 +8,7 @@ namespace DrillSergeant;
 /// <summary>
 /// Defines a parameter caster that uses reflection to instantiate the target object being casted to.
 /// </summary>
-internal class ReflectionParameterCaster : IParameterCaster
+internal class ReflectionParameterCaster
 {
     /// <inheritdoc cref="IParameterCaster.Cast(IDictionary{string, object?}, Type)" />
     public object Cast(IDictionary<string, object?> source, Type type)

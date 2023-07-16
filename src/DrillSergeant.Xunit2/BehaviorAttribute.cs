@@ -13,5 +13,8 @@ namespace DrillSergeant;
 [XunitTestCaseDiscoverer("DrillSergeant.Xunit2.BehaviorDiscoverer", "DrillSergeant.Xunit2")]
 public sealed class BehaviorAttribute : FactAttribute, ITraitAttribute
 {
+    /// <summary>
+    /// Gets or sets the name of the feature to categorize this behavior under.
+    /// </summary>
     public string? Feature { get; set; }
 }

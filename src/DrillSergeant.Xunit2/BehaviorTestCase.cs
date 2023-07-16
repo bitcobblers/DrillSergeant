@@ -20,8 +20,7 @@ internal class BehaviorTestCase : XunitTestCase
             TestMethodArguments,
             messageBus,
             aggregator,
-            cancellationTokenSource
-            );
+            cancellationTokenSource);
 
         return runner.RunAsync();
     }
