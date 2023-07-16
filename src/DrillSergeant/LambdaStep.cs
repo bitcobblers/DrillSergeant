@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-
-// ReSharper disable UnusedMember.Global
+using JetBrains.Annotations;
 
 namespace DrillSergeant;
 
@@ -43,6 +42,7 @@ public class LambdaStep : BaseStep
     /// </summary>
     /// <param name="name">The name of the step.</param>
     /// <returns>The current step.</returns>
+    [PublicAPI]
     public LambdaStep SetName(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -54,7 +54,7 @@ public class LambdaStep : BaseStep
         return this;
     }
 
-    // ReSharper disable once UnusedMethodReturnValue.Global
+    [PublicAPI]
     public LambdaStep SetVerb(string? verb)
     {
         if (string.IsNullOrWhiteSpace(verb))
@@ -66,30 +66,53 @@ public class LambdaStep : BaseStep
         return this;
     }
 
+    [PublicAPI]
     public LambdaStep Skip(Func<bool>? shouldSkip = null)
     {
         _shouldSkip = shouldSkip ?? new Func<bool>(() => true);
         return this;
     }
 
-    public LambdaStep Handle(Delegate handler) => SetHandler(handler);
+    internal LambdaStep Handle(Delegate handler) => SetHandler(handler);
 
     // ---
 
+    [PublicAPI]
     public LambdaStep Handle(Action? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep Handle(Action<dynamic>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep Handle(Action<dynamic, dynamic>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep Handle<TContext>(Action<TContext>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep Handle<TInput>(Action<dynamic, TInput>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep Handle<TContext, TInput>(Action<TContext, TInput>? handler) => SetHandler(handler);
 
     // ---
 
+    [PublicAPI]
     public LambdaStep HandleAsync(Func<Task>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep HandleAsync(Func<dynamic, Task>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep HandleAsync(Func<dynamic, dynamic, Task>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep HandleAsync<TContext>(Func<TContext, Task>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep HandleAsync<TInput>(Func<dynamic, TInput, Task>? handler) => SetHandler(handler);
+
+    [PublicAPI]
     public LambdaStep HandleAsync<TContext, TInput>(Func<TContext, TInput, Task>? handler) => SetHandler(handler);
 
     /// <inheritdoc />

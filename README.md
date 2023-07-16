@@ -16,94 +16,172 @@ DrillSergeant is a behavior testing library that empowers developers to apply BD
 For a complete example of a feature, see the following [example](https://github.com/bitcobblers/DrillSergeant/blob/main/test/DrillSergeant.Tests.Shared/Features/CalculatorFeature.cs).
 For something more complex, see the [DemoStore](https://github.com/bitcobblers/StoreDemo) repo.
 
-## A Basic Calculator Service
+## The Obligatory Hello World Example
 
 Lets say we have a `Calculator` service.  For this example we'll define it as a simple class.
 ```CSharp
 public class Calculator
 {
     public int Add(int a, int b) => a + b;
-    public int Sub(int a, int b) => a - b;
 }
 ```
 We can write a behavior test like so:
 ```CSharp
 public class CalculatorTests
 {
-    private readonly Calculator _calculator = new();
-
     [Behavior]
     [InlineData(1,2,3)] // [TestCase] for NUnit or [DataRow] for MSTest.
     [InlineData(2,3,5)]
     public void TestAdditionBehavior(int a, int b, int expected)
     {
-        var input = new
-        {
-            A = a,
-            B = b,
-            Expected = expected
-        };
-
-        BehaviorBuilder.New(input)
-            .Given(SetFirstNumber)
-            .Given(SetSecondNumber)
-            .When(AddNumbers)
-            .Then(CheckResult);
+        BehaviorBuilder.New()
+            .Given(NewCalculator())
+            .When(AddNumbers(a,b))
+            .Then(CheckResult(expected));
     }
 
-    [Behavior]
-    [InlineData(3,2,1)]
-    [InlineData(5,2,3)]
-    public void TestSubtractionBehavior(int a, int b, int expected)
-    {
-        var input = new
-        {
-            A = a,
-            B = b,
-            Expected = expected
-        };
+    private LambdaStep NewCalculator() =>
+        new LambdaStep("Create a calculator")
+            .Handle(context => context.Calculator = new Calculator());
 
-        BehaviorBuilder.New(input)
-            .Given(SetFirstNumber)
-            .Given(SetSecondNumber)
-            .When(SubtractNumbers)
-            .Then(CheckResult);
-    }
+    private LambdaStep AddNumbers(int a, int b) =>
+        new LambdaStep($"Add {a} and {b}")
+            .Handle(context => 
+            {
+                var calculator = context.Calculator;
+                context.Result = calculator.Add(a,b);
+            });
 
-    // Given Steps.
-    private void SetFirstNumber(dynamic context, dynamic input) => context.A = input.A;
-    private void SetSecondNumber(dynamic context, dynamic input) => context.B = input.B;
-
-    // When Steps.
-    private void AddNumbers(dynamic context) => context.Result = _calculator.Add(context.A, context.B);
-    private void SubtractNumbers(dynamic context) => context.Result = _calculator.Sub(context.A, context.B);
-
-    // Then Steps.
-    private void CheckResult(dynamic context, dynamic input) => Assert.Equal(input.Expected, context.Result);
+    private LambdaStep CheckResult(int expected) =>
+        new LambdaStep($"Check result matches {expected}")
+            .Handle(context => Assert.Equal(expected, context.Result));
 }
 ```
 
+And the test runner output should look like this:
+
+![image](https://github.com/bitcobblers/DrillSergeant/assets/5205466/3d5b364c-3549-42e6-aaea-67373faa8aa8)
+
 Behaviors are written in same fashion as a normal unit test.  The only difference is that it is marked using the `[Behavior]` attribute.
+
+## A More Advanced Example
+
+From the [StoreDemo](https://github.com/bitcobblers/StoreDemo) project we define a behavior test to verify that we can create a new shopping cart, add items to it, and then purchase its contents:
+
+```CSharp
+[Behavior]
+public Behavior PurchasingItemsInCartCreatesNewOrder()
+{
+    var client = _api.CreateClient();
+
+    return new Behavior()
+        .Given(CartSteps.NewCart(client))
+        .Given(CartSteps.LoadProducts(client))
+        .Given(CartSteps.AddRandomProductToCart(client))
+        .When(OrderingSteps.PlaceOrder(client))
+        .Then(OrderingSteps.CheckOrderId());
+}
+```
+
+Where `client` is an instance of `HttpClient`.  Within `CartSteps` we define the following steps:
+
+```CSharp
+public cstatic class CartSteps
+{
+    private static readonly Random random = new();
+
+    public static LambdaStep NewCart(HttpClient client) =>
+        new LambdaStep("Create new cart")
+            .HandleAsync(async context =>
+            {
+                var url = $"api/cart/new";
+                var response = await client.GetStringAsync(url);
+
+                context.CartId = int.Parse(response);
+            });
+
+    public static LambdaStep LoadProducts(HttpClient client) =>
+        new LambdaStep("Get product list")
+            .HandleAsync(async context =>
+            {
+                var url = "api/products";
+                var response = await client.GetFromJsonAsync<Product[]>(url);
+
+                context.Products = response;
+            });
+
+    // ---
+
+    public static LambdaStep AddRandomProductToCart(HttpClient client) =>
+        new LambdaStep("Add random product to cart")
+            .HandleAsync(async context =>
+            {
+                var cartId = (int)context.CartId;
+                var products = (Product[])context.Products;
+                var product = products[random.Next(0, products.Length)];
+
+                var url = "api/cart/add";
+                await client.PostAsJsonAsync(url, new AddProductRequest(cartId, product.Id, 1));
+            });
+}
+```
+
+And within `OrderingSteps` we define the steps:
+
+```CSharp
+public static class OrderingSteps
+{
+    public static LambdaStep PlaceOrder(HttpClient client) =>
+        new LambdaStep("Place order")
+            .HandleAsync(async context =>
+            {
+                var cartId = (int)context.CartId;
+                var order = new PlaceOrderRequest(cartId);
+                var url = "api/order/place";
+
+                var response = await client.PostAsJsonAsync(url, order);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var body = await response
+                        .Content
+                        .ReadFromJsonAsync<PlaceOrderResponse>();
+
+                    context.OrderId = body?.OrderNumber;
+                }
+                else
+                {
+                    context.OrderId = null;
+                }
+            });
+
+    public static LambdaStep CheckOrderId() =>
+        new LambdaStep("Check order id is set")
+            .Handle(context =>
+            {
+                Assert.NotNull(context.OrderId);
+            });
+}
+
+```
+
+This time when we run the test we get the following output in our test runner:
+
+![image](https://github.com/bitcobblers/DrillSergeant/assets/5205466/f70a692c-7a30-4ca3-93d3-9687068e2be4)
 
 ## Why Write Tests This Way?
 
 Unlike in normal unit tests, which are intended to test the correctness of individual methods, behaviors tests validate whether one or more components actually behave in the way expected when given "normal" inputs.  Because of this, behaviors are composed of a series of pluggable steps that can be re-used in different scenarios.  See the [Cucumber](https://cucumber.io/docs/guides/overview/) documentation for an introduction into behavior testing.
 
-## Why Not Use A 3rd Party Acceptance Testing Tool (e.g. SpecFlow, Fitnesse, Guage)?
+## Comparison with 3rd Party Acceptance Testing Tools (e.g., SpecFlow, Fitnesse, Guage)
 
-DrillSergeant was borne out of frustration of using 3rd party testing tools.  While tools such as SpecFlow and Guage have gotten easier to use over time, they require installing 3rd party plugins/runners in the developer environment.  Additionally they require separate files for authoring the tests themselves (`.feature` for Specflow, '.wiki' for FitNesse, and `.md` for Gauge).  This relies on a mixture of code generation and reflection magic in order to bind the test specifications with the code that actually runs them, which adds a layer of complexity.
+DrillSergeant was borne out of frustration of using 3rd party testing tools.  While tools such as SpecFlow and Guage have gotten easier to use over time, they require installing 3rd party plugins/runners in the developer environment.  Additionally they require separate files for authoring the tests themselves (`.feature` for Specflow, `.wiki` for FitNesse, and `.md` for Gauge).  This relies on a mixture of code generation and reflection magic in order to bind the test specifications with the code that actually runs them, which adds a layer of complexity.
 
 DrillSergeant takes a different approach to this problem.  Rather than rely on DSLs and complex translation layers, it engrafts additional capabilities to the xunit framework to make it easy to write behavior-driven with familiar C# syntax.  No new DSLs to learn, no build task fussiness, no reflection shenanigans.  Just a simple API written entirely in C# code that can be tested/debugged the exact same way as all of your other unit tests.
 
 For a longer-winded explanation, see the following [blog post](https://www.bitcobblers.com/b/behavior-driven-testing/).
 
-## Support 
-
-|Framework|Support|Major Version|Notes               |
-|---------|-------|-------------|--------------------|
-|Xunit    |Yes    |2            |Full support        |
-|NUnit    |Yes    |3            |Mostly supported    |
-|MSTest   |Yes    |2            |Experimental support|
+## Test Runner Compatibility
 
 Originally DrillSergeant was built around xunit and has been well tested with it.  As of version 0.2.0 support has been added for NUnit and MSTest.  
 
@@ -115,11 +193,17 @@ The MSTest integration on the other hand should be considered experimental.  Thi
 
 DrillSergeant is a regular library and can be installed via package manager with either the `Install-Package` or `dotnet add package` commands.  Note that because DrillSergeant is still in beta that you will need check the 'Include Prelease' checkbox to find it in nuget manager.
 
-|Framework|Package             |Example                                                        |
-|---------|--------------------|---------------------------------------------------------------|
-|Xunit    |DrillSergeant.Xunit2|`dotnet add package DrillSergeant.Xunit2 --version 0.3.0-beta` |
-|NUnit    |DrillSergeant.NUnit3|`dotnet add package DrillSergeant.NUnit3 --version 0.3.0-beta` |
-|MSTest   |DrillSergeant.MSTest|`dotnet add package DrillSergeant.MSTest --version 0.3.0-beta` |
+|Framework|Package             |Example                                  |
+|---------|--------------------|-----------------------------------------|
+|Xunit    |DrillSergeant.Xunit2|`dotnet add package DrillSergeant.Xunit2`|
+|NUnit    |DrillSergeant.NUnit3|`dotnet add package DrillSergeant.NUnit3`|
+|MSTest   |DrillSergeant.MSTest|`dotnet add package DrillSergeant.MSTest`|
+
+## Support
+
+If you encounter any issues running tests or would like a feature added please do so [here](https://github.com/bitcobblers/DrillSergeant/issues/new/choose).  DrillSergeant is still fairly new and under active development.
+
+And if you like the project, be sure to give it a star!
 
 ## More Information
 
