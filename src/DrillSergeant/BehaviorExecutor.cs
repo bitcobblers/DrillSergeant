@@ -37,7 +37,7 @@ internal class BehaviorExecutor
             method.Invoke(instance, parameters);
         }
 
-        return BehaviorBuilder.CurrentBehavior;
+        return BehaviorBuilder.Current;
     }
 
     public Task Execute(IBehavior behavior, CancellationToken cancellationToken, int timeout = 0)
