@@ -93,8 +93,9 @@ public class Behavior : IBehavior
     /// <param name="input">A dictionary containing key-value input values to use.</param>
     /// <returns>The current behavior.</returns>
     [PublicAPI]
-    public Behavior SetInput(IDictionary<string, object?> input)
+    public Behavior SetInput(IDictionary<string, object?>? input)
     {
+        input ??= new Dictionary<string, object?>();
         Input.Clear();
 
         foreach(var (k,v) in input)
