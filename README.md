@@ -70,11 +70,11 @@ From the [StoreDemo](https://github.com/bitcobblers/StoreDemo) project we define
 
 ```CSharp
 [Behavior]
-public Behavior PurchasingItemsInCartCreatesNewOrder()
+public void PurchasingItemsInCartCreatesNewOrder()
 {
     var client = _api.CreateClient();
 
-    return new Behavior()
+    BehaviorBuilder.New()
         .Given(CartSteps.NewCart(client))
         .Given(CartSteps.LoadProducts(client))
         .Given(CartSteps.AddRandomProductToCart(client))
@@ -86,7 +86,7 @@ public Behavior PurchasingItemsInCartCreatesNewOrder()
 Where `client` is an instance of `HttpClient`.  Within `CartSteps` we define the following steps:
 
 ```CSharp
-public cstatic class CartSteps
+public static class CartSteps
 {
     private static readonly Random random = new();
 
@@ -109,8 +109,6 @@ public cstatic class CartSteps
 
                 context.Products = response;
             });
-
-    // ---
 
     public static LambdaStep AddRandomProductToCart(HttpClient client) =>
         new LambdaStep("Add random product to cart")
