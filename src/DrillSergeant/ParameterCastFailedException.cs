@@ -10,7 +10,7 @@ namespace DrillSergeant;
 [Serializable, ExcludeFromCodeCoverage]
 public class ParameterCastFailedException : Exception
 {
-    public ParameterCastFailedException(Type targetType, string message) 
+    public ParameterCastFailedException(Type targetType, string message)
         : base(message)
     {
         TargetType = targetType;

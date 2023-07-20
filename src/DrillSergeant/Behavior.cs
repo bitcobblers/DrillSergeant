@@ -98,9 +98,9 @@ public class Behavior : IBehavior
         input ??= new Dictionary<string, object?>();
         Input.Clear();
 
-        foreach(var (k,v) in input)
+        foreach (var (k, v) in input)
         {
-            Input[k]=v;
+            Input[k] = v;
         }
 
         return this;
@@ -154,7 +154,7 @@ public class Behavior : IBehavior
         {
             _ownedDisposables.Add(instance);
         }
-        
+
         return this;
     }
 

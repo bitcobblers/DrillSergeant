@@ -20,13 +20,13 @@ internal class BehaviorExecutor
         var input = new Dictionary<string, object?>();
         var methodParameters = method.GetParameters();
 
-        for(int i=0; i<methodParameters.Length; i++)
+        for (int i = 0; i < methodParameters.Length; i++)
         {
             input[methodParameters[i].Name!] = parameters[i];
         }
 
         BehaviorBuilder.Reset(input);
-        
+
         if (IsAsync(method))
         {
             dynamic asyncResult = method.Invoke(instance, parameters)!;

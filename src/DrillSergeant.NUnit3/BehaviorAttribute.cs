@@ -12,7 +12,7 @@ namespace DrillSergeant;
 /// Defines an attribute used to notify the test runner that the method is a behavior test.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
-public sealed class BehaviorAttribute 
+public sealed class BehaviorAttribute
     : NUnitAttribute, IWrapTestMethod, ISimpleTestBuilder, IApplyToTest, IImplyFixture
 {
     private readonly NUnitTestCaseBuilder _builder = new();
