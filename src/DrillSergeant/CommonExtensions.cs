@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace DrillSergeant;
 
-public static class Extensions
+public static class CommonExtensions
 {
     /// <summary>
     /// Converts a method to a delegate.

@@ -10,7 +10,7 @@ public static class BehaviorBuilder
     /// <summary>
     /// Gets the current behavior to test.
     /// </summary>
-    public static Behavior? CurrentBehavior => Instance.Value;
+    public static Behavior? Current => Instance.Value;
 
     /// <summary>
     /// Creates a new behavior to build.

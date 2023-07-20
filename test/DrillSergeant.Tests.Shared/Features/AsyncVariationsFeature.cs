@@ -1,4 +1,4 @@
-﻿using DrillSergeant.GWT;
+﻿using DrillSergeant.Extensions.GWT;
 using Shouldly;
 
 namespace DrillSergeant.Tests.Features;

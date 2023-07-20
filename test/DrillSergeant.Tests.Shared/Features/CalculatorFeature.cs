@@ -1,4 +1,5 @@
-﻿using DrillSergeant.GWT;
+﻿using DrillSergeant.Extensions.GWT;
+using static DrillSergeant.GWT;
 using Shouldly;
 
 #if NUNIT
@@ -48,11 +49,12 @@ public class CalculatorFeature
         var input = new Input(a, b, a + b);
 
         BehaviorBuilder.New(input)
-            .EnableContextLogging()
-            .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
-            .And<Input>(SetSecondNumber)
-            .When(AddNumbers(_calculator))
-            .Then<CheckResultStep>();
+            .EnableContextLogging();
+
+        Given("Set first number", (c, i) => c.A = i.A); // Inline step declaration.
+        And<Input>(SetSecondNumber);
+        When(AddNumbers(_calculator));
+        Then<CheckResultStep>();
     }
 #endif
 

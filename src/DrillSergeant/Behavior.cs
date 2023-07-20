@@ -55,7 +55,7 @@ public class Behavior : IBehavior
     public IDictionary<string, object?> Context { get; } = new ExpandoObject();
 
     /// <inheritdoc cref="IBehavior.Input" />
-    public IDictionary<string, object?> Input { get; }
+    public IDictionary<string, object?> Input { get; private set; }
 
     /// <inheritdoc cref="IBehavior.LogContext" />
     public bool LogContext { get; private set; }
@@ -74,6 +74,23 @@ public class Behavior : IBehavior
             _steps.Add(step);
         }
 
+        return this;
+    }
+
+    public Behavior SetInput(object? input)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+        dynamic castedInput = new ExpandoObject();
+        var dict = (IDictionary<string, object?>)castedInput;
+
+        input ??= new { };
+
+        foreach (var property in input.GetType().GetProperties(flags))
+        {
+            dict[property.Name] = property.GetValue(input);
+        }
+
+        Input = dict;
         return this;
     }
 
