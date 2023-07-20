@@ -1,4 +1,4 @@
-﻿using DrillSergeant.Extensions.GWT;
+﻿using DrillSergeant.Syntax.GWT;
 using static DrillSergeant.GWT;
 using Shouldly;
 

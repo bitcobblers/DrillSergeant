@@ -18,15 +18,15 @@ public class VerbGenerator : IIncrementalGenerator
         {
             foreach (var verbGroup in VerbDefinitionParser.Parse(text))
             {
-                var ns = $"DrillSergeant.Extensions.{verbGroup.Name}";
+                var ns = $"DrillSergeant.Syntax.{verbGroup.Name}";
 
                 context.AddSource($"{verbGroup.Name}.g.cs", GetVerbGroupStaticsTemplateHeader("DrillSergeant", verbGroup.Name));
 
                 foreach (var verb in verbGroup.Verbs)
                 {
-                    context.AddSource($"{verbGroup.Name}/{verb}Step.g.cs", GetVerbStepTemplate(ns, verb));
-                    context.AddSource($"{verbGroup.Name}/{verb}LambdaStep.g.cs", GetLambdaVerbStepTemplate(ns, verb));
-                    context.AddSource($"{verbGroup.Name}/BehaviorExtensions.{verb}.g.cs", GetBehaviorExtensionsTemplate(ns, verb));
+                    context.AddSource($"{verbGroup.Name}/Syntax/{verb}Step.g.cs", GetVerbStepTemplate(ns, verb));
+                    context.AddSource($"{verbGroup.Name}/Syntax/{verb}LambdaStep.g.cs", GetLambdaVerbStepTemplate(ns, verb));
+                    context.AddSource($"{verbGroup.Name}/Syntax/BehaviorExtensions.{verb}.g.cs", GetBehaviorExtensionsTemplate(ns, verb));
 
                     context.AddSource($"{verbGroup.Name}_{verb}.g.cs", GetVerbGroupStaticsTemplate("DrillSergeant", verbGroup.Name, verb));
                 }
@@ -224,7 +224,7 @@ public static partial class {groupName}
 using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Threading.Tasks;
-using DrillSergeant.Extensions.{groupName};
+using DrillSergeant.Syntax.{groupName};
 
 namespace {ns};
 
@@ -322,18 +322,6 @@ public static partial class {groupName}
 
         BehaviorBuilder.Current.AddStep(step);
     }}
-
-    //// ---
-
-    //private static Behavior {verb}Internal(this Behavior behavior, string name, Delegate step)
-    //{{
-    //    behavior.AddStep(
-    //        new {verb}LambdaStep()
-    //            .SetName(name)
-    //            .Handle(step));
-
-    //    return behavior;
-    //}}
 }}
 ";
 }
