@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace DrillSergeant;
@@ -15,7 +16,7 @@ public class Behavior : IBehavior
 {
     private readonly List<IStep> _steps = new();
     private readonly HashSet<IDisposable> _ownedDisposables = new();
-
+    private bool _isFrozen;
     private bool _disposed;
 
     /// <summary>
@@ -48,7 +49,11 @@ public class Behavior : IBehavior
     /// <inheritdoc cref="IBehavior.LogContext" />
     public bool LogContext { get; private set; }
 
+    /// <inheritdoc cref="IBehavior.IsFrozen" />
+    public bool IsFrozen => _isFrozen;
+
     internal ISet<IDisposable> OwnedDisposables => _ownedDisposables;
+
 
     /// <summary>
     /// Adds a new step to the behavior.
@@ -58,6 +63,8 @@ public class Behavior : IBehavior
     [PublicAPI]
     public Behavior AddStep(IStep? step)
     {
+        AssertNotFrozen();
+
         if (step != null)
         {
             _steps.Add(step);
@@ -74,6 +81,8 @@ public class Behavior : IBehavior
     [PublicAPI]
     public Behavior SetInput(object? input)
     {
+        AssertNotFrozen();
+
         const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
 
         input ??= new { };
@@ -95,6 +104,8 @@ public class Behavior : IBehavior
     [PublicAPI]
     public Behavior SetInput(IDictionary<string, object?>? input)
     {
+        AssertNotFrozen();
+
         input ??= new Dictionary<string, object?>();
         Input.Clear();
 
@@ -114,6 +125,8 @@ public class Behavior : IBehavior
     [PublicAPI]
     public Behavior Background(Behavior? background)
     {
+        AssertNotFrozen();
+
         if (background == null)
         {
             return this;
@@ -138,6 +151,8 @@ public class Behavior : IBehavior
     [PublicAPI]
     public Behavior EnableContextLogging()
     {
+        AssertNotFrozen();
+
         LogContext = true;
         return this;
     }
@@ -155,6 +170,12 @@ public class Behavior : IBehavior
             _ownedDisposables.Add(instance);
         }
 
+        return this;
+    }
+
+    public Behavior Freeze()
+    {
+        _isFrozen = true;
         return this;
     }
 
@@ -186,5 +207,13 @@ public class Behavior : IBehavior
         }
 
         _disposed = true;
+    }
+
+    private void AssertNotFrozen([CallerMemberName]string memberName="")
+    {
+        if(_isFrozen)
+        {
+            throw new BehaviorFrozenException(memberName);
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Shouldly;
+﻿using Shouldly;
 using Xunit;
 
 namespace DrillSergeant.Tests;
@@ -98,6 +97,81 @@ public class BehaviorTests
             // Assert.
             behavior.Input.ShouldNotContainKey("A");
         }
+    }
+
+    public class FreezeMethod : BehaviorTests
+    {
+        [Fact]
+        public void AttemptingToAddStepToFrozenBehaviorThrowsBehaviorFrozenException()
+        {
+            // Arrange.
+            using var behavior = new Behavior();
+
+            // Act.
+            behavior.Freeze();
+
+            // Assert.
+            Assert.Throws<BehaviorFrozenException>(
+                () => behavior.AddStep(new StubStep()));
+        }
+
+        [Fact]
+        public void AttemptingToSetInputToFrozenBehaviorThrowsBehaviorFrozenException_Object()
+        {
+            // Arrange.
+            using var behavior = new Behavior();
+
+            // Act.
+            behavior.Freeze();
+
+            // Assert.
+            Assert.Throws<BehaviorFrozenException>(
+                () => behavior.SetInput((object?)null));
+        }
+
+        [Fact]
+        public void AttemptingToSetInputToFrozenBehaviorThrowsBehaviorFrozenException_Dictionary()
+        {
+            // Arrange.
+            using var behavior = new Behavior();
+
+            // Act.
+            behavior.Freeze();
+
+            // Assert.
+            Assert.Throws<BehaviorFrozenException>(
+                () => behavior.SetInput(null));
+        }
+
+        [Fact]
+        public void AttemptingToAddBackgroundToFrozenBehaviorThrowsBehaviorFrozenException()
+        {
+            // Arrange.
+            using var behavior = new Behavior();
+
+            // Act.
+            behavior.Freeze();
+
+            // Assert.
+            Assert.Throws<BehaviorFrozenException>(
+                () => behavior.Background(new Behavior()));
+        }
+
+        [Fact]
+        public void AttemptingToEnableContextLoggingToFrozenBehaviorThrowsBehaviorFrozenException()
+        {
+            // Arrange.
+            using var behavior = new Behavior();
+
+            // Act.
+            behavior.Freeze();
+
+            // Assert.
+            Assert.Throws<BehaviorFrozenException>(
+                () => behavior.EnableContextLogging());
+        }
+
+        private class StubStep : VerbStep { }
     }
 
     public class DisposeMethod : BehaviorTests

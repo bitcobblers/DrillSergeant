@@ -1,4 +1,5 @@
 ﻿using DrillSergeant.Xunit2;
+using FakeItEasy;
 using Shouldly;
 using System;
 using System.Threading;
@@ -13,6 +14,42 @@ public class BehaviorExecutorTests
 {
     public class LoadBehaviorMethod : BehaviorExecutorTests
     {
+        [Fact]
+        public async Task LoadedBehaviorsAreAutomaticallyFrozen()
+        {
+            // Arrange.
+            var reporter = A.Fake<ITestReporter>();
+            var instance = new StubWithBehavior();
+            var method = typeof(StubWithBehavior).GetMethod("SampleBehavior");
+            var parameters = Array.Empty<object?>();
+            var executor = new BehaviorExecutor(reporter);
+
+            // Act.
+            using var behavior = (Behavior)await executor.LoadBehavior(instance, method!, parameters);
+
+            // Assert.
+            behavior.IsFrozen.ShouldBeTrue();
+        }
+        
+        public class StubWithBehavior
+        {
+            public void SampleBehavior()
+            {
+            }
+        }
+
+        public class StubStep : VerbStep {}
+
+        private async Task<Behavior> LoadSampleBehavior()
+        {
+            var reporter = A.Fake<ITestReporter>();
+            var instance = new StubWithBehavior();
+            var method = typeof(StubWithBehavior).GetMethod("SampleBehavior");
+            var parameters = Array.Empty<object?>();
+            var executor = new BehaviorExecutor(reporter);
+
+            return (Behavior)await executor.LoadBehavior(instance, method!, parameters);
+        }
     }
 
     public class ExecuteMethod : BehaviorExecutorTests
