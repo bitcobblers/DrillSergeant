@@ -90,7 +90,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
             var task = Task.Run(async () =>
             {
                 var exceptions = new List<Exception>();
-                var behavior = await executor.LoadBehavior(classInstance, method, arguments);
+                using var behavior = await executor.LoadBehavior(classInstance, method, arguments);
 
                 if (behavior == null)
                 {

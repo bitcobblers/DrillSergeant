@@ -15,7 +15,7 @@ internal class BehaviorExecutor
 
     public BehaviorExecutor(ITestReporter reporter) => _reporter = reporter;
 
-    public async Task<IBehavior?> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
+    public async Task<IBehavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
     {
         var input = new Dictionary<string, object?>();
         var methodParameters = method.GetParameters();

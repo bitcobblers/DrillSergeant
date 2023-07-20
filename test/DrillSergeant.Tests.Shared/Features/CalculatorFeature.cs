@@ -23,7 +23,7 @@ public class CalculatorFeature
 #endif
     private readonly Calculator _calculator = new();
 
-    public record Input(int A, int B, int Expected);
+    public record Input(int a, int b, int expected);
 
 
 #if XUNIT
@@ -46,12 +46,17 @@ public class CalculatorFeature
     [InlineAutoData]
     public void AdditionBehaviorWithAutoData(int a, int b)
     {
-        var input = new Input(a, b, a + b);
-
-        BehaviorBuilder.New(input)
+        BehaviorBuilder
+            .Current
+            .SetInput(new
+            {
+                a,
+                b,
+                expected = a + b
+            })
             .EnableContextLogging();
 
-        Given("Set first number", (c, i) => c.A = i.A); // Inline step declaration.
+        Given("Set first number", (c, i) => c.a = i.a); // Inline step declaration.
         And<Input>(SetSecondNumber);
         When(AddNumbers(_calculator));
         Then<CheckResultStep>();
@@ -70,11 +75,7 @@ public class CalculatorFeature
 #endif
     public void AsyncAdditionBehavior(int a, int b, int expected)
     {
-        var input = new Input(a, b, expected);
-
-        BehaviorBuilder.New(input);
-
-        Given("Set first number", (c, i) => c.A = i.A);
+        Given("Set first number", (c, i) => c.a = i.a);
         GivenAsync(SetSecondNumberAsync);
         When(AddNumbersAsync(_calculator));
         Then<CheckResultStepAsync>();
@@ -92,36 +93,38 @@ public class CalculatorFeature
 #endif
     public void AdditionBehavior(int a, int b, int expected)
     {
-        var input = new Input(a, b, expected);
-
-        BehaviorBuilder.New(input)
+        BehaviorBuilder
+            .Current
             .EnableContextLogging();
 
-        Given("Set first number", (c, i) => c.A = i.A); // Inline step declaration.
+        Given("Set first number", (c, i) => c.a = i.a); // Inline step declaration.
         And<Input>(SetSecondNumber);
         When(AddNumbers(_calculator));
         Then(new CheckResultStep());
     }
 
     // Step implemented as a normal method.
-    private void SetSecondNumber(dynamic context, Input input) => context.B = input.B;
+    private void SetSecondNumber(dynamic context, Input input) => context.b = input.b;
 
     private Task SetSecondNumberAsync(dynamic context, dynamic input)
     {
-        context.B = input.B;
+        context.b = input.b;
         return Task.CompletedTask;
     }
 
     // Step implemented as a lambda step for greater flexibility.
     public LambdaStep AddNumbers(Calculator calculator) =>
         new LambdaStep("Add numbers")
-            .Handle((c) => { c.Result = calculator.Add(c.A, c.B); });
+            .Handle((c) =>
+            {
+                c.Result = calculator.Add(c.a, c.b);
+            });
 
     public LambdaStep AddNumbersAsync(Calculator calculator) =>
         new LambdaStep("Add numbers")
             .HandleAsync((c, _) =>
             {
-                c.Result = calculator.Add(c.A, c.B);
+                c.Result = calculator.Add(c.a, c.b);
                 return Task.CompletedTask;
             });
 
@@ -130,11 +133,10 @@ public class CalculatorFeature
     {
         public void Then(dynamic context, Input input)
         {
-            int expected = input.Expected;
+            int expected = input.expected;
             int result = context.Result;
 
             expected.ShouldBe(result);
-
         }
     }
 
@@ -143,7 +145,7 @@ public class CalculatorFeature
     {
         public Task ThenAsync(dynamic context, Input input)
         {
-            int expected = input.Expected;
+            int expected = input.expected;
             int result = context.Result;
 
             expected.ShouldBe(result);
