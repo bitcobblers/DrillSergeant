@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace DrillSergeant;
 
@@ -29,21 +30,8 @@ public class Behavior : IBehavior
     /// Initializes a new instance of the <see cref="Behavior"/> class.
     /// </summary>
     /// <param name="input">The input to bind to the behavior.</param>
-    public Behavior(object? input)
-    {
-        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
-        dynamic castedInput = new ExpandoObject();
-        var dict = (IDictionary<string, object?>)castedInput;
-
-        input ??= new { };
-
-        foreach (var property in input.GetType().GetProperties(flags))
-        {
-            dict[property.Name] = property.GetValue(input);
-        }
-
-        Input = dict;
-    }
+    public Behavior(object? input) =>
+        SetInput(input);
 
     /// <summary>
     /// Finalizes an instance of the <see cref="Behavior"/> class.
@@ -55,7 +43,7 @@ public class Behavior : IBehavior
     public IDictionary<string, object?> Context { get; } = new ExpandoObject();
 
     /// <inheritdoc cref="IBehavior.Input" />
-    public IDictionary<string, object?> Input { get; }
+    public IDictionary<string, object?> Input { get; } = new ExpandoObject();
 
     /// <inheritdoc cref="IBehavior.LogContext" />
     public bool LogContext { get; private set; }
@@ -67,6 +55,7 @@ public class Behavior : IBehavior
     /// </summary>
     /// <param name="step">An instance of the step to add.</param>
     /// <returns>The current behavior.</returns>
+    [PublicAPI]
     public Behavior AddStep(IStep? step)
     {
         if (step != null)
@@ -78,10 +67,32 @@ public class Behavior : IBehavior
     }
 
     /// <summary>
+    /// Sets the input to use for the behavior.
+    /// </summary>
+    /// <param name="input">The input to use.</param>
+    /// <returns>The current behavior.</returns>
+    [PublicAPI]
+    public Behavior SetInput(object? input)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+
+        input ??= new { };
+        Input.Clear();
+
+        foreach (var property in input.GetType().GetProperties(flags))
+        {
+            Input[property.Name] = property.GetValue(input);
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Adds a background <see cref="Behavior"/> to the current behavior.
     /// </summary>
     /// <param name="background">The background behavior to add.</param>
     /// <returns>The current behavior.</returns>
+    [PublicAPI]
     public Behavior Background(Behavior? background)
     {
         if (background == null)
@@ -105,6 +116,7 @@ public class Behavior : IBehavior
     /// Enables context logging between steps.
     /// </summary>
     /// <returns>The current behavior.</returns>
+    [PublicAPI]
     public Behavior EnableContextLogging()
     {
         LogContext = true;
@@ -116,6 +128,7 @@ public class Behavior : IBehavior
     /// </summary>
     /// <param name="instance">The object instance to take ownership of.</param>
     /// <returns>The current behavior.</returns>
+    [PublicAPI]
     public Behavior Owns(IDisposable? instance)
     {
         if (instance != null)

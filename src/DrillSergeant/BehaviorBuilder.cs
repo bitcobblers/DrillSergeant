@@ -10,7 +10,7 @@ public static class BehaviorBuilder
     /// <summary>
     /// Gets the current behavior to test.
     /// </summary>
-    public static Behavior? CurrentBehavior => Instance.Value;
+    public static Behavior? Current => Instance.Value;
 
     /// <summary>
     /// Creates a new behavior to build.
@@ -22,15 +22,6 @@ public static class BehaviorBuilder
         Instance.Value = new Behavior(input);
 
         return Instance.Value;
-    }
-
-    /// <summary>
-    /// Marks an object as being owned by the current behavior.
-    /// </summary>
-    /// <param name="instance">The object to take ownership of.</param>
-    public static void Owns(IDisposable? instance)
-    {
-        Instance.Value?.Owns(instance);
     }
 
     /// <summary>

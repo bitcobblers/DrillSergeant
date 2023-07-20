@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using System.Collections.Generic;
+using Shouldly;
 using Xunit;
 
 namespace DrillSergeant.Tests;
@@ -53,6 +54,51 @@ public class BehaviorTests
         }
     }
 
+    public class SetInputMethod : BehaviorTests
+    {
+        [Fact]
+        public void BehaviorIsInitiallySetToEmptyDictionary()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            var input = behavior.Input;
+
+            // Assert.
+            input.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void SettingInputOverwritesExistingProperties()
+        {
+            // Arrange.
+            var input1 = new { A = "error" };
+            var input2 = new { A = "expected" };
+            var behavior = new Behavior(input1);
+
+            // Act.
+            behavior.SetInput(input2);
+
+            // Assert.
+            behavior.Input["A"].ShouldBe("expected");
+        }
+
+        [Fact]
+        public void SettingInputRemovesOldProperties()
+        {
+            // Arrange.
+            var input1 = new { A = "error" };
+            var input2 = new { B = "ignored" };
+            var behavior = new Behavior(input1);
+
+            // Act.
+            behavior.SetInput(input2);
+
+            // Assert.
+            behavior.Input.ShouldNotContainKey("A");
+        }
+    }
 
     public class DisposeMethod : BehaviorTests
     {
