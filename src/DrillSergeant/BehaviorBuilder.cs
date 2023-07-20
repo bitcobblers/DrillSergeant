@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace DrillSergeant;
@@ -36,7 +37,7 @@ public static class BehaviorBuilder
     /// <summary>
     /// Clears the current behavior.
     /// </summary>
-    internal static void Clear()
+    internal static void Reset(IDictionary<string, object?> input)
     {
         Instance.Value?.Dispose();
         Instance.Value = null;
