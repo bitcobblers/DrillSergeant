@@ -1,4 +1,5 @@
 ﻿using DrillSergeant.Extensions.GWT;
+using static DrillSergeant.GWT;
 using Shouldly;
 
 namespace DrillSergeant.Tests.Features;
@@ -16,16 +17,16 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.New(input)
-            .When("Update input", (c, i) => i.Value = "error")
-            .Then("Input should be unchanged", (_, i) => ((string)i.Value).ShouldBe("expected"));
+        BehaviorBuilder.New(input);
+        When("Update input", (c, i) => i.Value = "error");
+        Then("Input should be unchanged", (_, i) => ((string)i.Value).ShouldBe("expected"));
     }
 
     [Behavior]
     public void CreatingBehaviorWithoutInputCreatesEmptyBag()
     {
-        BehaviorBuilder.New()
-            .Then("The input should be non-null", (_, i) => ((object?)i).ShouldNotBeNull());
+        BehaviorBuilder.New();
+        Then("The input should be non-null", (_, i) => ((object?)i).ShouldNotBeNull());
     }
 
     [Behavior]
@@ -33,9 +34,9 @@ public class BaseStepFeature
     {
         object value = new();
 
-        BehaviorBuilder.New()
-            .Given("Set context", c => c.Value = value)
-            .Then("Verify context is same", c => ((object)c.Value).ShouldBeSameAs(value));
+        BehaviorBuilder.New();
+        Given("Set context", c => c.Value = value);
+        Then("Verify context is same", c => ((object)c.Value).ShouldBeSameAs(value));
     }
 
     [Behavior]
@@ -43,9 +44,10 @@ public class BaseStepFeature
     {
         BehaviorBuilder.New()
             .EnableContextLogging()
-            .Background(SetupContext)
-            .Then("Check A", c => ((int)c.A).ShouldBe(1))
-            .But("Check B", c => ((int)c.B).ShouldBe(2));
+            .Background(SetupContext);
+
+        Then("Check A", c => ((int)c.A).ShouldBe(1));
+        But("Check B", c => ((int)c.B).ShouldBe(2));
     }
 
     [Behavior]
@@ -58,8 +60,9 @@ public class BaseStepFeature
 
         BehaviorBuilder.New(input)
             .EnableContextLogging()
-            .Background(SetupContextFromInput)
-            .Then("Check Value", c => ((string)c.Value).ShouldBe("expected"));
+            .Background(SetupContextFromInput);
+
+        Then("Check Value", c => ((string)c.Value).ShouldBe("expected"));
     }
 
     [Behavior]
@@ -72,8 +75,9 @@ public class BaseStepFeature
 
         BehaviorBuilder.New(input)
             .EnableContextLogging()
-            .Background(SetupContextFromInputAsync)
-            .Then("Check Value", c => ((string)c.Value).ShouldBe("expected"));
+            .Background(SetupContextFromInputAsync);
+
+        Then("Check Value", c => ((string)c.Value).ShouldBe("expected"));
     }
 
     [Behavior]
@@ -86,25 +90,28 @@ public class BaseStepFeature
 
         BehaviorBuilder.New(input)
             .EnableContextLogging()
-            .Background(SetupContext)
-            .Then("Check Value", c => ((int)c.A).ShouldBe(1));
+            .Background(SetupContext);
+
+        Then("Check Value", c => ((int)c.A).ShouldBe(1));
     }
 
     [Behavior]
     public void CallingNullLambdaHandlerDoesNotStopExecution()
     {
-        BehaviorBuilder.New()
-            .Given(NullLambdaStep())
-            .When("Set context value", c => c.Success = true)
-            .Then("Check context", c => ((bool)c.Success).ShouldBeTrue());
+        BehaviorBuilder.New();
+
+        Given(NullLambdaStep());
+        When("Set context value", c => c.Success = true);
+        Then("Check context", c => ((bool)c.Success).ShouldBeTrue());
     }
 
     [Behavior]
     public void SkippingStepPreventsItFromExecuting()
     {
-        BehaviorBuilder.New()
-            .Given(SkippedStep())
-            .Then("should execute", () => { });
+        BehaviorBuilder.New();
+
+        Given(SkippedStep());
+        Then("should execute", () => { });
     }
 
     private LambdaStep NullLambdaStep() =>

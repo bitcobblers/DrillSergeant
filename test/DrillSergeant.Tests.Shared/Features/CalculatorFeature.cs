@@ -72,11 +72,12 @@ public class CalculatorFeature
     {
         var input = new Input(a, b, expected);
 
-        BehaviorBuilder.New(input)
-            .Given("Set first number", (c, i) => c.A = i.A)
-            .GivenAsync(SetSecondNumberAsync)
-            .When(AddNumbersAsync(_calculator))
-            .Then<CheckResultStepAsync>();
+        BehaviorBuilder.New(input);
+
+        Given("Set first number", (c, i) => c.A = i.A);
+        GivenAsync(SetSecondNumberAsync);
+        When(AddNumbersAsync(_calculator));
+        Then<CheckResultStepAsync>();
     }
 
     [Behavior]
@@ -94,11 +95,12 @@ public class CalculatorFeature
         var input = new Input(a, b, expected);
 
         BehaviorBuilder.New(input)
-            .EnableContextLogging()
-            .Given("Set first number", (c, i) => c.A = i.A) // Inline step declaration.
-            .And<Input>(SetSecondNumber)
-            .When(AddNumbers(_calculator))
-            .Then(new CheckResultStep());
+            .EnableContextLogging();
+
+        Given("Set first number", (c, i) => c.A = i.A); // Inline step declaration.
+        And<Input>(SetSecondNumber);
+        When(AddNumbers(_calculator));
+        Then(new CheckResultStep());
     }
 
     // Step implemented as a normal method.
