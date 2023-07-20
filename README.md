@@ -110,8 +110,6 @@ public static class CartSteps
                 context.Products = response;
             });
 
-    // ---
-
     public static LambdaStep AddRandomProductToCart(HttpClient client) =>
         new LambdaStep("Add random product to cart")
             .HandleAsync(async context =>
