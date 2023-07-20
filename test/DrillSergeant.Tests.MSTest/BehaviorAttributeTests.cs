@@ -89,14 +89,13 @@ public class BehaviorAttributeTests
             [Behavior]
             public void EmptyBehavior()
             {
-                BehaviorBuilder.New();
             }
 
             [Behavior]
             public void BehaviorThatThrowsException()
             {
                 BehaviorBuilder
-                    .New()
+                    .Reset()
                     .AddStep(new LambdaStep().Handle(() => throw new Exception("ERROR")));
             }
         }

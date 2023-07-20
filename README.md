@@ -34,10 +34,9 @@ public class CalculatorTests
     [InlineData(2,3,5)]
     public void TestAdditionBehavior(int a, int b, int expected)
     {
-        BehaviorBuilder.New()
-            .Given(NewCalculator())
-            .When(AddNumbers(a,b))
-            .Then(CheckResult(expected));
+        Given(NewCalculator());
+        When(AddNumbers(a,b));
+        Then(CheckResult(expected));
     }
 
     private LambdaStep NewCalculator() =>
@@ -74,12 +73,11 @@ public void PurchasingItemsInCartCreatesNewOrder()
 {
     var client = _api.CreateClient();
 
-    BehaviorBuilder.New()
-        .Given(CartSteps.NewCart(client))
-        .Given(CartSteps.LoadProducts(client))
-        .Given(CartSteps.AddRandomProductToCart(client))
-        .When(OrderingSteps.PlaceOrder(client))
-        .Then(OrderingSteps.CheckOrderId());
+    Given(CartSteps.NewCart(client));
+    Given(CartSteps.LoadProducts(client));
+    Given(CartSteps.AddRandomProductToCart(client));
+    When(OrderingSteps.PlaceOrder(client));
+    Then(OrderingSteps.CheckOrderId());
 }
 ```
 

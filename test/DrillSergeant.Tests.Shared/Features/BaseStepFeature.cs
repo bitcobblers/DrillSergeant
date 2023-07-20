@@ -17,7 +17,7 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.New(input);
+        BehaviorBuilder.Reset(input);
         When("Update input", (c, i) => i.Value = "error");
         Then("Input should be unchanged", (_, i) => ((string)i.Value).ShouldBe("expected"));
     }
@@ -25,7 +25,6 @@ public class BaseStepFeature
     [Behavior]
     public void CreatingBehaviorWithoutInputCreatesEmptyBag()
     {
-        BehaviorBuilder.New();
         Then("The input should be non-null", (_, i) => ((object?)i).ShouldNotBeNull());
     }
 
@@ -34,7 +33,6 @@ public class BaseStepFeature
     {
         object value = new();
 
-        BehaviorBuilder.New();
         Given("Set context", c => c.Value = value);
         Then("Verify context is same", c => ((object)c.Value).ShouldBeSameAs(value));
     }
@@ -42,7 +40,7 @@ public class BaseStepFeature
     [Behavior]
     public void ConsumingBackgroundAutomaticallyExecutesSteps()
     {
-        BehaviorBuilder.New()
+        BehaviorBuilder.Reset()
             .EnableContextLogging()
             .Background(SetupContext);
 
@@ -58,7 +56,7 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.New(input)
+        BehaviorBuilder.Reset(input)
             .EnableContextLogging()
             .Background(SetupContextFromInput);
 
@@ -73,7 +71,7 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.New(input)
+        BehaviorBuilder.Reset(input)
             .EnableContextLogging()
             .Background(SetupContextFromInputAsync);
 
@@ -88,7 +86,7 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.New(input)
+        BehaviorBuilder.Reset(input)
             .EnableContextLogging()
             .Background(SetupContext);
 
@@ -98,8 +96,6 @@ public class BaseStepFeature
     [Behavior]
     public void CallingNullLambdaHandlerDoesNotStopExecution()
     {
-        BehaviorBuilder.New();
-
         Given(NullLambdaStep());
         When("Set context value", c => c.Success = true);
         Then("Check context", c => ((bool)c.Success).ShouldBeTrue());
@@ -108,8 +104,6 @@ public class BaseStepFeature
     [Behavior]
     public void SkippingStepPreventsItFromExecuting()
     {
-        BehaviorBuilder.New();
-
         Given(SkippedStep());
         Then("should execute", () => { });
     }

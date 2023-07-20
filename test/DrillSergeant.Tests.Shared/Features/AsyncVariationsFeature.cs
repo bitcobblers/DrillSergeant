@@ -19,8 +19,6 @@ public class AsyncVariationsFeature
     [Behavior]
     public void WaitUsingInlineDelay()
     {
-        BehaviorBuilder.New();
-
         Given("Set context", c => c.IsSuccess = false);
         WhenAsync("Add delay", async c =>
         {
@@ -36,7 +34,6 @@ public class AsyncVariationsFeature
 #endif
     public void WaitUsingInlineDelay_WithContext()
     {
-        BehaviorBuilder.New();
         Given("Set context", c => c.IsSuccess = false);
         WhenAsync<Context>("Add delay", async c =>
         {
@@ -49,8 +46,6 @@ public class AsyncVariationsFeature
     [Behavior]
     public void WaitUsingInlineDelay_WithInput()
     {
-        BehaviorBuilder.New();
-
         Given("Set context", c => c.IsSuccess = false);
         WhenAsync<Input>("Add delay", async (c, i) =>
         {
@@ -63,8 +58,6 @@ public class AsyncVariationsFeature
     [Behavior]
     public void WaitUsingInlineDelay_WithContextAndInput()
     {
-        BehaviorBuilder.New();
-
         Given("Set context", c => c.IsSuccess = false);
         WhenAsync<Context, Input>("Add delay", async (c, i) =>
         {
@@ -77,8 +70,6 @@ public class AsyncVariationsFeature
     [Behavior]
     public void WaitUsingLambdaDelay()
     {
-        BehaviorBuilder.New();
-
         Given("Set context", c => c.IsSuccess = false);
         When(DelayAndSet(10));
         Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());

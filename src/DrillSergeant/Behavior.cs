@@ -88,6 +88,25 @@ public class Behavior : IBehavior
     }
 
     /// <summary>
+    /// Sets the input to use for the behavior.
+    /// </summary>
+    /// <param name="input">A dictionary containing key-value input values to use.</param>
+    /// <returns>The current behavior.</returns>
+    [PublicAPI]
+    public Behavior SetInput(IDictionary<string, object?>? input)
+    {
+        input ??= new Dictionary<string, object?>();
+        Input.Clear();
+
+        foreach (var (k, v) in input)
+        {
+            Input[k] = v;
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Adds a background <see cref="Behavior"/> to the current behavior.
     /// </summary>
     /// <param name="background">The background behavior to add.</param>
@@ -135,7 +154,7 @@ public class Behavior : IBehavior
         {
             _ownedDisposables.Add(instance);
         }
-        
+
         return this;
     }
 

@@ -1,5 +1,4 @@
 ﻿using DrillSergeant.Xunit2;
-using FakeItEasy;
 using Shouldly;
 using System;
 using System.Threading;
@@ -14,90 +13,6 @@ public class BehaviorExecutorTests
 {
     public class LoadBehaviorMethod : BehaviorExecutorTests
     {
-        [Fact]
-        public async Task NoReturnedBehaviorThrowsInvalidOperationException_Sync()
-        {
-            // Arrange.
-            var reporter = A.Fake<ITestReporter>();
-            var instance = new StubWithBehaviors();
-            var method = typeof(StubWithBehaviors).GetMethod("NotABehavior_Sync");
-            var parameters = Array.Empty<object?>();
-
-            var executor = new BehaviorExecutor(reporter);
-
-            // Act and assert.
-            var behavior = await executor.LoadBehavior(instance, method!, parameters);
-
-            // Assert.
-            behavior.ShouldBeNull();
-        }
-
-        [Fact]
-        public async Task NoReturnedBehaviorReturnsNull_Async()
-        {
-            // Arrange.
-            var reporter = A.Fake<ITestReporter>();
-            var instance = new StubWithBehaviors();
-            var method = typeof(StubWithBehaviors).GetMethod("NotABehavior_Async");
-            var parameters = Array.Empty<object?>();
-
-            var executor = new BehaviorExecutor(reporter);
-
-            // Act.
-            var behavior = await executor.LoadBehavior(instance, method!, parameters);
-
-            // Assert.
-            behavior.ShouldBeNull();
-        }
-
-        [Fact]
-        public async Task AsyncMethodSetsBehaviorProperty()
-        {
-            // Arrange.
-            var reporter = A.Fake<ITestReporter>();
-            var instance = new StubWithBehaviors();
-            var method = typeof(StubWithBehaviors).GetMethod("AsyncBehavior");
-            var parameters = Array.Empty<object?>();
-
-            var executor = new BehaviorExecutor(reporter);
-
-            // Act.
-            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
-
-            // Assert.
-            behavior.ShouldNotBeNull();
-        }
-
-        [Fact]
-        public async Task SyncMethodSetsBehaviorProperty()
-        {
-            // Arrange.
-            var reporter = A.Fake<ITestReporter>();
-            var instance = new StubWithBehaviors();
-            var method = typeof(StubWithBehaviors).GetMethod("SyncBehavior");
-            var parameters = Array.Empty<object?>();
-
-            var executor = new BehaviorExecutor(reporter);
-
-            // Act.
-            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
-
-            // Assert.
-            behavior.ShouldNotBeNull();
-        }
-
-        private class StubWithBehaviors
-        {
-            public void NotABehavior_Sync()
-            {
-            }
-
-            public Task NotABehavior_Async() => Task.CompletedTask;
-
-            public Behavior SyncBehavior() => BehaviorBuilder.New();
-
-            public Task<Behavior> AsyncBehavior() => Task.FromResult(BehaviorBuilder.New());
-        }
     }
 
     public class ExecuteMethod : BehaviorExecutorTests
@@ -176,10 +91,10 @@ public class BehaviorExecutorTests
             var executor = new BehaviorExecutor(_reporter);
 
             var obj = new StubDisposable();
-            var behavior = BehaviorBuilder.New()
+            var behavior = BehaviorBuilder.Reset()
                 .AddStep(
                     new LambdaStep("Registers disposable")
-                        .Handle(c => c.Obj = obj.OwnedByBehavior()));
+                        .Handle(c => c.Obj = obj.OwnedByBehavior()!));
 
             // Act.
             await executor.Execute(behavior, CancellationToken.None);
@@ -253,19 +168,19 @@ public class BehaviorExecutorTests
         private class StubWithBehaviors
         {
             public Behavior SuccessfulBehavior() =>
-                BehaviorBuilder.New()
+                BehaviorBuilder.Reset()
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true));
 
             public Behavior FailingBehavior() =>
-                BehaviorBuilder.New()
+                BehaviorBuilder.Reset()
                     .AddStep(
                         new LambdaStep("Failing step")
                             .Handle(() => throw new Exception("Failed")));
 
             public Behavior FailingBehaviorWithAdditionalSteps() =>
-                BehaviorBuilder.New()
+                BehaviorBuilder.Reset()
                     .AddStep(
                         new LambdaStep("Set context to true")
                             .Handle(c => c.IsSuccess = true))
@@ -277,7 +192,7 @@ public class BehaviorExecutorTests
                             .Handle(c => c.IsSuccess = false));
 
             public Behavior BehaviorWithSkippedStep() =>
-                BehaviorBuilder.New()
+                BehaviorBuilder.Reset()
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true))
@@ -287,7 +202,7 @@ public class BehaviorExecutorTests
                             .Skip(() => true));
 
             public Behavior BehaviorWithFive100MsSteps() =>
-                BehaviorBuilder.New()
+                BehaviorBuilder.Reset()
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true))

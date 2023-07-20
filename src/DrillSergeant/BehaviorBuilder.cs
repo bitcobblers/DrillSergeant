@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading;
 
 namespace DrillSergeant;
@@ -10,26 +10,30 @@ public static class BehaviorBuilder
     /// <summary>
     /// Gets the current behavior to test.
     /// </summary>
-    public static Behavior? Current => Instance.Value;
+    public static Behavior Current => Instance.Value ?? new Behavior();
 
     /// <summary>
     /// Creates a new behavior to build.
     /// </summary>
     /// <param name="input">The input parameters for the behavior.</param>
     /// <returns>The new behavior to build.</returns>
-    public static Behavior New(object? input = null)
+    internal static Behavior Reset(object? input = null)
     {
-        Instance.Value = new Behavior(input);
+        Instance.Value?.Dispose();
+        Instance.Value = new Behavior().SetInput(input);
 
         return Instance.Value;
     }
 
     /// <summary>
-    /// Clears the current behavior.
+    /// Resets the current behavior builder.
     /// </summary>
-    internal static void Clear()
+    /// <param name="input">The dictionary to use for input data.</param>
+    internal static Behavior Reset(IDictionary<string, object?> input)
     {
         Instance.Value?.Dispose();
-        Instance.Value = null;
+        Instance.Value = new Behavior().SetInput(input);
+
+        return Instance.Value;
     }
 }
