@@ -38,7 +38,7 @@ public class AsyncVariationsFeature
         WhenAsync<Context>("Add delay", async c =>
         {
             await Task.Delay(10);
-            c.IsSuccess = true;
+            CurrentBehavior.Context.IsSuccess = true;
         });
         Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
     }
@@ -62,7 +62,7 @@ public class AsyncVariationsFeature
         WhenAsync<Context, Input>("Add delay", async (c, i) =>
         {
             await Task.Delay(10);
-            c.IsSuccess = true;
+            CurrentBehavior.Context.IsSuccess = true;
         });
         Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
     }

@@ -53,10 +53,10 @@ public abstract class BaseStep : IStep
             await result;
         }
 
-        if (ReferenceEquals(context, resolvedContext) == false)
-        {
-            UpdateContext(context, resolvedContext);
-        }
+        //if (ReferenceEquals(context, resolvedContext) == false)
+        //{
+        //    UpdateContext(context, resolvedContext);
+        //}
     }
 
     /// <summary>
