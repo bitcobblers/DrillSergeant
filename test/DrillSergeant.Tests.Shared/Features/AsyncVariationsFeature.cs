@@ -19,13 +19,14 @@ public class AsyncVariationsFeature
     [Behavior]
     public void WaitUsingInlineDelay()
     {
-        Given("Set context", c => c.IsSuccess = false);
-        WhenAsync("Add delay", async c =>
+        Given("Set context", () => CurrentBehavior.Context.IsSuccess = false); //  c => c.IsSuccess = false);
+        WhenAsync("Add delay", async () =>
         {
             await Task.Delay(10);
-            c.IsSuccess = true;
+            //c.IsSuccess = true;
+            CurrentBehavior.Context.IsSuccess = true;
         });
-        Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
+        Then("Check result", () => ((bool)CurrentBehavior.Context.IsSuccess).ShouldBeTrue());  //c => ((bool)c.IsSuccess).ShouldBeTrue());
     }
 
     [Behavior]
@@ -34,53 +35,31 @@ public class AsyncVariationsFeature
 #endif
     public void WaitUsingInlineDelay_WithContext()
     {
-        Given("Set context", c => c.IsSuccess = false);
-        WhenAsync<Context>("Add delay", async c =>
+        Given("Set context", () => CurrentBehavior.Context.IsSuccess = false);  // c => c.IsSuccess = false);
+        WhenAsync("Add delay", async () =>
         {
+            var context = CurrentBehavior.MapContext<Context>();
             await Task.Delay(10);
-            CurrentBehavior.Context.IsSuccess = true;
-        });
-        Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
-    }
 
-    [Behavior]
-    public void WaitUsingInlineDelay_WithInput()
-    {
-        Given("Set context", c => c.IsSuccess = false);
-        WhenAsync<Input>("Add delay", async (c, i) =>
-        {
-            await Task.Delay(10);
-            c.IsSuccess = true;
+            context.IsSuccess = true;
         });
-        Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
+        Then("Check result", () => ((bool)CurrentBehavior.Context.IsSuccess).ShouldBeTrue());
     }
-
-    [Behavior]
-    public void WaitUsingInlineDelay_WithContextAndInput()
-    {
-        Given("Set context", c => c.IsSuccess = false);
-        WhenAsync<Context, Input>("Add delay", async (c, i) =>
-        {
-            await Task.Delay(10);
-            CurrentBehavior.Context.IsSuccess = true;
-        });
-        Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
-    }
-
+    
     [Behavior]
     public void WaitUsingLambdaDelay()
     {
-        Given("Set context", c => c.IsSuccess = false);
+        Given("Set context", () => CurrentBehavior.Context.IsSuccess = false);
         When(DelayAndSet(10));
-        Then("Check result", c => ((bool)c.IsSuccess).ShouldBeTrue());
+        Then("Check result", () => ((bool)CurrentBehavior.Context.IsSuccess).ShouldBeTrue());
     }
 
     public LambdaStep DelayAndSet(int milliseconds) =>
         new WhenLambdaStep()
             .SetName($"Adding delay of {milliseconds:N0}ms")
-            .HandleAsync(async c =>
+            .HandleAsync(async () =>
             {
                 await Task.Delay(milliseconds);
-                c.IsSuccess = true;
+                CurrentBehavior.Context.IsSuccess = true;
             });
 }

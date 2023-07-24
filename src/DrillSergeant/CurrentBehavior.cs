@@ -51,7 +51,7 @@ public static class CurrentBehavior
         get
         {
             AssertBehavior();
-            return Instance.Value!.CopiedInput;
+            return BaseStep.CopyInput(Instance.Value!.Behavior.Input);
         }
     }
 
