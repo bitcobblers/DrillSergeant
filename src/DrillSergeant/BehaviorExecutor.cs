@@ -9,6 +9,8 @@ namespace DrillSergeant;
 
 internal class BehaviorExecutor
 {
+    private static readonly AsyncLocal<ExecutionState> State = new();
+
     public event EventHandler<StepFailedEventArgs> StepFailed = delegate { };
 
     private readonly ITestReporter _reporter;
@@ -42,9 +44,18 @@ internal class BehaviorExecutor
 
     public Task Execute(IBehavior behavior, CancellationToken cancellationToken, int timeout = 0)
     {
-        return timeout == 0 ?
-            ExecuteInternalNoTimeout(behavior, cancellationToken) :
-            ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        try
+        {
+            State.Value = ExecutionState.Executing;
+
+            return timeout == 0 ?
+                ExecuteInternalNoTimeout(behavior, cancellationToken) :
+                ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        }
+        finally
+        {
+            State.Value = ExecutionState.NotExecuting;
+        }
     }
 
     private async Task ExecuteInternalWithTimeout(IBehavior behavior, int timeout, CancellationToken cancellationToken)
