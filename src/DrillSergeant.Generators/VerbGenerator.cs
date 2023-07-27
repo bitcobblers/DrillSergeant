@@ -225,6 +225,35 @@ namespace {ns};
 
 public static partial class {groupName}
 {{
+    public static StepResult<T> {verb}_Ex<T>(string name, Func<T> step)
+    {{
+        var result = new StepResult<T>();
+
+        BehaviorBuilder.Current.AddStep(
+            new LambdaStep()
+                .SetName(name)
+                .SetVerb(""{verb}"")
+                .Handle(() =>
+                {{
+                    var value = step();
+                    result.SetResult(() => value);
+                }}));
+
+        return result;
+    }}
+
+    public static void {verb}_Ex(string name, Action step)
+    {{
+        BehaviorBuilder.Current.AddStep(
+            new LambdaStep()
+                .SetName(name)
+                .SetVerb(""{verb}"")
+                .Handle(() =>
+                {{
+                    step();
+                }}));
+    }}
+
     public static void {verb}(Action step) =>
         BehaviorBuilder.Current.{verb}(step.Method.Name, step);
 

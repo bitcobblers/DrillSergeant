@@ -97,11 +97,17 @@ public class CalculatorFeature
             .Current
             .EnableContextLogging();
 
-        Given("Set first number", (c, i) => c.a = i.a); // Inline step declaration.
-        And<Input>(SetSecondNumber);
-        When(AddNumbers(_calculator));
-        Then(new CheckResultStep());
+        var calculator = Given_Ex("Create calculator", () => new Calculator());
+        var result = When_Ex("Add numbers", () => AddNumbers_Simple(a, b, calculator));
+
+        Then_Ex("Check result", () => result.Value.ShouldBe(expected));
     }
+
+    private int AddNumbers_Simple(int a, int b, StepResult<Calculator> calculator)
+    {
+        return calculator.Value.Add(a, b);
+    }
+
 
     // Step implemented as a normal method.
     private void SetSecondNumber(dynamic context, Input input) => context.b = input.b;
