@@ -9,7 +9,7 @@ namespace DrillSergeant;
 
 internal class BehaviorExecutor
 {
-    private static readonly AsyncLocal<ExecutionState> State = new();
+    internal static readonly AsyncLocal<ExecutionState> State = new();
 
     public event EventHandler<StepFailedEventArgs> StepFailed = delegate { };
 
