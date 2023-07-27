@@ -1,18 +1,27 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using JetBrains.Annotations;
+using System;
 
-namespace DrillSergeant
+namespace DrillSergeant;
+
+public class StepResult<T>
 {
-    [ExcludeFromCodeCoverage]
-    public record StepResult
+    private readonly Lazy<T> _value;
+
+    public StepResult(Func<T> func) => _value = new Lazy<T>(func);
+
+    [PublicAPI]
+    public T Value
     {
-        public string Verb { get; init; } = string.Empty;
-        public string Name { get; init; } = string.Empty;
-        public bool Skipped { get; init; }
-        public bool Success { get; init; }
-        public bool PreviousStepsFailed { get; init; }
-        public bool CancelPending { get; init; }
-        public decimal Elapsed { get; init; }
-        public string AdditionalOutput { get; init; } = string.Empty;
-        public object? Context { get; init; }
+        get
+        {
+            //if (CurrentBehavior.IsExecuting == false)
+            //{
+            //    throw new InvalidOperationException("Cannot evaluate step result outside of a test");
+            //}
+
+            return _value.Value;
+        }
     }
+
+    public static implicit operator T(StepResult<T> stepResult) => stepResult.Value;
 }

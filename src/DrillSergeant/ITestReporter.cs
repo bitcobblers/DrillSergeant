@@ -18,5 +18,5 @@ public interface ITestReporter : IDisposable
     /// Writes the result for a single step to the report.
     /// </summary>
     /// <param name="result">The step result to write.</param>
-    void WriteStepResult(StepResult? result);
+    void WriteStepResult(StepExecutionResult? result);
 }

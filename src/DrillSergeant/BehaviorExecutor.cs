@@ -68,7 +68,7 @@ internal class BehaviorExecutor
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _reporter.WriteStepResult(new StepResult
+                _reporter.WriteStepResult(new StepExecutionResult
                 {
                     Verb = step.Verb,
                     Name = step.Name,
@@ -83,7 +83,7 @@ internal class BehaviorExecutor
 
             if (step.ShouldSkip)
             {
-                _reporter.WriteStepResult(new StepResult
+                _reporter.WriteStepResult(new StepExecutionResult
                 {
                     Verb = step.Verb,
                     Name = step.Name,
@@ -97,7 +97,7 @@ internal class BehaviorExecutor
 
             if (previousStepFailed)
             {
-                _reporter.WriteStepResult(new StepResult
+                _reporter.WriteStepResult(new StepExecutionResult
                 {
                     Verb = step.Verb,
                     Name = step.Name,
@@ -122,7 +122,7 @@ internal class BehaviorExecutor
                 }
             });
 
-            _reporter.WriteStepResult(new StepResult
+            _reporter.WriteStepResult(new StepExecutionResult
             {
                 Verb = step.Verb,
                 Name = step.Name,
