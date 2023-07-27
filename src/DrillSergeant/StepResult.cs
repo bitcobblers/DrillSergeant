@@ -7,41 +7,28 @@ namespace DrillSergeant;
 /// Defines the evaluation of a step.
 /// </summary>
 /// <typeparam name="T">The type returned by the step.</typeparam>
-public class StepResult<T>
+public class StepResult<T> : AsyncStepResult<T>
 {
-    private Lazy<T>? _value;
-
-    public StepResult()
+    public StepResult(string name)
+        : base(name)
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StepResult{T}"/> class.
-    /// </summary>
-    /// <param name="func">The function to call to evaluate the result.</param>
-    internal StepResult(Func<T> func) => SetResult(func);
-
-    internal void SetResult(Func<T> func) => _value = new Lazy<T>(func);
-
-    /// <summary>
-    /// Gets the resolved value of the result.
-    /// </summary>
-    [PublicAPI]
-    public T Value
+    internal StepResult(string name, Func<T> func)
+        : base(name, func)
     {
-        get
+    }
+
+    [PublicAPI]
+    public new T Resolve()
+    {
+        try
         {
-            if (BehaviorExecutor.State.Value == ExecutionState.NotExecuting)
-            {
-                throw new EagerStepResultEvaluationException();
-            }
-
-            if(_value==null)
-            {
-                throw new ArgumentNullException(nameof(_value));
-            }
-
-            return _value.Value;
+            return base.Resolve().Result;
+        }
+        catch(AggregateException ex) when(ex.InnerException != null)
+        {
+            throw ex.InnerException;
         }
     }
 
@@ -49,5 +36,5 @@ public class StepResult<T>
     /// Converts the step result to its resolved type.
     /// </summary>
     /// <param name="stepResult">The step result value to convert.</param>
-    public static implicit operator T?(StepResult<T?> stepResult) => stepResult.Value;
+    public static implicit operator T(StepResult<T> stepResult) => stepResult.Resolve();
 }

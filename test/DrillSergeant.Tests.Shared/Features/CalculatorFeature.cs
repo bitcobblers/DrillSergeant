@@ -100,12 +100,12 @@ public class CalculatorFeature
         var calculator = Given_Ex("Create calculator", () => new Calculator());
         var result = When_Ex("Add numbers", () => AddNumbers_Simple(a, b, calculator));
 
-        Then_Ex("Check result", () => result.Value.ShouldBe(expected));
+        Then_Ex("Check result", () => result.Resolve().ShouldBe(expected));
     }
 
     private int AddNumbers_Simple(int a, int b, StepResult<Calculator> calculator)
     {
-        return calculator.Value.Add(a, b);
+        return calculator.Resolve().Add(a, b);
     }
 
 

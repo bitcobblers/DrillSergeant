@@ -227,7 +227,7 @@ public static partial class {groupName}
 {{
     public static StepResult<T> {verb}_Ex<T>(string name, Func<T> step)
     {{
-        var result = new StepResult<T>();
+        var result = new StepResult<T>(name);
 
         BehaviorBuilder.Current.AddStep(
             new LambdaStep()

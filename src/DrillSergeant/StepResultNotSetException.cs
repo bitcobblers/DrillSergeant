@@ -5,15 +5,15 @@ using System.Runtime.Serialization;
 namespace DrillSergeant;
 
 [ExcludeFromCodeCoverage, Serializable]
-public class EagerStepResultEvaluationException : Exception
+public class StepResultNotSetException : Exception
 {
-    public EagerStepResultEvaluationException(string name)
-        : base($"Cannot evaluate step '{name}' result.  Evaluation can only occur while executing a behavior.")
+    public StepResultNotSetException(string name)
+        : base($"The result for the step '{name}' was not set.")
     {
         Name = name;
     }
 
-    protected EagerStepResultEvaluationException(SerializationInfo  info, StreamingContext context)
+    protected StepResultNotSetException(SerializationInfo info, StreamingContext context)
     {
         Name = info.GetString(nameof(Name))!;
     }
