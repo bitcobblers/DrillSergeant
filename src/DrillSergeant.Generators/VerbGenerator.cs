@@ -225,6 +225,9 @@ namespace {ns};
 
 public static partial class {groupName}
 {{
+    public static StepResult<T> {verb}_Ex<T>(Func<T> step) => {verb}_Ex(step.Method.Name, step);
+    public static void {verb}_Ex(Action step) => {verb}_Ex(step.Method.Name, step);
+
     public static StepResult<T> {verb}_Ex<T>(string name, Func<T> step)
     {{
         var result = new StepResult<T>(name);
@@ -242,6 +245,23 @@ public static partial class {groupName}
         return result;
     }}
 
+    public static AsyncStepResult<T> {verb}Async_Ex<T>(string name, Func<Task<T>> step)
+    {{
+        var result = new AsyncStepResult<T>(name);
+
+        BehaviorBuilder.Current.AddStep(
+            new LambdaStep()
+                .SetName(name)
+                .SetVerb(""{verb}"")
+                .HandleAsync(async () =>
+                {{
+                    var value = await step();
+                    result.SetResult(() => value);
+                }}));
+
+        return result;
+    }}
+
     public static void {verb}_Ex(string name, Action step)
     {{
         BehaviorBuilder.Current.AddStep(
@@ -251,6 +271,18 @@ public static partial class {groupName}
                 .Handle(() =>
                 {{
                     step();
+                }}));
+    }}
+
+    public static void {verb}Async_Ex(string name, Func<Task> step)
+    {{
+        BehaviorBuilder.Current.AddStep(
+            new LambdaStep()
+                .SetName(name)
+                .SetVerb(""{verb}"")
+                .HandleAsync(async () =>
+                {{
+                    await step();
                 }}));
     }}
 

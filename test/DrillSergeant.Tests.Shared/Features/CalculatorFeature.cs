@@ -73,12 +73,12 @@ public class CalculatorFeature
 #if MSTEST
     [DynamicData(nameof(AdditionInputs))]
 #endif
-    public void AsyncAdditionBehavior(int a, int b, int expected)
+    public async Task AsyncAdditionBehavior(int a, int b, int expected)
     {
-        Given("Set first number", (c, i) => c.a = i.a);
-        GivenAsync(SetSecondNumberAsync);
-        When(AddNumbersAsync(_calculator));
-        Then<CheckResultStepAsync>();
+        var calculator = Given_Ex("Create calculator", () => new Calculator());
+        var result = WhenAsync_Ex("Add numbers", () => Task.FromResult(AddNumbers_Simple(a, b, calculator)));
+
+        ThenAsync_Ex("Check result", async () => (await result.Resolve()).ShouldBe(expected));
     }
 
     [Behavior]
