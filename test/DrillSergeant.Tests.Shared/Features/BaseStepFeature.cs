@@ -17,7 +17,8 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.Reset(input);
+        BehaviorBuilder.Current.SetInput(input);
+
         When("Update input", (c, i) => i.Value = "error");
         Then("Input should be unchanged", (_, i) => ((string)i.Value).ShouldBe("expected"));
     }
@@ -40,7 +41,7 @@ public class BaseStepFeature
     [Behavior]
     public void ConsumingBackgroundAutomaticallyExecutesSteps()
     {
-        BehaviorBuilder.Reset()
+        BehaviorBuilder.Current
             .EnableContextLogging()
             .Background(SetupContext);
 
@@ -56,7 +57,8 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.Reset(input)
+        BehaviorBuilder.Current
+            .SetInput(input)
             .EnableContextLogging()
             .Background(SetupContextFromInput);
 
@@ -71,7 +73,8 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.Reset(input)
+        BehaviorBuilder.Current
+            .SetInput(input)
             .EnableContextLogging()
             .Background(SetupContextFromInputAsync);
 
@@ -86,7 +89,8 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.Reset(input)
+        BehaviorBuilder.Current
+            .SetInput(input)
             .EnableContextLogging()
             .Background(SetupContext);
 

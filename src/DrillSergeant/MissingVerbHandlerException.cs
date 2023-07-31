@@ -8,7 +8,7 @@ namespace DrillSergeant;
 /// Defines an exception that is thrown when no DrillSergeant is unable to find a handler to execute.
 /// </summary>
 [Serializable, ExcludeFromCodeCoverage]
-public class MissingVerbHandlerException : Exception, ISerializable
+public class MissingVerbHandlerException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MissingVerbHandlerException"/> class.

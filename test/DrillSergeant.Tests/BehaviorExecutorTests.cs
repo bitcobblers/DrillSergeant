@@ -125,10 +125,10 @@ public class BehaviorExecutorTests
             var executor = new BehaviorExecutor(_reporter);
 
             var obj = new StubDisposable();
-            var behavior = BehaviorBuilder.Reset()
-                .AddStep(
+            var behavior = BehaviorBuilder.Build(b =>
+                b.AddStep(
                     new LambdaStep("Registers disposable")
-                        .Handle(c => c.Obj = obj.OwnedByBehavior()!));
+                        .Handle(c => c.Obj = obj.OwnedByBehavior()!)));
 
             // Act.
             await executor.Execute(behavior, CancellationToken.None);
@@ -202,19 +202,18 @@ public class BehaviorExecutorTests
         private class StubWithBehaviors
         {
             public Behavior SuccessfulBehavior() =>
-                BehaviorBuilder.Reset()
-                    .AddStep(
-                        new LambdaStep("Successful step")
-                            .Handle(c => c.IsSuccess = true));
+                BehaviorBuilder.Current.AddStep(
+                    new LambdaStep("Successful step")
+                        .Handle(c => c.IsSuccess = true));
 
             public Behavior FailingBehavior() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Failing step")
                             .Handle(() => throw new Exception("Failed")));
 
             public Behavior FailingBehaviorWithAdditionalSteps() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Set context to true")
                             .Handle(c => c.IsSuccess = true))
@@ -226,7 +225,7 @@ public class BehaviorExecutorTests
                             .Handle(c => c.IsSuccess = false));
 
             public Behavior BehaviorWithSkippedStep() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true))
@@ -236,7 +235,7 @@ public class BehaviorExecutorTests
                             .Skip(() => true));
 
             public Behavior BehaviorWithFive100MsSteps() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true))
