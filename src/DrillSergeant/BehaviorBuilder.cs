@@ -19,7 +19,7 @@ public static class BehaviorBuilder
         {
             var stack = GetCurrentStack();
 
-            if(stack.Any())
+            if (stack.Any())
             {
                 return stack.Peek();
             }
@@ -32,7 +32,7 @@ public static class BehaviorBuilder
     {
         var behavior = new Behavior();
         var stack = GetCurrentStack();
-        
+
         stack.Push(behavior);
 
         try
@@ -82,6 +82,6 @@ public static class BehaviorBuilder
         }
     }
 
-    internal static Stack<Behavior> GetCurrentStack() => 
+    internal static Stack<Behavior> GetCurrentStack() =>
         CurrentStack.Value ?? (CurrentStack.Value = new());
 }
