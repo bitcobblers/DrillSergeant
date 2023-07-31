@@ -24,16 +24,4 @@ public static class BehaviorBuilder
 
         return Instance.Value;
     }
-
-    /// <summary>
-    /// Resets the current behavior builder.
-    /// </summary>
-    /// <param name="input">The dictionary to use for input data.</param>
-    internal static Behavior Reset(IDictionary<string, object?> input)
-    {
-        Instance.Value?.Dispose();
-        Instance.Value = new Behavior().SetInput(input);
-
-        return Instance.Value;
-    }
 }
