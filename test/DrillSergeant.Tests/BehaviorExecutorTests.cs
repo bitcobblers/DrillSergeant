@@ -1,10 +1,7 @@
 ﻿using DrillSergeant.Xunit2;
-using FakeItEasy;
-using Shouldly;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 

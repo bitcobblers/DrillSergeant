@@ -1,7 +1,5 @@
-﻿using Shouldly;
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace DrillSergeant.Tests;
 

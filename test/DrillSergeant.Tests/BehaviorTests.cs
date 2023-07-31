@@ -1,7 +1,4 @@
-﻿using Shouldly;
-using Xunit;
-
-namespace DrillSergeant.Tests;
+﻿namespace DrillSergeant.Tests;
 
 public class BehaviorTests
 {
