@@ -17,7 +17,7 @@ public class AsyncStepResult<T>
         SetResult(func);
 
     internal void SetResult(Func<T> func) => _value = new AsyncLazy<T>(func);
-    
+
     internal void SetResult(Func<Task<T>> func) => _value = new AsyncLazy<T>(func);
 
     /// <summary>

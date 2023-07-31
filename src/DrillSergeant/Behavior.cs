@@ -209,9 +209,9 @@ public class Behavior : IBehavior
         _disposed = true;
     }
 
-    private void AssertNotFrozen([CallerMemberName]string memberName="")
+    private void AssertNotFrozen([CallerMemberName] string memberName = "")
     {
-        if(_isFrozen)
+        if (_isFrozen)
         {
             throw new BehaviorFrozenException(memberName);
         }

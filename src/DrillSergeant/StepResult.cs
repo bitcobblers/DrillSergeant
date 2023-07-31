@@ -26,7 +26,7 @@ public class StepResult<T> : AsyncStepResult<T>
         {
             return base.Resolve().Result;
         }
-        catch(AggregateException ex) when(ex.InnerException != null)
+        catch (AggregateException ex) when (ex.InnerException != null)
         {
             throw ex.InnerException;
         }

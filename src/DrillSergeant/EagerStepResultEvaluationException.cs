@@ -13,7 +13,7 @@ public class EagerStepResultEvaluationException : Exception
         Name = name;
     }
 
-    protected EagerStepResultEvaluationException(SerializationInfo  info, StreamingContext context)
+    protected EagerStepResultEvaluationException(SerializationInfo info, StreamingContext context)
     {
         Name = info.GetString(nameof(Name))!;
     }

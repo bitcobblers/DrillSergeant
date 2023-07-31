@@ -30,7 +30,7 @@ public class BehaviorExecutorTests
             // Assert.
             behavior.IsFrozen.ShouldBeTrue();
         }
-        
+
         public class StubWithBehavior
         {
             public void SampleBehavior()
@@ -38,7 +38,7 @@ public class BehaviorExecutorTests
             }
         }
 
-        public class StubStep : VerbStep {}
+        public class StubStep : VerbStep { }
 
         private async Task<Behavior> LoadSampleBehavior()
         {
