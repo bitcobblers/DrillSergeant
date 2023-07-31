@@ -49,7 +49,14 @@ public class Behavior : IBehavior
     /// <inheritdoc cref="IBehavior.LogContext" />
     public bool LogContext { get; private set; }
 
-    /// <inheritdoc cref="IBehavior.IsFrozen" />
+    /// <summary>
+    /// Gets a value indicating whether the behavior has been frozen and unable to be configured further.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Attempting to call any of the configuration methods on a behavior once it has been thrown will result in a <see cref="BehaviorFrozenException"/> exception being thrown.
+    /// </para>
+    /// </remarks>
     public bool IsFrozen => _isFrozen;
 
     internal ISet<IDisposable> OwnedDisposables => _ownedDisposables;
