@@ -1,17 +1,18 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
 
 namespace DrillSergeant;
 
 /// <summary>
 /// Defines a behavior, encapsulating a series of steps to run as a single test.
 /// </summary>
+// ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
 public class Behavior : IBehavior
 {
     private readonly List<IStep> _steps = new();
@@ -22,7 +23,7 @@ public class Behavior : IBehavior
     /// <summary>
     /// Initializes a new instance of the <see cref="Behavior"/> class.
     /// </summary>
-    public Behavior()
+    internal Behavior()
         : this(new { })
     {
     }
@@ -31,7 +32,7 @@ public class Behavior : IBehavior
     /// Initializes a new instance of the <see cref="Behavior"/> class.
     /// </summary>
     /// <param name="input">The input to bind to the behavior.</param>
-    public Behavior(object? input) =>
+    internal Behavior(object? input) =>
         SetInput(input);
 
     /// <summary>
