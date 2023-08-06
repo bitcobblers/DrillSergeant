@@ -45,7 +45,7 @@ internal class BehaviorExecutor
 
     public Task Execute(Behavior behavior, CancellationToken cancellationToken, int timeout = 0)
     {
-        using(BehaviorBuilder.Push(behavior))
+        using (BehaviorBuilder.Push(behavior))
         {
             return timeout == 0 ?
                 ExecuteInternalNoTimeout(behavior, cancellationToken) :
