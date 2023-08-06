@@ -2,4 +2,9 @@ version: "1.0"
 linter: jetbrains/qodana-dotnet:2023.2
 dotnet:
   solution: DrillSergeant.sln
-fixesStrategy: cleanup
+fixesStrategy: cleanup/apply
+exclude:
+  - name: All
+    paths:
+      - src
+      - test
