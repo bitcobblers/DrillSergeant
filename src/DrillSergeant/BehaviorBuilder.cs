@@ -82,6 +82,15 @@ public static class BehaviorBuilder
         }
     }
 
-    internal static Stack<Behavior> GetCurrentStack() =>
-        CurrentStack.Value ?? (CurrentStack.Value = new());
+    internal static Stack<Behavior> GetCurrentStack()
+    {
+        Stack<Behavior>? value = CurrentStack.Value;
+
+        if (value != null)
+        {
+            return value;
+        }
+
+        return CurrentStack.Value = new();
+    }
 }
