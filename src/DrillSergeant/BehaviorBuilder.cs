@@ -28,6 +28,11 @@ public static class BehaviorBuilder
         }
     }
 
+    /// <summary>
+    /// Builds a new behavior.
+    /// </summary>
+    /// <param name="configure">The callback to execute to configure the behavior.</param>
+    /// <returns>The configured behavior.</returns>
     public static Behavior Build(Action<Behavior> configure)
     {
         var behavior = new Behavior();
@@ -47,6 +52,11 @@ public static class BehaviorBuilder
         return behavior;
     }
 
+    /// <summary>
+    /// Builds a new behavior asynchronously.
+    /// </summary>
+    /// <param name="configure">The callback to execute to configure the behavior.</param>
+    /// <returns>The configured behavior.</returns>
     public static async Task<Behavior> BuildAsync(Func<Behavior, Task<Behavior>> configure)
     {
         var behavior = new Behavior();
