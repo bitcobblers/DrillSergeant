@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Dynamic;
 using System.Threading.Tasks;
-using Xunit;
 // ReSharper disable UnusedParameter.Global
 // ReSharper disable MemberCanBePrivate.Global
 #pragma warning disable IDE0060

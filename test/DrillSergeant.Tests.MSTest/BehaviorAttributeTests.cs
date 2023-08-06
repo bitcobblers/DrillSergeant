@@ -94,8 +94,7 @@ public class BehaviorAttributeTests
             [Behavior]
             public void BehaviorThatThrowsException()
             {
-                BehaviorBuilder
-                    .Reset()
+                BehaviorBuilder.Current
                     .AddStep(new LambdaStep().Handle(() => throw new Exception("ERROR")));
             }
         }

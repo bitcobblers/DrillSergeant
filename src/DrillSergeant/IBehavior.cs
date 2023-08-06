@@ -27,14 +27,4 @@ public interface IBehavior : IEnumerable<IStep>, IDisposable
     /// Gets a value indicating whether the context should be logged between steps.
     /// </summary>
     bool LogContext { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether the behavior has been frozen and unable to be configured further.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Attempting to call any of the configuration methods on a behavior once it has been thrown will result in a <see cref="BehaviorFrozenException"/> exception being thrown.
-    /// </para>
-    /// </remarks>
-    bool IsFrozen { get; }
 }

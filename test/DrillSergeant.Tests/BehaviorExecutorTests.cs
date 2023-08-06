@@ -1,10 +1,7 @@
 ﻿using DrillSergeant.Xunit2;
-using FakeItEasy;
-using Shouldly;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -30,7 +27,7 @@ public class BehaviorExecutorTests
             // Assert.
             behavior.IsFrozen.ShouldBeTrue();
         }
-        
+
         public class StubWithBehavior
         {
             public void SampleBehavior()
@@ -38,7 +35,7 @@ public class BehaviorExecutorTests
             }
         }
 
-        public class StubStep : VerbStep {}
+        public class StubStep : VerbStep { }
 
         private async Task<Behavior> LoadSampleBehavior()
         {
@@ -128,10 +125,10 @@ public class BehaviorExecutorTests
             var executor = new BehaviorExecutor(_reporter);
 
             var obj = new StubDisposable();
-            var behavior = BehaviorBuilder.Reset()
-                .AddStep(
+            var behavior = BehaviorBuilder.Build(b =>
+                b.AddStep(
                     new LambdaStep("Registers disposable")
-                        .Handle(c => c.Obj = obj.OwnedByBehavior()!));
+                        .Handle(c => c.Obj = obj.OwnedByBehavior()!)));
 
             // Act.
             await executor.Execute(behavior, CancellationToken.None);
@@ -195,6 +192,48 @@ public class BehaviorExecutorTests
                 () => executor.Execute(behavior!, CancellationToken.None, 100));
         }
 
+        [Fact]
+        public async Task CleansUpStackAfterSuccessfulExecution()
+        {
+            // Arrange.
+            var instance = new StubWithBehaviors();
+            var method = typeof(StubWithBehaviors).GetMethod("SuccessfulBehavior");
+            var parameters = Array.Empty<object?>();
+
+            var executor = new BehaviorExecutor(_reporter);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            var beforeStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Act.
+            await executor.Execute(behavior, CancellationToken.None);
+            var afterStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Assert.
+            afterStackSize.ShouldBe(beforeStackSize);
+        }
+
+        [Fact]
+        public async Task CleansUpStackIfExecutionThrowsException()
+        {
+            // Arrange.
+            var instance = new StubWithBehaviors();
+            var method = typeof(StubWithBehaviors).GetMethod("BehaviorWithFive100MsSteps");
+            var parameters = Array.Empty<object?>();
+
+            var executor = new BehaviorExecutor(_reporter);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            var beforeStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Act.
+            await Assert.ThrowsAsync<BehaviorTimeoutException>(
+                () => executor.Execute(behavior!, CancellationToken.None, 100));
+
+            var afterStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Assert.
+            afterStackSize.ShouldBe(beforeStackSize);
+        }
+
         private class StubDisposable : IDisposable
         {
             public int DisposeCount { get; private set; }
@@ -205,19 +244,18 @@ public class BehaviorExecutorTests
         private class StubWithBehaviors
         {
             public Behavior SuccessfulBehavior() =>
-                BehaviorBuilder.Reset()
-                    .AddStep(
-                        new LambdaStep("Successful step")
-                            .Handle(c => c.IsSuccess = true));
+                BehaviorBuilder.Current.AddStep(
+                    new LambdaStep("Successful step")
+                        .Handle(c => c.IsSuccess = true));
 
             public Behavior FailingBehavior() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Failing step")
                             .Handle(() => throw new Exception("Failed")));
 
             public Behavior FailingBehaviorWithAdditionalSteps() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Set context to true")
                             .Handle(c => c.IsSuccess = true))
@@ -229,7 +267,7 @@ public class BehaviorExecutorTests
                             .Handle(c => c.IsSuccess = false));
 
             public Behavior BehaviorWithSkippedStep() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true))
@@ -239,7 +277,7 @@ public class BehaviorExecutorTests
                             .Skip(() => true));
 
             public Behavior BehaviorWithFive100MsSteps() =>
-                BehaviorBuilder.Reset()
+                BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Successful step")
                             .Handle(c => c.IsSuccess = true))

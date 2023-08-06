@@ -15,7 +15,7 @@ internal class BehaviorExecutor
 
     public BehaviorExecutor(ITestReporter reporter) => _reporter = reporter;
 
-    public async Task<IBehavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
+    public async Task<Behavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
     {
         var input = new Dictionary<string, object?>();
         var methodParameters = method.GetParameters();
@@ -25,26 +25,32 @@ internal class BehaviorExecutor
             input[methodParameters[i].Name!] = parameters[i];
         }
 
-        BehaviorBuilder.Reset(input);
-
-        if (IsAsync(method))
+        return await BehaviorBuilder.BuildAsync(async b =>
         {
-            dynamic asyncResult = method.Invoke(instance, parameters)!;
-            await asyncResult;
-        }
-        else
-        {
-            method.Invoke(instance, parameters);
-        }
+            b.SetInput(input);
 
-        return BehaviorBuilder.Current.Freeze();
+            if (IsAsync(method))
+            {
+                dynamic asyncResult = method.Invoke(instance, parameters)!;
+                await asyncResult;
+            }
+            else
+            {
+                method.Invoke(instance, parameters);
+            }
+
+            return b.Freeze();
+        });
     }
 
-    public Task Execute(IBehavior behavior, CancellationToken cancellationToken, int timeout = 0)
+    public Task Execute(Behavior behavior, CancellationToken cancellationToken, int timeout = 0)
     {
-        return timeout == 0 ?
-            ExecuteInternalNoTimeout(behavior, cancellationToken) :
-            ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        using (BehaviorBuilder.Push(behavior))
+        {
+            return timeout == 0 ?
+                ExecuteInternalNoTimeout(behavior, cancellationToken) :
+                ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        }
     }
 
     private async Task ExecuteInternalWithTimeout(IBehavior behavior, int timeout, CancellationToken cancellationToken)
