@@ -76,20 +76,10 @@ public static class BehaviorBuilder
         return behavior;
     }
 
-    internal static async Task PushAsync(Behavior behavior, Func<Task> action)
+    internal static IDisposable Push(Behavior behavior)
     {
-        var stack = GetCurrentStack();
-
-        stack.Push(behavior);
-
-        try
-        {
-            await action();
-        }
-        finally
-        {
-            stack.Pop();
-        }
+        GetCurrentStack()?.Push(behavior);
+        return new StackCleanup();
     }
 
     internal static Stack<Behavior> GetCurrentStack()
@@ -102,5 +92,10 @@ public static class BehaviorBuilder
         }
 
         return CurrentStack.Value = new();
+    }
+
+    private class StackCleanup : IDisposable
+    {
+        public void Dispose() => CurrentStack.Value?.Pop();
     }
 }

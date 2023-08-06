@@ -192,6 +192,48 @@ public class BehaviorExecutorTests
                 () => executor.Execute(behavior!, CancellationToken.None, 100));
         }
 
+        [Fact]
+        public async Task CleansUpStackAfterSuccessfulExecution()
+        {
+            // Arrange.
+            var instance = new StubWithBehaviors();
+            var method = typeof(StubWithBehaviors).GetMethod("SuccessfulBehavior");
+            var parameters = Array.Empty<object?>();
+
+            var executor = new BehaviorExecutor(_reporter);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            var beforeStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Act.
+            await executor.Execute(behavior, CancellationToken.None);
+            var afterStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Assert.
+            afterStackSize.ShouldBe(beforeStackSize);
+        }
+
+        [Fact]
+        public async Task CleansUpStackIfExecutionThrowsException()
+        {
+            // Arrange.
+            var instance = new StubWithBehaviors();
+            var method = typeof(StubWithBehaviors).GetMethod("BehaviorWithFive100MsSteps");
+            var parameters = Array.Empty<object?>();
+
+            var executor = new BehaviorExecutor(_reporter);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
+            var beforeStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Act.
+            await Assert.ThrowsAsync<BehaviorTimeoutException>(
+                () => executor.Execute(behavior!, CancellationToken.None, 100));
+
+            var afterStackSize = BehaviorBuilder.GetCurrentStack().Count;
+
+            // Assert.
+            afterStackSize.ShouldBe(beforeStackSize);
+        }
+
         private class StubDisposable : IDisposable
         {
             public int DisposeCount { get; private set; }

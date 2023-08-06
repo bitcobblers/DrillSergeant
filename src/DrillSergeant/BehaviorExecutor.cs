@@ -43,11 +43,15 @@ internal class BehaviorExecutor
         });
     }
 
-    public Task Execute(Behavior behavior, CancellationToken cancellationToken, int timeout = 0) =>
-        BehaviorBuilder.PushAsync(behavior, () =>
-            timeout == 0 ?
+    public Task Execute(Behavior behavior, CancellationToken cancellationToken, int timeout = 0)
+    {
+        using(BehaviorBuilder.Push(behavior))
+        {
+            return timeout == 0 ?
                 ExecuteInternalNoTimeout(behavior, cancellationToken) :
-                ExecuteInternalWithTimeout(behavior, timeout, cancellationToken));
+                ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        }
+    }
 
     private async Task ExecuteInternalWithTimeout(IBehavior behavior, int timeout, CancellationToken cancellationToken)
     {
