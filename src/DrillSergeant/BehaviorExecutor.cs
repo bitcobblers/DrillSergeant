@@ -52,12 +52,9 @@ internal class BehaviorExecutor
         {
             CurrentBehavior.Set(behavior);
 
-            using (BehaviorBuilder.Push(behavior))
-            {
-                return timeout == 0 ?
-                    ExecuteInternalNoTimeout(behavior, cancellationToken) :
-                    ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
-            }
+            return timeout == 0 ?
+                ExecuteInternalNoTimeout(behavior, cancellationToken) :
+                ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
         }
         finally
         {

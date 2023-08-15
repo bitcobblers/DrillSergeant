@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -12,7 +13,7 @@ public static class CurrentBehavior
     private static readonly ReflectionParameterCaster Caster = new();
     private static readonly AsyncLocal<BehaviorState?> Instance = new();
 
-    internal static void Set(IBehavior behavior) =>
+    internal static void Set(Behavior behavior) =>
         Instance.Value = new BehaviorState(behavior);
 
     internal static void Clear() => Instance.Value = null;
@@ -88,6 +89,17 @@ public static class CurrentBehavior
         return (T)Caster.Cast(Instance.Value!.CopiedInput, typeof(T));
     }
 
+    /// <summary>
+    /// Tells the current behavior to take ownership of a disposable object.
+    /// </summary>
+    /// <typeparam name="T">The type of object to take ownership of.</typeparam>
+    /// <param name="instance">The object to take ownership of.</param>
+    public static void Owns<T>(T? instance) where T : IDisposable
+    {
+        AssertBehavior();
+        Instance.Value?.Behavior.Owns(instance);
+    }
+
     private static void AssertBehavior([CallerMemberName] string memberName = "")
     {
         if (Instance.Value == null)
@@ -98,13 +110,13 @@ public static class CurrentBehavior
 
     private class BehaviorState
     {
-        public BehaviorState(IBehavior behavior)
+        public BehaviorState(Behavior behavior)
         {
             Behavior = behavior;
             CopiedInput = BaseStep.CopyInput(behavior.Input);
         }
 
-        public IBehavior Behavior { get; }
+        public Behavior Behavior { get; }
         public IDictionary<string, object?> CopiedInput { get; }
         public bool IsTrackedContextReadonly { get; set; }
         public object? TrackedContext { get; set; }
