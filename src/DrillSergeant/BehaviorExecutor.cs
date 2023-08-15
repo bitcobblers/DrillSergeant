@@ -18,7 +18,7 @@ internal class BehaviorExecutor
 
     public BehaviorExecutor(ITestReporter reporter) => _reporter = reporter;
 
-    public async Task<IBehavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
+    public async Task<Behavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
     {
         var input = new Dictionary<string, object?>();
         var methodParameters = method.GetParameters();
@@ -28,26 +28,41 @@ internal class BehaviorExecutor
             input[methodParameters[i].Name!] = parameters[i];
         }
 
-        BehaviorBuilder.Reset(input);
-
-        if (IsAsync(method))
+        return await BehaviorBuilder.BuildAsync(async b =>
         {
-            dynamic asyncResult = method.Invoke(instance, parameters)!;
-            await asyncResult;
-        }
-        else
-        {
-            method.Invoke(instance, parameters);
-        }
+            b.SetInput(input);
 
-        return BehaviorBuilder.Current.Freeze();
+            if (IsAsync(method))
+            {
+                dynamic asyncResult = method.Invoke(instance, parameters)!;
+                await asyncResult;
+            }
+            else
+            {
+                method.Invoke(instance, parameters);
+            }
+
+            return b.Freeze();
+        });
     }
 
-    public Task Execute(IBehavior behavior, CancellationToken cancellationToken, int timeout = 0)
+    public Task Execute(Behavior behavior, CancellationToken cancellationToken, int timeout = 0)
     {
-        return timeout == 0 ?
-            ExecuteInternalNoTimeout(behavior, cancellationToken) :
-            ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        try
+        {
+            CurrentBehavior.Set(behavior);
+
+            using (BehaviorBuilder.Push(behavior))
+            {
+                return timeout == 0 ?
+                    ExecuteInternalNoTimeout(behavior, cancellationToken) :
+                    ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+            }
+        }
+        finally
+        {
+            CurrentBehavior.Clear();
+        }
     }
 
     private async Task ExecuteInternalWithTimeout(IBehavior behavior, int timeout, CancellationToken cancellationToken)
@@ -74,53 +89,44 @@ internal class BehaviorExecutor
 
         _reporter.WriteBlock("Input", behavior.Input);
 
-        try
+        foreach (var step in behavior)
         {
-            CurrentBehavior.Set(behavior);
+            var filter = filters.FirstOrDefault(f => f.Condition(step));
 
-            foreach (var step in behavior)
+            if (filter != null)
             {
-                var filter = filters.FirstOrDefault(f => f.Condition(step));
-
-                if (filter != null)
-                {
-                    filter.Alternate(step);
-                    continue;
-                }
-
-                var elapsed = await TimedCall(async () =>
-                {
-                    try
-                    {
-                        CurrentBehavior.ResetContext();
-                        await step.Execute(behavior.Context, behavior.Input);
-                    }
-                    catch (Exception ex)
-                    {
-                        StepFailed(this, new StepFailedEventArgs(ex));
-                        previousStepFailed = true;
-                    }
-                    finally
-                    {
-                        CurrentBehavior.UpdateContext();
-                    }
-                });
-
-                _reporter.WriteStepResult(new StepResult
-                {
-                    Verb = step.Verb,
-                    Name = step.Name,
-                    Skipped = false,
-                    Context = behavior.LogContext ? behavior.Context : null,
-                    Elapsed = elapsed,
-                    PreviousStepsFailed = previousStepFailed,
-                    Success = !previousStepFailed,
-                });
+                filter.Alternate(step);
+                continue;
             }
-        }
-        finally
-        {
-            CurrentBehavior.Clear();
+
+            var elapsed = await TimedCall(async () =>
+            {
+                try
+                {
+                    CurrentBehavior.ResetContext();
+                    await step.Execute(behavior.Context, behavior.Input);
+                }
+                catch (Exception ex)
+                {
+                    StepFailed(this, new StepFailedEventArgs(ex));
+                    previousStepFailed = true;
+                }
+                finally
+                {
+                    CurrentBehavior.UpdateContext();
+                }
+            });
+
+            _reporter.WriteStepResult(new StepResult
+            {
+                Verb = step.Verb,
+                Name = step.Name,
+                Skipped = false,
+                Context = behavior.LogContext ? behavior.Context : null,
+                Elapsed = elapsed,
+                PreviousStepsFailed = previousStepFailed,
+                Success = !previousStepFailed,
+            });
         }
     }
 

@@ -1,7 +1,5 @@
-﻿using Shouldly;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Xunit;
 
 namespace DrillSergeant.Tests;
 

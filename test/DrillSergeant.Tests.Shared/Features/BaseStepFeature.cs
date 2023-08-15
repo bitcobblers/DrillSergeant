@@ -40,7 +40,7 @@ public class BaseStepFeature
     [Behavior]
     public void ConsumingBackgroundAutomaticallyExecutesSteps()
     {
-        BehaviorBuilder.Reset()
+        BehaviorBuilder.Current
             .EnableContextLogging()
             .Background(SetupContext);
 
@@ -56,7 +56,8 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.Reset(input)
+        BehaviorBuilder.Current
+            .SetInput(input)
             .EnableContextLogging()
             .Background(SetupContextFromInput);
 
@@ -71,7 +72,8 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.Reset(input)
+        BehaviorBuilder.Current
+            .SetInput(input)
             .EnableContextLogging()
             .Background(SetupContextFromInputAsync);
 
@@ -86,7 +88,8 @@ public class BaseStepFeature
             Value = "expected"
         };
 
-        BehaviorBuilder.Reset(input)
+        BehaviorBuilder.Current
+            .SetInput(input)
             .EnableContextLogging()
             .Background(SetupContext);
 
@@ -117,22 +120,19 @@ public class BaseStepFeature
             .Skip();
 
     public Behavior SetupContext =>
-        new Behavior()
+        BehaviorBuilder.Build(b => b
             .Given("Background Step 1", () => CurrentBehavior.Context.A = 1)
-            .And("Background Step 2", () => CurrentBehavior.Context.B = 2);
+            .And("Background Step 2", () => CurrentBehavior.Context.B = 2));
 
     public Behavior SetupContextFromInput =>
-        new Behavior()
-            .Given("Setup Context", () =>
-            {
-                CurrentBehavior.Context.Value = CurrentBehavior.Input.Value;
-            });
+        BehaviorBuilder.Build(b => b
+            .Given("Setup Context", () => CurrentBehavior.Context.Value = CurrentBehavior.Input.Value)); //  (c, i) => c.Value = i.Value));
 
     public Behavior SetupContextFromInputAsync =>
-        new Behavior()
+        BehaviorBuilder.Build(b => b
             .GivenAsync("Setup Context", () =>
             {
                 CurrentBehavior.Context.Value = CurrentBehavior.Input.Value;
                 return Task.CompletedTask;
-            });
+            }));
 }

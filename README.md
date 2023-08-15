@@ -6,6 +6,7 @@
 [![Nuget](https://img.shields.io/nuget/dt/DrillSergeant)](https://www.nuget.org/packages/DrillSergeant/)
 [![codecov](https://codecov.io/gh/bitcobblers/DrillSergeant/branch/main/graph/badge.svg?token=R9MKC6IJXE)](https://codecov.io/gh/bitcobblers/DrillSergeant)
 [![CodeQL](https://github.com/bitcobblers/DrillSergeant/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bitcobblers/DrillSergeant/actions/workflows/github-code-scanning/codeql)
+[![Qodana](https://github.com/bitcobblers/DrillSergeant/actions/workflows/code_quality.yml/badge.svg?branch=main)](https://github.com/bitcobblers/DrillSergeant/actions/workflows/code_quality.yml)
 
 # Introduction
 
