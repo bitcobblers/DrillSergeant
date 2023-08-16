@@ -3,6 +3,10 @@ linter: jetbrains/qodana-dotnet:2023.2
 dotnet:
   solution: DrillSergeant.sln
 fixesStrategy: apply
+profile:
+  name: qodana.recommended
+include:
+  -name: CheckDependencyLicenses
 exclude:
   - name: All
     paths:
