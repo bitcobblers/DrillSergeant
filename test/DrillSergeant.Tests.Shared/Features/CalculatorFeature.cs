@@ -75,10 +75,10 @@ public class CalculatorFeature
 #endif
     public Task AsyncAdditionBehavior(int a, int b, int expected)
     {
-        var calculator = Given_Ex("Create calculator", () => new Calculator());
-        var result = WhenAsync_Ex("Add numbers", () => Task.FromResult(AddNumbers_Simple(a, b, calculator)));
+        var calculator = Given("Create calculator", () => new Calculator());
+        var result = WhenAsync("Add numbers", () => Task.FromResult(AddNumbers_Simple(a, b, calculator)));
 
-        ThenAsync_Ex("Check result", async () => (await result.Resolve()).ShouldBe(expected));
+        ThenAsync("Check result", async () => (await result.Resolve()).ShouldBe(expected));
 
         return Task.CompletedTask;
     }
@@ -99,10 +99,10 @@ public class CalculatorFeature
             .Current
             .EnableContextLogging();
 
-        var calculator = Given_Ex("Create calculator", () => new Calculator());
-        var result = When_Ex("Add numbers", () => AddNumbers_Simple(a, b, calculator));
+        var calculator = Given("Create calculator", () => new Calculator());
+        var result = When("Add numbers", () => AddNumbers_Simple(a, b, calculator));
 
-        Then_Ex("Check result", () => result.Resolve().ShouldBe(expected));
+        Then("Check result", () => result.Resolve().ShouldBe(expected));
     }
 
     private int AddNumbers_Simple(int a, int b, StepResult<Calculator> calculator)
