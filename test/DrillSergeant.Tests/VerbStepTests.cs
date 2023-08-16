@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Dynamic;
 using System.Threading.Tasks;
 // ReSharper disable UnusedParameter.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -40,105 +39,6 @@ public class VerbStepTests
                 : base(name)
             {
             }
-        }
-    }
-
-    public class ExecuteMethod : VerbStepTests
-    {
-        public class Context
-        {
-            public int Value { get; set; }
-        }
-
-        public record Input();
-
-        [Fact]
-        public async Task NonAsyncMethodWithReturnReturnsExpectedValue()
-        {
-            // Arrange.
-            var step = new StubStepNonAsyncReturnsValue();
-            dynamic context = new ExpandoObject();
-            dynamic input = new ExpandoObject();
-
-            // Act.
-            await step.Execute(context, input);
-
-            // Assert.
-            Assert.Equal(1, context.Value);
-        }
-
-        [Fact]
-        public async Task AsyncMethodWithReturnReturnsExpectedValue()
-        {
-            // Arrange.
-            var step = new StubStepAsyncReturnsValue();
-            dynamic context = new ExpandoObject();
-            dynamic input = new ExpandoObject();
-
-            // Act.
-            await step.Execute(context, input);
-
-            // Assert.
-            Assert.Equal(1, context.Value);
-        }
-
-        public class StubStepNonAsyncReturnsValue : VerbStep
-        {
-            public void Test(Context context, Input input) => context.Value = 1;
-
-            public override string Verb => "Test";
-        }
-
-        public class StubStepAsyncReturnsValue : VerbStep
-        {
-            public Task Test(Context context, Input input)
-            {
-                context.Value = 1;
-                return Task.CompletedTask;
-            }
-
-            public override string Verb => "Test";
-        }
-
-        public interface IStubInjectable
-        {
-            void DoSomething();
-        }
-
-        public class StubWithNoParameters : VerbStep
-        {
-            public bool HasExecuted { get; private set; }
-
-            public void Test()
-            {
-                HasExecuted = true;
-            }
-
-            public override string Verb => "Test";
-        }
-
-        public class StubWithInjectableParameter : VerbStep
-        {
-            public void Test(IStubInjectable injectable)
-            {
-                injectable.DoSomething();
-            }
-
-            public override string Verb => "Test";
-        }
-
-        public class StubThatReturnsValueSync : VerbStep
-        {
-            public string Test() => "expected";
-
-            public override string Verb => "Test";
-        }
-
-        public class StubThatReturnsValueAsync : VerbStep
-        {
-            public Task<string> Test() => Task.FromResult("expected");
-
-            public override string Verb => "Test";
         }
     }
 

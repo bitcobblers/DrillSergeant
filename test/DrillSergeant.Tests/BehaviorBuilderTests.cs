@@ -8,10 +8,10 @@ public class BehaviorBuilderTests
     public class CurrentProperty : BehaviorBuilderTests
     {
         [Fact]
-        public void ThrowsNoCurrentBehaviorExceptionWhenOutsideBuildScope()
+        public void ThrowsNoActiveBehaviorExceptionWhenOutsideBuildScope()
         {
             // Assert.
-            Assert.Throws<NoCurrentBehaviorException>(() => BehaviorBuilder.Current);
+            Assert.Throws<NoActiveBehaviorException>(() => BehaviorBuilder.Current);
         }
     }
 

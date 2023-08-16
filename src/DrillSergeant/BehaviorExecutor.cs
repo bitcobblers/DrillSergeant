@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace DrillSergeant;
 
 internal class BehaviorExecutor
 {
+    private record StepFilter(Func<IStep, bool> Condition, Action<IStep> Alternate);
+
     public event EventHandler<StepFailedEventArgs> StepFailed = delegate { };
 
     private readonly ITestReporter _reporter;
@@ -45,11 +48,17 @@ internal class BehaviorExecutor
 
     public Task Execute(Behavior behavior, CancellationToken cancellationToken, int timeout = 0)
     {
-        using (BehaviorBuilder.Push(behavior))
+        try
         {
+            CurrentBehavior.Set(behavior);
+
             return timeout == 0 ?
                 ExecuteInternalNoTimeout(behavior, cancellationToken) :
                 ExecuteInternalWithTimeout(behavior, timeout, cancellationToken);
+        }
+        finally
+        {
+            CurrentBehavior.Clear();
         }
     }
 
@@ -68,50 +77,22 @@ internal class BehaviorExecutor
     {
         bool previousStepFailed = false;
 
+        var filters = new[]
+        {
+            new StepFilter( _ => cancellationToken.IsCancellationRequested, s => CancelStep(s, previousStepFailed)),
+            new StepFilter( s => s.ShouldSkip, SkipStep),
+            new StepFilter( _ => previousStepFailed, SkipFailedStep)
+        };
+
         _reporter.WriteBlock("Input", behavior.Input);
 
         foreach (var step in behavior)
         {
-            if (cancellationToken.IsCancellationRequested)
+            var filter = filters.FirstOrDefault(f => f.Condition(step));
+
+            if (filter != null)
             {
-                _reporter.WriteStepResult(new StepResult
-                {
-                    Verb = step.Verb,
-                    Name = step.Name,
-                    PreviousStepsFailed = previousStepFailed,
-                    CancelPending = true,
-                    Skipped = true,
-                    Success = true
-                });
-
-                continue;
-            }
-
-            if (step.ShouldSkip)
-            {
-                _reporter.WriteStepResult(new StepResult
-                {
-                    Verb = step.Verb,
-                    Name = step.Name,
-                    Skipped = true,
-                    Success = true,
-                    PreviousStepsFailed = false
-                });
-
-                continue;
-            }
-
-            if (previousStepFailed)
-            {
-                _reporter.WriteStepResult(new StepResult
-                {
-                    Verb = step.Verb,
-                    Name = step.Name,
-                    PreviousStepsFailed = true,
-                    Skipped = true,
-                    Success = false
-                });
-
+                filter.Alternate(step);
                 continue;
             }
 
@@ -119,12 +100,17 @@ internal class BehaviorExecutor
             {
                 try
                 {
+                    CurrentBehavior.ResetContext();
                     await step.Execute(behavior.Context, behavior.Input);
                 }
                 catch (Exception ex)
                 {
                     StepFailed(this, new StepFailedEventArgs(ex));
                     previousStepFailed = true;
+                }
+                finally
+                {
+                    CurrentBehavior.UpdateContext();
                 }
             });
 
@@ -139,6 +125,43 @@ internal class BehaviorExecutor
                 Success = !previousStepFailed,
             });
         }
+    }
+
+    private void CancelStep(IStep step, bool previousStepFailed)
+    {
+        _reporter.WriteStepResult(new StepResult
+        {
+            Verb = step.Verb,
+            Name = step.Name,
+            PreviousStepsFailed = previousStepFailed,
+            CancelPending = true,
+            Skipped = true,
+            Success = true
+        });
+    }
+
+    private void SkipStep(IStep step)
+    {
+        _reporter.WriteStepResult(new StepResult
+        {
+            Verb = step.Verb,
+            Name = step.Name,
+            Skipped = true,
+            Success = true,
+            PreviousStepsFailed = false
+        });
+    }
+
+    private void SkipFailedStep(IStep step)
+    {
+        _reporter.WriteStepResult(new StepResult
+        {
+            Verb = step.Verb,
+            Name = step.Name,
+            PreviousStepsFailed = true,
+            Skipped = true,
+            Success = false
+        });
     }
 
     private static bool IsAsync(MethodInfo method) =>

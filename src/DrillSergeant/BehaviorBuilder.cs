@@ -24,7 +24,7 @@ public static class BehaviorBuilder
                 return stack.Peek();
             }
 
-            throw new NoCurrentBehaviorException();
+            throw new NoActiveBehaviorException();
         }
     }
 

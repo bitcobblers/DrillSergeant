@@ -26,7 +26,6 @@ public class VerbStep : BaseStep
     protected VerbStep(string? name) =>
         Name = string.IsNullOrWhiteSpace(name) ? GetType().Name : name.Trim();
 
-
     public override string Name { get; }
 
     /// <inheritdoc />

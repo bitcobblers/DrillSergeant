@@ -45,7 +45,7 @@ public static class Extensions
     /// <returns>The object passed in.</returns>
     public static T? OwnedByBehavior<T>(this T? instance) where T : IDisposable
     {
-        BehaviorBuilder.Current.Owns(instance);
+        CurrentBehavior.Owns(instance);
         return instance;
     }
 }
