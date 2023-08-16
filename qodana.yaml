@@ -8,5 +8,4 @@ profile:
 exclude:
   - name: All
     paths:
-      - src
       - test
