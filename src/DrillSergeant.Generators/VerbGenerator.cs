@@ -90,24 +90,24 @@ namespace {ns};
 [ExcludeFromCodeCoverage]
 public static partial class BehaviorExtensions_{verb}
 {{
-    public static Behavior {verb}(this Behavior behavior, Action step) =>
+    public static void {verb}(this Behavior behavior, Action step) =>
         behavior.{verb}(step.Method.Name, step);
 
-    public static Behavior {verb}Async(this Behavior behavior, Func<Task> step) =>
+    public static void {verb}Async(this Behavior behavior, Func<Task> step) =>
         behavior.{verb}Internal(step.Method.Name, step);
 
-    public static Behavior {verb}(this Behavior behavior, string name, Action step) =>
+    public static void {verb}(this Behavior behavior, string name, Action step) =>
         behavior.{verb}Internal(name, step);
 
-    public static Behavior {verb}Async(this Behavior behavior, string name, Func<Task> step) =>
+    public static void {verb}Async(this Behavior behavior, string name, Func<Task> step) =>
         behavior.{verb}Internal(name, step);
 
     // ---
 
-    public static Behavior {verb}<TStep>(this Behavior behavior) where TStep : IStep, new() =>
+    public static void {verb}<TStep>(this Behavior behavior) where TStep : IStep, new() =>
         behavior.{verb}(new TStep());
 
-    public static Behavior {verb}(this Behavior behavior, IStep step)
+    public static void {verb}(this Behavior behavior, IStep step)
     {{
         if(step is LambdaStep lambda)
         {{
@@ -115,19 +115,16 @@ public static partial class BehaviorExtensions_{verb}
         }}
 
         behavior.AddStep(step);
-        return behavior;
     }}
 
     // ---
 
-    private static Behavior {verb}Internal(this Behavior behavior, string name, Delegate step)
+    private static void {verb}Internal(this Behavior behavior, string name, Delegate step)
     {{
         behavior.AddStep(
             new {verb}LambdaStep()
                 .SetName(name)
                 .Handle(step));
-
-        return behavior;
     }}
 }}
 ";
