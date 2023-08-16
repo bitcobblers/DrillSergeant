@@ -1,12 +1,59 @@
-﻿using Shouldly;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace DrillSergeant.Tests;
 
 public class CurrentBehaviorTests
 {
+    public class UpdateContextMethod : BaseStepTests
+    {
+        [Fact]
+        public void UpdatesContextWithNewFields()
+        {
+            // Arrange.
+            var expected = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1
+            };
+            var context = new Dictionary<string, object?>();
+            var changedContext = new StubWithValue { IntValue = 1 };
+
+            // Act.
+            CurrentBehavior.UpdateContext(context, changedContext);
+
+            // Assert.
+            context.ShouldBe(expected);
+        }
+
+        [Fact]
+        public void UpdatesExistingFieldInContext()
+        {
+            // Arrange.
+            var context = new Dictionary<string, object?>
+            {
+                ["IntValue"] = -1
+            };
+
+            var changedContext = new StubWithValue { IntValue = 1 };
+
+            // Act.
+            CurrentBehavior.UpdateContext(context, changedContext);
+
+            // Assert.
+            context.ShouldContainKey("IntValue");
+            context["IntValue"].ShouldBe(1);
+        }
+
+        public class StubWithValue
+        {
+            public int IntValue { get; set; }
+
+            private int PrivateIntValue { get; set; }
+
+            public static int StaticIntValue { get; set; }
+        }
+    }
+
     public class AccessTests : CurrentBehaviorTests
     {
         [Fact]

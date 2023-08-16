@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -29,7 +31,7 @@ public static class CurrentBehavior
             return;
         }
 
-        BaseStep.UpdateContext(Instance.Value.Behavior.Context, Instance.Value.TrackedContext);
+        UpdateContext(Instance.Value.Behavior.Context, Instance.Value.TrackedContext);
     }
 
     /// <summary>
@@ -52,7 +54,7 @@ public static class CurrentBehavior
         get
         {
             AssertBehavior();
-            return BaseStep.CopyInput(Instance.Value!.Behavior.Input);
+            return CopyInput(Instance.Value!.Behavior.Input);
         }
     }
 
@@ -100,6 +102,29 @@ public static class CurrentBehavior
         Instance.Value?.Behavior.Owns(instance);
     }
 
+    internal static IDictionary<string, object?> CopyInput(IDictionary<string, object?> input)
+    {
+        var copy = new ExpandoObject();
+        var copyAsDict = (IDictionary<string, object?>)copy;
+
+        foreach (var (key, value) in input)
+        {
+            copyAsDict[key] = value;
+        }
+
+        return copy;
+    }
+
+    internal static void UpdateContext(IDictionary<string, object?> context, object changedContext)
+    {
+        var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+
+        foreach (var property in changedContext.GetType().GetProperties(flags))
+        {
+            context[property.Name] = property.GetValue(changedContext);
+        }
+    }
+
     private static void AssertBehavior([CallerMemberName] string memberName = "")
     {
         if (Instance.Value == null)
@@ -113,7 +138,7 @@ public static class CurrentBehavior
         public BehaviorState(Behavior behavior)
         {
             Behavior = behavior;
-            CopiedInput = BaseStep.CopyInput(behavior.Input);
+            CopiedInput = CopyInput(behavior.Input);
         }
 
         public Behavior Behavior { get; }

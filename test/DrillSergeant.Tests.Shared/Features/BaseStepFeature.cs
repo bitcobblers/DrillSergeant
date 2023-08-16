@@ -120,17 +120,19 @@ public class BaseStepFeature
             .Skip();
 
     public Behavior SetupContext =>
-        BehaviorBuilder.Build(b => b
-            .Given("Background Step 1", () => CurrentBehavior.Context.A = 1)
-            .And("Background Step 2", () => CurrentBehavior.Context.B = 2));
+        BehaviorBuilder.Build(_ =>
+        {
+            Given("Background Step 1", () => CurrentBehavior.Context.A = 1);
+            And("Background Step 2", () => CurrentBehavior.Context.B = 2);
+        });
 
     public Behavior SetupContextFromInput =>
-        BehaviorBuilder.Build(b => b
-            .Given("Setup Context", () => CurrentBehavior.Context.Value = CurrentBehavior.Input.Value)); //  (c, i) => c.Value = i.Value));
+        BehaviorBuilder.Build(_ => 
+            Given("Setup Context", () => CurrentBehavior.Context.Value = CurrentBehavior.Input.Value)); //  (c, i) => c.Value = i.Value));
 
     public Behavior SetupContextFromInputAsync =>
-        BehaviorBuilder.Build(b => b
-            .GivenAsync("Setup Context", () =>
+        BehaviorBuilder.Build(_ =>
+            GivenAsync("Setup Context", () =>
             {
                 CurrentBehavior.Context.Value = CurrentBehavior.Input.Value;
                 return Task.CompletedTask;
