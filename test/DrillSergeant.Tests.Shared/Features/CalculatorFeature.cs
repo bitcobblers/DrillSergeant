@@ -56,8 +56,8 @@ public class CalculatorFeature
             })
             .EnableContextLogging();
 
-        Given("Set first number", (c, i) => c.a = i.a); // Inline step declaration.
-        And<Input>(SetSecondNumber);
+        Given("Set first number", () => CurrentBehavior.Context.a = a); // Inline step declaration.
+        And(() => SetSecondNumber(b));
         When(AddNumbers(_calculator));
         Then<CheckResultStep>();
     }
@@ -111,37 +111,39 @@ public class CalculatorFeature
     }
 
     // Step implemented as a normal method.
-    private void SetSecondNumber(dynamic context, Input input) => context.b = input.b;
+    private void SetSecondNumber(int b) => CurrentBehavior.Context.b = b;
 
-    private Task SetSecondNumberAsync(dynamic context, dynamic input)
+    private Task SetSecondNumberAsync()
     {
-        context.b = input.b;
+        CurrentBehavior.Context.b = CurrentBehavior.Input.b;
         return Task.CompletedTask;
     }
 
     // Step implemented as a lambda step for greater flexibility.
     public LambdaStep AddNumbers(Calculator calculator) =>
         new LambdaStep("Add numbers")
-            .Handle((c) =>
+            .Handle(() =>
             {
-                c.Result = calculator.Add(c.a, c.b);
+                var context = CurrentBehavior.Context;
+                context.Result = calculator.Add(context.a, context.b);
             });
 
     public LambdaStep AddNumbersAsync(Calculator calculator) =>
         new LambdaStep("Add numbers")
-            .HandleAsync((c, _) =>
+            .HandleAsync(() =>
             {
-                c.Result = calculator.Add(c.a, c.b);
+                var context = CurrentBehavior.Context;
+                context.Result = calculator.Add(context.a, context.b);
                 return Task.CompletedTask;
             });
 
     // Step implemented as type for full customization and reusability.
     public class CheckResultStep : ThenStep
     {
-        public void Then(dynamic context, Input input)
+        public void Then()
         {
-            int expected = input.expected;
-            int result = context.Result;
+            int expected = (int)CurrentBehavior.Input.expected;
+            int result = (int)CurrentBehavior.Context.Result;
 
             expected.ShouldBe(result);
         }
@@ -150,10 +152,10 @@ public class CalculatorFeature
     // Class-level step.
     public class CheckResultStepAsync : ThenStep
     {
-        public Task ThenAsync(dynamic context, Input input)
+        public Task ThenAsync()
         {
-            int expected = input.expected;
-            int result = context.Result;
+            int expected = (int)CurrentBehavior.Input.expected;
+            int result = (int)CurrentBehavior.Context.Result;
 
             expected.ShouldBe(result);
             return Task.CompletedTask;

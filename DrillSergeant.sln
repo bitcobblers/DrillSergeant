@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BE246BD2-629F-47BA-91C9-61B3EA8FEE7F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.husky\task-runner.json = .husky\task-runner.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant", "src\DrillSergeant\DrillSergeant.csproj", "{BA4C64F7-2155-438B-8AF5-1EDF7A273189}"

@@ -1,39 +1,101 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
 public static class BehaviorBuilder
 {
-    private static readonly AsyncLocal<Behavior?> Instance = new();
+    private static readonly AsyncLocal<Stack<Behavior>> CurrentStack = new();
 
     /// <summary>
     /// Gets the current behavior to test.
     /// </summary>
-    public static Behavior Current => Instance.Value ?? new Behavior();
-
-    /// <summary>
-    /// Creates a new behavior to build.
-    /// </summary>
-    /// <param name="input">The input parameters for the behavior.</param>
-    /// <returns>The new behavior to build.</returns>
-    internal static Behavior Reset(object? input = null)
+    public static Behavior Current
     {
-        Instance.Value?.Dispose();
-        Instance.Value = new Behavior().SetInput(input);
+        get
+        {
+            var stack = GetCurrentStack();
 
-        return Instance.Value;
+            if (stack.Any())
+            {
+                return stack.Peek();
+            }
+
+            throw new NoActiveBehaviorException();
+        }
     }
 
     /// <summary>
-    /// Resets the current behavior builder.
+    /// Builds a new behavior.
     /// </summary>
-    /// <param name="input">The dictionary to use for input data.</param>
-    internal static Behavior Reset(IDictionary<string, object?> input)
+    /// <param name="configure">The callback to execute to configure the behavior.</param>
+    /// <returns>The configured behavior.</returns>
+    public static Behavior Build(Action<Behavior> configure)
     {
-        Instance.Value?.Dispose();
-        Instance.Value = new Behavior().SetInput(input);
+        var behavior = new Behavior();
+        var stack = GetCurrentStack();
 
-        return Instance.Value;
+        stack.Push(behavior);
+
+        try
+        {
+            configure?.Invoke(behavior);
+        }
+        finally
+        {
+            stack.Pop();
+        }
+
+        return behavior;
+    }
+
+    /// <summary>
+    /// Builds a new behavior asynchronously.
+    /// </summary>
+    /// <param name="configure">The callback to execute to configure the behavior.</param>
+    /// <returns>The configured behavior.</returns>
+    public static async Task<Behavior> BuildAsync(Func<Behavior, Task<Behavior>> configure)
+    {
+        var behavior = new Behavior();
+        var stack = GetCurrentStack();
+
+        stack.Push(behavior);
+
+        try
+        {
+            await configure(behavior);
+        }
+        finally
+        {
+            stack.Pop();
+        }
+
+        return behavior;
+    }
+
+    internal static IDisposable Push(Behavior behavior)
+    {
+        GetCurrentStack()?.Push(behavior);
+        return new StackCleanup();
+    }
+
+    internal static Stack<Behavior> GetCurrentStack()
+    {
+        Stack<Behavior>? value = CurrentStack.Value;
+
+        if (value != null)
+        {
+            return value;
+        }
+
+        return CurrentStack.Value = new();
+    }
+
+    private class StackCleanup : IDisposable
+    {
+        public void Dispose() => CurrentStack.Value?.Pop();
     }
 }
