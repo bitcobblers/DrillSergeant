@@ -73,8 +73,6 @@ public class LambdaStep : BaseStep
         return this;
     }
 
-    internal LambdaStep Handle(Delegate handler) => SetHandler(handler);
-
     [PublicAPI]
     public LambdaStep Handle(Action? handler) => SetHandler(handler);
 
