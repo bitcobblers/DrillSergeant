@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
+// Based on: https://devblogs.microsoft.com/pfxteam/asynclazyt/
+
 /// <summary>
 /// Defines an implementation of <see cref="Lazy{T}"/> that supports asynchronous resolution.
 /// </summary>
