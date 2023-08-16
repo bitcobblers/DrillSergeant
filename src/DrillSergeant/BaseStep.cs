@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -44,19 +43,13 @@ public abstract class BaseStep : IStep
     public virtual async Task Execute(IDictionary<string, object?> context, IDictionary<string, object?> input)
     {
         var handler = PickHandler();
-        var parameters = ResolveParameters(context, input, handler.Method.GetParameters());
-        var resolvedContext = parameters.FirstOrDefault() ?? context;
+        var parameters = Array.Empty<object>();
         dynamic result = handler.DynamicInvoke(parameters)!;
 
         if (IsAsync(handler.Method))
         {
             await result;
         }
-
-        //if (ReferenceEquals(context, resolvedContext) == false)
-        //{
-        //    UpdateContext(context, resolvedContext);
-        //}
     }
 
     /// <summary>

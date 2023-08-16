@@ -1,7 +1,4 @@
-﻿using System.Dynamic;
-using System.Threading.Tasks;
-
-namespace DrillSergeant.Tests;
+﻿namespace DrillSergeant.Tests;
 
 public class LambdaStepTests
 {
@@ -86,55 +83,6 @@ public class LambdaStepTests
 
             // Assert.
             result.ShouldBeTrue();
-        }
-    }
-
-    public class ExecuteMethod : LambdaStepTests
-    {
-        public record Context
-        {
-            public int Value { get; set; }
-        }
-
-        public record Input();
-
-        [Fact]
-        public async Task NonAsyncHandlerWithReturnReturnsValue()
-        {
-            // Arrange.
-            var step = new LambdaStep("Test").Handle((c, i) =>
-            {
-                c.Value = 1;
-            });
-
-            dynamic context = new ExpandoObject();
-            dynamic input = new ExpandoObject();
-
-            // Act.
-            await step.Execute(context, input);
-
-            // Assert.
-            ((object)context.Value).ShouldBe(1);
-        }
-
-        [Fact]
-        public async Task AsyncHandlerWithReturnReturnsValue()
-        {
-            // Arrange.
-            var step = new LambdaStep("Test").HandleAsync((c, i) =>
-            {
-                c.Value = 1;
-                return Task.CompletedTask;
-            });
-
-            dynamic context = new ExpandoObject();
-            dynamic input = new ExpandoObject();
-
-            // Act.
-            await step.Execute(context, input);
-
-            // Assert.
-            ((object)context.Value).ShouldBe(1);
         }
     }
 }

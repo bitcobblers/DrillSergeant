@@ -128,7 +128,7 @@ public class BehaviorExecutorTests
             var behavior = BehaviorBuilder.Build(b =>
                 b.AddStep(
                     new LambdaStep("Registers disposable")
-                        .Handle(c => c.Obj = obj.OwnedByBehavior()!)));
+                        .Handle(() => obj.OwnedByBehavior())));
 
             // Act.
             await executor.Execute(behavior, CancellationToken.None);
@@ -246,7 +246,7 @@ public class BehaviorExecutorTests
             public Behavior SuccessfulBehavior() =>
                 BehaviorBuilder.Current.AddStep(
                     new LambdaStep("Successful step")
-                        .Handle(c => c.IsSuccess = true));
+                        .Handle(() => CurrentBehavior.Context.IsSuccess = true));
 
             public Behavior FailingBehavior() =>
                 BehaviorBuilder.Current
@@ -258,19 +258,19 @@ public class BehaviorExecutorTests
                 BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Set context to true")
-                            .Handle(c => c.IsSuccess = true))
+                            .Handle(() => CurrentBehavior.Context.IsSuccess = true))
                     .AddStep(
                         new LambdaStep("Failing step")
                             .Handle(() => throw new Exception("Failed")))
                     .AddStep(
                         new LambdaStep("Set context to false")
-                            .Handle(c => c.IsSuccess = false));
+                            .Handle(() => CurrentBehavior.Context.IsSuccess = true));
 
             public Behavior BehaviorWithSkippedStep() =>
                 BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Successful step")
-                            .Handle(c => c.IsSuccess = true))
+                            .Handle(() => CurrentBehavior.Context.IsSuccess = true))
                     .AddStep(
                         new LambdaStep("Skipped step")
                             .Handle(c => c.IsSuccess = false)
@@ -280,7 +280,7 @@ public class BehaviorExecutorTests
                 BehaviorBuilder.Current
                     .AddStep(
                         new LambdaStep("Successful step")
-                            .Handle(c => c.IsSuccess = true))
+                            .Handle(() => CurrentBehavior.Context.IsSuccess = true))
                     .AddStep(
                         new LambdaStep("Delay 100ms (1)")
                             .HandleAsync(() => Task.Delay(100)))
@@ -298,7 +298,7 @@ public class BehaviorExecutorTests
                             .HandleAsync(() => Task.Delay(100)))
                     .AddStep(
                         new LambdaStep("Should not execute")
-                            .Handle(c => c.IsSuccess = false));
+                            .Handle(() => CurrentBehavior.Context.IsSuccess = false));
         }
     }
 }

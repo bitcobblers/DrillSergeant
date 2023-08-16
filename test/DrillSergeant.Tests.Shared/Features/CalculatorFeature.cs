@@ -145,7 +145,7 @@ public class CalculatorFeature
     // Class-level step.
     public class CheckResultStepAsync : ThenStep
     {
-        public Task ThenAsync(dynamic context, Input input)
+        public Task ThenAsync()
         {
             int expected = (int)CurrentBehavior.Input.expected;
             int result = (int)CurrentBehavior.Context.Result;
