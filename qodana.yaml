@@ -4,7 +4,7 @@ dotnet:
   solution: DrillSergeant.sln
 fixesStrategy: apply
 profile:
-  name: qodana.recommended.all
+  name: qodana.recommended
 exclude:
   - name: All
     paths:
