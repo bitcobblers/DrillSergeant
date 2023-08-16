@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Shouldly;
-using Xunit;
 
 namespace DrillSergeant.Tests;
 
 public class AsyncStepResultTests
 {
     [Fact]
-    public Task ValueIsOnlyEvaluatedOnce() => RunInState(ExecutionState.Executing, async () =>
+    public Task ValueIsOnlyEvaluatedOnce() => RunInState(isExecuting: true, async () =>
     {
         // Arrange.
         var step = new AsyncStepResult<object>("ignored", () => Task.FromResult(new object()));
@@ -24,11 +22,10 @@ public class AsyncStepResultTests
 
     [Fact]
     public Task AttemptingToResolveValueOutsideExecutionThrowsEagerStepResultEvaluationException() =>
-        RunInState(ExecutionState.NotExecuting, async () =>
+        RunInState(isExecuting: false, async () =>
         {
             // Arrange.
             var step = new AsyncStepResult<bool>("ignored", () => Task.FromResult(true));
-            BehaviorExecutor.State.Value = ExecutionState.NotExecuting;
 
             // Assert.
             await Should.ThrowAsync<EagerStepResultEvaluationException>(async () => await step.Resolve());
@@ -36,7 +33,7 @@ public class AsyncStepResultTests
 
     [Fact]
     public Task AttemptingToResolveWithoutSettingResultThrowsStepResultNotSetException() =>
-        RunInState(ExecutionState.Executing, async () =>
+        RunInState(isExecuting: true, async () =>
         {
             // Arrange.
             var step = new AsyncStepResult<bool>("ignored");
@@ -45,16 +42,16 @@ public class AsyncStepResultTests
             await Should.ThrowAsync<StepResultNotSetException>(async () => await step.Resolve());
         });
 
-    private static Task RunInState(ExecutionState state, Func<Task> action)
+    private static Task RunInState(bool isExecuting, Func<Task> action)
     {
         try
         {
-            BehaviorExecutor.State.Value = state;
+            BehaviorExecutor.IsExecuting.Value = isExecuting;
             return action();
         }
         finally
         {
-            BehaviorExecutor.State.Value = ExecutionState.NotExecuting;
+            BehaviorExecutor.IsExecuting.Value = false;
         }
     }
 }

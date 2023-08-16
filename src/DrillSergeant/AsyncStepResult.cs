@@ -32,7 +32,7 @@ public class AsyncStepResult<T>
     [PublicAPI]
     public async Task<T> Resolve()
     {
-        if (BehaviorExecutor.State.Value == ExecutionState.NotExecuting)
+        if (BehaviorExecutor.IsExecuting.Value == false)
         {
             throw new EagerStepResultEvaluationException(Name);
         }

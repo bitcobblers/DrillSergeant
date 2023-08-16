@@ -1,14 +1,12 @@
-﻿using Shouldly;
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace DrillSergeant.Tests;
 
 public class StepResultTests
 {
     [Fact]
-    public Task ValueIsOnlyEvaluatedOnce() => RunInState(ExecutionState.Executing, () =>
+    public Task ValueIsOnlyEvaluatedOnce() => RunInState(isExecuting: true, () =>
     {
         // Arrange.
         var step = new StepResult<object>("ignored", () => new object());
@@ -22,7 +20,7 @@ public class StepResultTests
     });
 
     [Fact]
-    public Task ValueIsAutomaticallyConvertedToSameType() => RunInState(ExecutionState.Executing, () =>
+    public Task ValueIsAutomaticallyConvertedToSameType() => RunInState(isExecuting: true, () =>
     {
         // Arrange.
         var step = new StepResult<bool>("ignored", () => true);
@@ -37,11 +35,11 @@ public class StepResultTests
 
     [Fact]
     public Task AttemptingToResolveValueOutsideExecutionThrowsEagerStepResultEvaluationException() =>
-        RunInState(ExecutionState.NotExecuting, () =>
+        RunInState(isExecuting: false, () =>
         {
             // Arrange.
             var step = new StepResult<bool>("ignored", () => true);
-            BehaviorExecutor.State.Value = ExecutionState.NotExecuting;
+            BehaviorExecutor.IsExecuting.Value = false;
 
             // Assert.
             Should.Throw<EagerStepResultEvaluationException>(() => step.Resolve());
@@ -49,7 +47,7 @@ public class StepResultTests
 
     [Fact]
     public Task AttemptingToResolveWithoutSettingResultThrowsStepResultNotSetException() =>
-        RunInState(ExecutionState.Executing, () =>
+        RunInState(isExecuting: true, () =>
         {
             // Arrange.
             var step = new AsyncStepResult<bool>("ignored");
@@ -58,18 +56,18 @@ public class StepResultTests
             Should.Throw<StepResultNotSetException>(() => step.Resolve());
         });
 
-    private static Task RunInState(ExecutionState state, Action action)
+    private static Task RunInState(bool isExecuting, Action action)
     {
         try
         {
-            BehaviorExecutor.State.Value = state;
+            BehaviorExecutor.IsExecuting.Value = isExecuting;
             action();
 
             return Task.CompletedTask;
         }
         finally
         {
-            BehaviorExecutor.State.Value = ExecutionState.NotExecuting;
+            BehaviorExecutor.IsExecuting.Value = false;
         }
     }
 }
