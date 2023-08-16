@@ -148,20 +148,7 @@ public class CalculatorFeature
             expected.ShouldBe(result);
         }
     }
-
-    // Class-level step.
-    public class CheckResultStepAsync : ThenStep
-    {
-        public Task ThenAsync()
-        {
-            int expected = (int)CurrentBehavior.Input.expected;
-            int result = (int)CurrentBehavior.Context.Result;
-
-            expected.ShouldBe(result);
-            return Task.CompletedTask;
-        }
-    }
-
+    
     public class Calculator
     {
         public int Add(int a, int b) => a + b;
