@@ -86,18 +86,22 @@ namespace {ns};
 
 public static partial class {groupName}
 {{
+    [ExcludeFromCodeCoverage]
     public static void {verb}(Action step) =>
         {verb}(step.Method.Name, step);
 
+    [ExcludeFromCodeCoverage]
     public static void {verb}Async(Func<Task> step) =>
         {verb}Async(step.Method.Name, step);
 
+    [ExcludeFromCodeCoverage]
     public static void {verb}(string name, Action step) =>
         BehaviorBuilder.Current.AddStep(
             new {verb}LambdaStep()
                 .SetName(""{verb}"")
                 .Handle(step));
 
+    [ExcludeFromCodeCoverage]
     public static void {verb}Async(string name, Func<Task> step) =>
         BehaviorBuilder.Current.AddStep(
             new {verb}LambdaStep()
@@ -106,9 +110,11 @@ public static partial class {groupName}
 
     // ---
 
+    [ExcludeFromCodeCoverage]
     public static void {verb}<TStep>() where TStep : IStep, new() =>
         BehaviorBuilder.Current.AddStep(new TStep());
 
+    [ExcludeFromCodeCoverage]
     public static void {verb}(IStep step)
     {{
         if(step is LambdaStep lambda)
