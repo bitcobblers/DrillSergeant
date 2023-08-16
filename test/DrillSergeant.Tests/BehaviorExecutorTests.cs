@@ -273,7 +273,7 @@ public class BehaviorExecutorTests
                             .Handle(() => CurrentBehavior.Context.IsSuccess = true))
                     .AddStep(
                         new LambdaStep("Skipped step")
-                            .Handle(c => c.IsSuccess = false)
+                            .Handle(() => CurrentBehavior.Context.IsSuccess = false)
                             .Skip(() => true));
 
             public Behavior BehaviorWithFive100MsSteps() =>

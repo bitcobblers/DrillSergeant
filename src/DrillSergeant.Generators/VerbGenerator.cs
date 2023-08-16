@@ -93,79 +93,13 @@ public static partial class BehaviorExtensions_{verb}
     public static Behavior {verb}(this Behavior behavior, Action step) =>
         behavior.{verb}(step.Method.Name, step);
 
-    public static Behavior {verb}(this Behavior behavior, Action<dynamic> step) =>
-        behavior.{verb}(step.Method.Name, step);
-
-    public static Behavior {verb}(this Behavior behavior, Action<dynamic, dynamic> step) =>
-        behavior.{verb}(step.Method.Name, step);
-
-    public static Behavior {verb}<TContext>(this Behavior behavior, Action<TContext> step) =>
-        behavior.{verb}(step.Method.Name, step);
-
-    public static Behavior {verb}<TInput>(this Behavior behavior, Action<dynamic, TInput> step) =>
-        behavior.{verb}(step.Method.Name, step);
-
-    public static Behavior {verb}<TContext, TInput>(this Behavior behavior, Action<TContext, TInput> step) =>
-        behavior.{verb}(step.Method.Name, step);
-
-    // ---
-
     public static Behavior {verb}Async(this Behavior behavior, Func<Task> step) =>
         behavior.{verb}Internal(step.Method.Name, step);
-
-    public static Behavior {verb}Async(this Behavior behavior, Func<dynamic, Task> step) =>
-        behavior.{verb}Internal(step.Method.Name, step);
-
-    public static Behavior {verb}Async(this Behavior behavior, Func<dynamic, dynamic, Task> step) =>
-        behavior.{verb}Internal(step.Method.Name, step);
-
-    public static Behavior {verb}Async<TContext>(this Behavior behavior, Func<TContext, Task> step) =>
-        behavior.{verb}Internal(step.Method.Name, step);
-
-    public static Behavior {verb}Async<TInput>(this Behavior behavior, Func<dynamic, TInput, Task> step) =>
-        behavior.{verb}Internal(step.Method.Name, step);
-
-    public static Behavior {verb}Async<TContext, TInput>(this Behavior behavior, Func<TContext, TInput, Task> step) =>
-        behavior.{verb}Internal(step.Method.Name, step);
-
-    // ---
 
     public static Behavior {verb}(this Behavior behavior, string name, Action step) =>
         behavior.{verb}Internal(name, step);
 
-    public static Behavior {verb}(this Behavior behavior, string name, Action<dynamic> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}(this Behavior behavior, string name, Action<dynamic, dynamic> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}<TContext>(this Behavior behavior, string name, Action<TContext> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}<TInput>(this Behavior behavior, string name, Action<dynamic, TInput> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}<TContext, TInput>(this Behavior behavior, string name, Action<TContext, TInput> step) =>
-        behavior.{verb}Internal(name, step);
-
-    // ---
-
     public static Behavior {verb}Async(this Behavior behavior, string name, Func<Task> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}Async(this Behavior behavior, string name, Func<dynamic, Task> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}Async(this Behavior behavior, string name, Func<dynamic, dynamic, Task> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}Async<TContext>(this Behavior behavior, string name, Func<TContext, Task> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}Async<TInput>(this Behavior behavior, string name, Func<dynamic, TInput, Task> step) =>
-        behavior.{verb}Internal(name, step);
-
-    public static Behavior {verb}Async<TContext, TInput>(this Behavior behavior, string name, Func<TContext, TInput, Task> step) =>
         behavior.{verb}Internal(name, step);
 
     // ---
@@ -228,79 +162,13 @@ public static partial class {groupName}
     public static void {verb}(Action step) =>
         BehaviorBuilder.Current.{verb}(step.Method.Name, step);
 
-    public static void {verb}(Action<dynamic> step) =>
-        BehaviorBuilder.Current.{verb}(step.Method.Name, step);
-
-    public static void {verb}(Action<dynamic, dynamic> step) =>
-        BehaviorBuilder.Current.{verb}(step.Method.Name, step);
-
-    public static void {verb}<TContext>(Action<TContext> step) =>
-        BehaviorBuilder.Current.{verb}(step.Method.Name, step);
-
-    public static void {verb}<TInput>(Action<dynamic, TInput> step) =>
-        BehaviorBuilder.Current.{verb}(step.Method.Name, step);
-
-    public static void {verb}<TContext, TInput>(Action<TContext, TInput> step) =>
-        BehaviorBuilder.Current.{verb}(step.Method.Name, step);
-
-    // ---
-
     public static void {verb}Async(Func<Task> step) =>
         BehaviorBuilder.Current.{verb}Async(step.Method.Name, step);
-
-    public static void {verb}Async(Func<dynamic, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(step.Method.Name, step);
-
-    public static void {verb}Async(Func<dynamic, dynamic, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(step.Method.Name, step);
-
-    public static void {verb}Async<TContext>(Func<TContext, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(step.Method.Name, step);
-
-    public static void {verb}Async<TInput>(Func<dynamic, TInput, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(step.Method.Name, step);
-
-    public static void {verb}Async<TContext, TInput>(Func<TContext, TInput, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(step.Method.Name, step);
-
-    // ---
 
     public static void {verb}(string name, Action step) =>
         BehaviorBuilder.Current.{verb}(name, step);
 
-    public static void {verb}(string name, Action<dynamic> step) =>
-        BehaviorBuilder.Current.{verb}(name, step);
-
-    public static void {verb}(string name, Action<dynamic, dynamic> step) =>
-        BehaviorBuilder.Current.{verb}(name, step);
-
-    public static void {verb}<TContext>(string name, Action<TContext> step) =>
-        BehaviorBuilder.Current.{verb}(name, step);
-
-    public static void {verb}<TInput>(string name, Action<dynamic, TInput> step) =>
-        BehaviorBuilder.Current.{verb}(name, step);
-
-    public static void {verb}<TContext, TInput>(string name, Action<TContext, TInput> step) =>
-        BehaviorBuilder.Current.{verb}(name, step);
-
-    // ---
-
     public static void {verb}Async(string name, Func<Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(name, step);
-
-    public static void {verb}Async(string name, Func<dynamic, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(name, step);
-
-    public static void {verb}Async(string name, Func<dynamic, dynamic, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(name, step);
-
-    public static void {verb}Async<TContext>(string name, Func<TContext, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(name, step);
-
-    public static void {verb}Async<TInput>(string name, Func<dynamic, TInput, Task> step) =>
-        BehaviorBuilder.Current.{verb}Async(name, step);
-
-    public static void {verb}Async<TContext, TInput>(string name, Func<TContext, TInput, Task> step) =>
         BehaviorBuilder.Current.{verb}Async(name, step);
 
     // ---
