@@ -12,6 +12,8 @@ internal class BehaviorExecutor
 {
     private record StepFilter(Func<IStep, bool> Condition, Action<IStep> Alternate);
 
+    internal static readonly AsyncLocal<bool> IsExecuting = new();
+
     public event EventHandler<StepFailedEventArgs> StepFailed = delegate { };
 
     private readonly ITestReporter _reporter;
@@ -51,6 +53,7 @@ internal class BehaviorExecutor
         try
         {
             CurrentBehavior.Set(behavior);
+            IsExecuting.Value = true;
 
             return timeout == 0 ?
                 ExecuteInternalNoTimeout(behavior, cancellationToken) :
@@ -59,6 +62,7 @@ internal class BehaviorExecutor
         finally
         {
             CurrentBehavior.Clear();
+            IsExecuting.Value = false;
         }
     }
 
@@ -114,7 +118,7 @@ internal class BehaviorExecutor
                 }
             });
 
-            _reporter.WriteStepResult(new StepResult
+            _reporter.WriteStepResult(new StepExecutionResult
             {
                 Verb = step.Verb,
                 Name = step.Name,
@@ -129,7 +133,7 @@ internal class BehaviorExecutor
 
     private void CancelStep(IStep step, bool previousStepFailed)
     {
-        _reporter.WriteStepResult(new StepResult
+        _reporter.WriteStepResult(new StepExecutionResult
         {
             Verb = step.Verb,
             Name = step.Name,
@@ -142,7 +146,7 @@ internal class BehaviorExecutor
 
     private void SkipStep(IStep step)
     {
-        _reporter.WriteStepResult(new StepResult
+        _reporter.WriteStepResult(new StepExecutionResult
         {
             Verb = step.Verb,
             Name = step.Name,
@@ -154,7 +158,7 @@ internal class BehaviorExecutor
 
     private void SkipFailedStep(IStep step)
     {
-        _reporter.WriteStepResult(new StepResult
+        _reporter.WriteStepResult(new StepExecutionResult
         {
             Verb = step.Verb,
             Name = step.Name,

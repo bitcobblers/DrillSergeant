@@ -90,6 +90,52 @@ public static partial class {groupName}
     // ---
 
     [ExcludeFromCodeCoverage]
+    public static StepResult<T> {verb}<T>(Func<T> step) =>
+        {verb}(step.Method.Name, step);
+
+    [ExcludeFromCodeCoverage]
+    public static AsyncStepResult<T> {verb}Async<T>(Func<Task<T>> step) =>
+        {verb}Async(step.Method.Name, step);
+
+    [ExcludeFromCodeCoverage]
+    public static StepResult<T> {verb}<T>(string name, Func<T> step)
+    {{
+        var result = new StepResult<T>(name);
+
+        BehaviorBuilder.Current.AddStep(
+            new LambdaStep()
+                .SetName(name)
+                .SetVerb(""{verb}"")
+                .Handle(() =>
+                {{
+                    var value = step();
+                    result.SetResult(() => value);
+                }}));
+
+        return result;
+    }}
+
+    [ExcludeFromCodeCoverage]
+    public static AsyncStepResult<T> {verb}Async<T>(string name, Func<Task<T>> step)
+    {{
+        var result = new AsyncStepResult<T>(name);
+
+        BehaviorBuilder.Current.AddStep(
+            new LambdaStep()
+                .SetName(name)
+                .SetVerb(""{verb}"")
+                .HandleAsync(async () =>
+                {{
+                    var value = await step();
+                    result.SetResult(() => value);
+                }}));
+
+        return result;
+    }}
+
+    // ---
+
+    [ExcludeFromCodeCoverage]
     public static void {verb}<TStep>() where TStep : IStep, new() =>
         BehaviorBuilder.Current.AddStep(new TStep());
 

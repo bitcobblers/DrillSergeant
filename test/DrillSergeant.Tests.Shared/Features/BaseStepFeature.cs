@@ -6,6 +6,7 @@ namespace DrillSergeant.Tests.Features;
 #if MSTEST
 [TestClass]
 #endif
+// ReSharper disable once UnusedType.Global
 public class BaseStepFeature
 {
     [Behavior]
@@ -127,7 +128,7 @@ public class BaseStepFeature
 
     public Behavior SetupContextFromInput =>
         BehaviorBuilder.Build(_ => 
-            Given("Setup Context", () => CurrentBehavior.Context.Value = CurrentBehavior.Input.Value)); //  (c, i) => c.Value = i.Value));
+            Given("Setup Context", () => CurrentBehavior.Context.Value = CurrentBehavior.Input.Value));
 
     public Behavior SetupContextFromInputAsync =>
         BehaviorBuilder.Build(_ =>

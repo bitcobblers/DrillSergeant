@@ -73,12 +73,14 @@ public class CalculatorFeature
 #if MSTEST
     [DynamicData(nameof(AdditionInputs))]
 #endif
-    public void AsyncAdditionBehavior(int a, int b, int expected)
+    public Task AsyncAdditionBehavior(int a, int b, int expected)
     {
-        Given("Set first number", () => CurrentBehavior.Context.a = a);
-        GivenAsync(SetSecondNumberAsync);
-        When(AddNumbersAsync(_calculator));
-        Then<CheckResultStepAsync>();
+        var calculator = Given("Create calculator", () => new Calculator());
+        var result = WhenAsync("Add numbers", () => Task.FromResult(AddNumbers_Simple(a, b, calculator)));
+
+        ThenAsync("Check result", async () => (await result.Resolve()).ShouldBe(expected));
+
+        return Task.CompletedTask;
     }
 
     [Behavior]
@@ -97,10 +99,15 @@ public class CalculatorFeature
             .Current
             .EnableContextLogging();
 
-        Given("Set first number", () => CurrentBehavior.Context.a = a); // = i.a); // Inline step declaration.
-        And("Set second number", () => SetSecondNumber(b));
-        When(AddNumbers(_calculator));
-        Then(new CheckResultStep());
+        var calculator = Given("Create calculator", () => new Calculator());
+        var result = When("Add numbers", () => AddNumbers_Simple(a, b, calculator));
+
+        Then("Check result", () => result.Resolve().ShouldBe(expected));
+    }
+
+    private int AddNumbers_Simple(int a, int b, StepResult<Calculator> calculator)
+    {
+        return calculator.Resolve().Add(a, b);
     }
 
     // Step implemented as a normal method.
@@ -141,20 +148,7 @@ public class CalculatorFeature
             expected.ShouldBe(result);
         }
     }
-
-    // Class-level step.
-    public class CheckResultStepAsync : ThenStep
-    {
-        public Task ThenAsync()
-        {
-            int expected = (int)CurrentBehavior.Input.expected;
-            int result = (int)CurrentBehavior.Context.Result;
-
-            expected.ShouldBe(result);
-            return Task.CompletedTask;
-        }
-    }
-
+    
     public class Calculator
     {
         public int Add(int a, int b) => a + b;

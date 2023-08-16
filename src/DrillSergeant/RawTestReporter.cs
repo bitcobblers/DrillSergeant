@@ -43,7 +43,7 @@ public class RawTestReporter : ITestReporter
     }
 
     /// <inheritdoc />
-    public virtual void WriteStepResult(StepResult? result)
+    public virtual void WriteStepResult(StepExecutionResult? result)
     {
         if (result == null)
         {

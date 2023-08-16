@@ -30,7 +30,7 @@ internal class XunitRawTestReporter : RawTestReporter
     public string Output => _sink.Output;
 
     /// <inheritdoc />
-    public override void WriteStepResult(StepResult? result)
+    public override void WriteStepResult(StepExecutionResult? result)
     {
         if (result == null)
         {
