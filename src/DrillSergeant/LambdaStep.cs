@@ -1,8 +1,75 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace DrillSergeant;
+
+public class LambdaStep<T> : LambdaStep
+{
+    private StepResult<T>? _result;
+    private AsyncStepResult<T>? _asyncResult;
+
+    public LambdaStep()
+    {
+    }
+
+    public LambdaStep(string? name)
+        : base(name)
+    {
+    }
+
+    [PublicAPI]
+    public new LambdaStep<T> SetName(string? name)
+    {
+        base.SetName(name);
+        return this;
+    }
+
+    [PublicAPI]
+    public new LambdaStep<T> SetVerb(string? verb)
+    {
+        base.SetVerb(verb); 
+        return this;
+    }
+
+    [PublicAPI]
+    public LambdaStep<T> SetResult(StepResult<T> result)
+    {
+        _result = result;
+        return this;
+    }
+
+    [PublicAPI]
+    public LambdaStep<T> SetResultAsync(AsyncStepResult<T> asyncResult)
+    {
+        _asyncResult = asyncResult;
+        return this;
+    }
+
+    [PublicAPI]
+    public LambdaStep<T> Handle(Func<T> handler)
+    {
+        SetHandler(() =>
+        {
+            var value = handler();
+            _result?.SetResult(() => value);
+        });
+
+        return this;
+    }
+
+    [PublicAPI]
+    public LambdaStep<T> HandleAsync(Func<Task<T>> handler)
+    {
+        SetHandler(async () =>
+        {
+            var value = await handler();
+            _asyncResult?.SetResult(() => value);
+        });
+
+        return this;
+    }
+}
 
 /// <summary>
 /// Defines a step that is defined as a method handler.
@@ -85,7 +152,7 @@ public class LambdaStep : BaseStep
         return _handler ?? new Action(() => { });
     }
 
-    private LambdaStep SetHandler(Delegate? handler)
+    protected virtual LambdaStep SetHandler(Delegate? handler)
     {
         if (handler != null)
         {

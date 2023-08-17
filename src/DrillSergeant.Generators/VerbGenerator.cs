@@ -103,14 +103,11 @@ public static partial class {groupName}
         var result = new StepResult<T>(name);
 
         BehaviorBuilder.Current.AddStep(
-            new LambdaStep()
+            new LambdaStep<T>()
                 .SetName(name)
                 .SetVerb(""{verb}"")
-                .Handle(() =>
-                {{
-                    var value = step();
-                    result.SetResult(() => value);
-                }}));
+                .SetResult(result)
+                .Handle(step));
 
         return result;
     }}
@@ -121,14 +118,11 @@ public static partial class {groupName}
         var result = new AsyncStepResult<T>(name);
 
         BehaviorBuilder.Current.AddStep(
-            new LambdaStep()
+            new LambdaStep<T>()
                 .SetName(name)
                 .SetVerb(""{verb}"")
-                .HandleAsync(async () =>
-                {{
-                    var value = await step();
-                    result.SetResult(() => value);
-                }}));
+                .SetResultAsync(result)
+                .HandleAsync(step));
 
         return result;
     }}
