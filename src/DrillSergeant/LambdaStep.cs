@@ -9,15 +9,23 @@ public class LambdaStep<T> : LambdaStep
     private StepResult<T>? _result;
     private AsyncStepResult<T>? _asyncResult;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LambdaStep{T}"/> class.
+    /// </summary>
     public LambdaStep()
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LambdaStep{T}"/> class.
+    /// </summary>
+    /// <param name="name">The name of the step.</param>
     public LambdaStep(string? name)
         : base(name)
     {
     }
 
+    /// <inheritdoc cref="LambdaStep.SetName(string?)" />
     [PublicAPI]
     public new LambdaStep<T> SetName(string? name)
     {
@@ -25,10 +33,19 @@ public class LambdaStep<T> : LambdaStep
         return this;
     }
 
+    /// <inheritdoc cref="LambdaStep.SetVerb(string?)" />
     [PublicAPI]
     public new LambdaStep<T> SetVerb(string? verb)
     {
         base.SetVerb(verb); 
+        return this;
+    }
+
+    /// <inheritdoc cref="LambdaStep.Skip(Func{bool}?)" />
+    [PublicAPI]
+    public new LambdaStep<T> Skip(Func<bool>? shouldSkip)
+    {
+        base.Skip(shouldSkip);
         return this;
     }
 
@@ -121,6 +138,11 @@ public class LambdaStep : BaseStep
         return this;
     }
 
+    /// <summary>
+    /// Sets the verb for the lambda step.
+    /// </summary>
+    /// <param name="verb">The verb of the step.</param>
+    /// <returns>The current step.</returns>
     [PublicAPI]
     public LambdaStep SetVerb(string? verb)
     {
@@ -133,6 +155,11 @@ public class LambdaStep : BaseStep
         return this;
     }
 
+    /// <summary>
+    /// Sets a flag indicating whether the step should be skipped.
+    /// </summary>
+    /// <param name="shouldSkip">An optional delegate to determine if the step should be skipped.</param>
+    /// <returns>The current step.</returns>
     [PublicAPI]
     public LambdaStep Skip(Func<bool>? shouldSkip = null)
     {
