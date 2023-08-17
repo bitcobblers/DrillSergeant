@@ -78,7 +78,7 @@ public class CalculatorFeature
         var calculator = Given("Create calculator", () => new Calculator());
         var result = WhenAsync("Add numbers", () => Task.FromResult(AddNumbers_Simple(a, b, calculator)));
 
-        ThenAsync("Check result", async () => (await result.Resolve()).ShouldBe(expected));
+        ThenAsync("Check result", () => CheckResultAsync(result, expected));
 
         return Task.CompletedTask;
     }
@@ -102,12 +102,23 @@ public class CalculatorFeature
         var calculator = Given("Create calculator", () => new Calculator());
         var result = When("Add numbers", () => AddNumbers_Simple(a, b, calculator));
 
-        Then("Check result", () => result.Resolve().ShouldBe(expected));
+        Then("Check result", () => CheckResult(result, expected));
     }
 
-    private int AddNumbers_Simple(int a, int b, StepResult<Calculator> calculator)
+    private int AddNumbers_Simple(int a, int b, Calculator calculator)
     {
-        return calculator.Resolve().Add(a, b);
+        return calculator.Add(a, b);
+    }
+
+    private void CheckResult(int given, int expected)
+    {
+        given
+            .ShouldBe(expected);
+    }
+
+    private async Task CheckResultAsync(Task<int> given, int expected)
+    {
+        (await given).ShouldBe(expected);
     }
 
     // Step implemented as a normal method.
