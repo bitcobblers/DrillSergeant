@@ -4,6 +4,10 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
+/// <summary>
+/// Defines a lambda step that sets returns a result when executed.
+/// </summary>
+/// <typeparam name="T">The return type for the step.</typeparam>
 public class LambdaStep<T> : LambdaStep
 {
     private StepResult<T>? _result;
@@ -49,6 +53,11 @@ public class LambdaStep<T> : LambdaStep
         return this;
     }
 
+    /// <summary>
+    /// Caches the step result that will be set when the step is executed.
+    /// </summary>
+    /// <param name="result">The result to cache.</param>
+    /// <returns>The current step.</returns>
     [PublicAPI]
     public LambdaStep<T> SetResult(StepResult<T> result)
     {
@@ -56,6 +65,11 @@ public class LambdaStep<T> : LambdaStep
         return this;
     }
 
+    /// <summary>
+    /// Caches the step result that will be set when the step is executed.
+    /// </summary>
+    /// <param name="asyncResult">The result to cache.</param>
+    /// <returns>The current step.</returns>
     [PublicAPI]
     public LambdaStep<T> SetResultAsync(AsyncStepResult<T> asyncResult)
     {
@@ -63,6 +77,7 @@ public class LambdaStep<T> : LambdaStep
         return this;
     }
 
+    /// <inheritdoc cref="LambdaStep.Handle(Action)" />
     [PublicAPI]
     public LambdaStep<T> Handle(Func<T> handler)
     {
@@ -75,6 +90,7 @@ public class LambdaStep<T> : LambdaStep
         return this;
     }
 
+    /// <inheritdoc cref="LambdaStep.HandleAsync(Func{Task})" />
     [PublicAPI]
     public LambdaStep<T> HandleAsync(Func<Task<T>> handler)
     {
@@ -167,9 +183,19 @@ public class LambdaStep : BaseStep
         return this;
     }
 
+    /// <summary>
+    /// Sets synchronous handler.
+    /// </summary>
+    /// <param name="handler">The handler to set.</param>
+    /// <returns>The current step.</returns>
     [PublicAPI]
     public LambdaStep Handle(Action? handler) => SetHandler(handler);
 
+    /// <summary>
+    /// Sets an asynchronous handler.
+    /// </summary>
+    /// <param name="handler">The handler to set.</param>
+    /// <returns>The current step.</returns>
     [PublicAPI]
     public LambdaStep HandleAsync(Func<Task>? handler) => SetHandler(handler);
 
