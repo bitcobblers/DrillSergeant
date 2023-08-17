@@ -1,5 +1,4 @@
-﻿using DrillSergeant.Syntax.GWT;
-using static DrillSergeant.GWT;
+﻿using static DrillSergeant.GWT;
 using Shouldly;
 
 #if NUNIT
@@ -59,7 +58,13 @@ public class CalculatorFeature
         Given("Set first number", () => CurrentBehavior.Context.a = a); // Inline step declaration.
         And(() => SetSecondNumber(b));
         When(AddNumbers(_calculator));
-        Then<CheckResultStep>();
+        Then("Check result", () =>
+        {
+            int expected = (int)CurrentBehavior.Input.expected;
+            int result = (int)CurrentBehavior.Context.Result;
+
+            expected.ShouldBe(result);
+        });
     }
 #endif
 
@@ -136,18 +141,6 @@ public class CalculatorFeature
                 context.Result = calculator.Add(context.a, context.b);
                 return Task.CompletedTask;
             });
-
-    // Step implemented as type for full customization and reusability.
-    public class CheckResultStep : ThenStep
-    {
-        public void Then()
-        {
-            int expected = (int)CurrentBehavior.Input.expected;
-            int result = (int)CurrentBehavior.Context.Result;
-
-            expected.ShouldBe(result);
-        }
-    }
     
     public class Calculator
     {
