@@ -97,7 +97,7 @@ public class LambdaStep<T> : LambdaStep
         SetHandler(async () =>
         {
             var value = await handler();
-            _asyncResult?.SetResult(() => value);
+            _asyncResult?.SetResult(() => Task.FromResult(value));
         });
 
         return this;

@@ -12,5 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Features\AsyncVariationsFeature.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\BaseStepFeature.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\CalculatorFeature.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\FixtureFeature.cs" />
   </ItemGroup>
 </Project>

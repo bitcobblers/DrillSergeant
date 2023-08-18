@@ -63,4 +63,10 @@ public static class StepBuilder
 
         BehaviorBuilder.Current.AddStep(step);
     }
+
+    public static StepResult<T> AddStep<T>(string verb, StepFixture<T> fixture) => 
+        AddStep(verb, fixture.Name, fixture.Execute);
+
+    public static AsyncStepResult<T> AddStepAsync<T>(string verb, AsyncStepFixture<T> fixture) =>
+        AddStepAsync(verb, fixture.Name, fixture.Execute);
 }

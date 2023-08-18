@@ -81,6 +81,16 @@ public static partial class {groupName}
     [ExcludeFromCodeCoverage]
     public static void {verb}(IStep step) =>
         StepBuilder.AddStep(""{verb}"", step);
+
+    // ---
+
+    [ExcludeFromCodeCoverage]
+    public static StepResult<T> {verb}<T>(StepFixture<T> fixture) =>
+        StepBuilder.AddStep(""{verb}"", fixture);
+
+    [ExcludeFromCodeCoverage]
+    public static AsyncStepResult<T> {verb}<T>(AsyncStepFixture<T> fixture) =>
+        StepBuilder.AddStepAsync(""{verb}"", fixture);
 }}
 ";
 }
