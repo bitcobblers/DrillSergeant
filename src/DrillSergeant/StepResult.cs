@@ -7,29 +7,40 @@ namespace DrillSergeant;
 /// Defines the evaluation of a step.
 /// </summary>
 /// <typeparam name="T">The type returned by the step.</typeparam>
-public class StepResult<T> : AsyncStepResult<T>
+public class StepResult<T>
 {
-    public StepResult(string name)
-        : base(name)
-    {
-    }
+    private Lazy<T>? _value;
 
-    internal StepResult(string name, Func<T> func)
-        : base(name, func)
-    {
-    }
+    public StepResult(string? name) => Name = name ?? "<unnamed>";
 
+    internal StepResult(string? name, Func<T> func) : this(name) =>
+        SetResult(func);
+
+    /// <summary>
+    /// Gets the name of the step result.
+    /// </summary>
     [PublicAPI]
-    public new T Resolve()
+    public string Name { get; }
+
+    internal void SetResult(Func<T> func) => _value = new Lazy<T>(func);
+
+    /// <summary>
+    /// Gets the resolved value of the result.
+    /// </summary>
+    [PublicAPI]
+    public T Resolve()
     {
-        try
+        if(BehaviorExecutor.IsExecuting.Value==false)
         {
-            return base.Resolve().Result;
+            throw new EagerStepResultEvaluationException(Name);
         }
-        catch (AggregateException ex) when (ex.InnerException != null)
+
+        if(_value==null)
         {
-            throw ex.InnerException;
+            throw new StepResultNotSetException(Name);
         }
+
+        return _value.Value;
     }
 
     /// <summary>

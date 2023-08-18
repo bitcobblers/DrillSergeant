@@ -14,11 +14,6 @@ public class AsyncStepResult<T>
     internal AsyncStepResult(string? name, Func<Task<T>> func) : this(name) =>
         SetResult(func);
 
-    internal AsyncStepResult(string? name, Func<T> func) : this(name) =>
-        SetResult(func);
-
-    internal void SetResult(Func<T> func) => _value = new AsyncLazy<T>(func);
-
     internal void SetResult(Func<Task<T>> func) => _value = new AsyncLazy<T>(func);
 
     /// <summary>
