@@ -1,11 +1,16 @@
 {
-   "tasks": [
-      {
-         "name": "dotnet-format",
-         "group": "pre-commit",
-         "command": "dotnet",
-         "args": ["dotnet-format", "--include", "${staged}"],
-         "include": ["**/*.cs"]
-      }
-   ]
+  "tasks": [
+    {
+      "name": "dotnet-format",
+      "group": "pre-commit",
+      "command": "dotnet",
+      "args": [ "dotnet-format", "--include", "${staged}" ],
+      "include": [ "**/*.cs" ]
+    }, {
+      "name": "run-tests",
+      "group": "pre-push",
+      "command": "dotnet",
+      "args": [ "test", "-c", "Release" ]
+    }
+  ]
 }
