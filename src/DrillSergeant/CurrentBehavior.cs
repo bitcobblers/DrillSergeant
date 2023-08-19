@@ -117,7 +117,7 @@ public static class CurrentBehavior
 
     internal static void UpdateContext(IDictionary<string, object?> context, object changedContext)
     {
-        var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
 
         foreach (var property in changedContext.GetType().GetProperties(flags))
         {
