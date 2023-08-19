@@ -66,6 +66,6 @@ public class AsyncStepResult<T> : BaseStepResult
     /// Converts an async step result to an awaitable task.
     /// </summary>
     /// <param name="stepResult">The step result to convert.</param>
-    public static implicit operator Task<T>(AsyncStepResult<T> stepResult) 
+    public static implicit operator Task<T>(AsyncStepResult<T> stepResult)
         => stepResult.Resolve();
 }

@@ -44,7 +44,7 @@ public class AsyncVariationsFeature
         });
         Then("Check result", () => ((bool)CurrentBehavior.Context.IsSuccess).ShouldBeTrue());
     }
-    
+
     [Behavior]
     public void WaitUsingLambdaDelay()
     {

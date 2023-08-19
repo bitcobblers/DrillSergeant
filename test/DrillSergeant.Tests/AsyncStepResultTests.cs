@@ -96,8 +96,8 @@ public class AsyncStepResultTests
         {
             // Arrange.
             var step = new AsyncStepResult<bool>(
-                "ignored", 
-                func: () => Task.FromResult(true), 
+                "ignored",
+                func: () => Task.FromResult(true),
                 isExecuting: () => false);
 
             // Assert.

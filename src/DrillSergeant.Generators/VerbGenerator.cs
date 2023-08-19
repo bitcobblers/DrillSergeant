@@ -22,7 +22,7 @@ public class VerbGenerator : IIncrementalGenerator
                 {
                     var className = $"{verbGroup.Name}_{verb}.g.cs";
                     var template = GetVerbGroupStaticsTemplate("DrillSergeant", verbGroup.Name, verb);
-                    
+
                     context.AddSource(className, template);
                 }
             }

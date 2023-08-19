@@ -13,7 +13,7 @@ public abstract class StepFixture<T>
     protected StepFixture(string? name)
     {
         Name = string.IsNullOrWhiteSpace(name) ?
-            GetType().Name : 
+            GetType().Name :
             name;
     }
 

@@ -63,7 +63,7 @@ public abstract class BaseStep : IStep
     protected virtual void Dispose(bool disposing)
     {
     }
-    
+
     internal static bool IsAsync(MethodInfo method) =>
         method.ReturnType.Name == nameof(Task) ||
         method.ReturnType.Name == typeof(Task<>).Name;

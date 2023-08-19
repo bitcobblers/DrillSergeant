@@ -2,7 +2,7 @@
 
 public class StepResultTests
 {
-    public class Converters :StepResultTests
+    public class Converters : StepResultTests
     {
         [Fact]
         public void WithoutSettingValueThrowsStepResultNotSetException()

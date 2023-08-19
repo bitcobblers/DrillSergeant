@@ -35,8 +35,8 @@ public static class StepBuilder
                 .SetName(name)
                 .SetVerb(verb)
                 .SetResult(result)
-                .Handle(step)); 
-        
+                .Handle(step));
+
         return result;
     }
 
@@ -56,7 +56,7 @@ public static class StepBuilder
 
     public static void AddStep(string verb, IStep step)
     {
-        if(step is LambdaStep lambda)
+        if (step is LambdaStep lambda)
         {
             lambda.SetVerb(verb);
         }
@@ -64,7 +64,7 @@ public static class StepBuilder
         BehaviorBuilder.Current.AddStep(step);
     }
 
-    public static StepResult<T> AddStep<T>(string verb, StepFixture<T> fixture) => 
+    public static StepResult<T> AddStep<T>(string verb, StepFixture<T> fixture) =>
         AddStep(verb, fixture.Name, fixture.Execute);
 
     public static AsyncStepResult<T> AddStepAsync<T>(string verb, AsyncStepFixture<T> fixture) =>

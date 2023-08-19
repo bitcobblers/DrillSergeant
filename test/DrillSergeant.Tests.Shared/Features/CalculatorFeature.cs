@@ -152,7 +152,7 @@ public class CalculatorFeature
                 context.Result = calculator.Add(context.a, context.b);
                 return Task.CompletedTask;
             });
-    
+
     public class Calculator
     {
         public int Add(int a, int b) => a + b;

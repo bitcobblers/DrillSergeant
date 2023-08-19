@@ -41,7 +41,7 @@ public class LambdaStep<T> : LambdaStep
     [PublicAPI]
     public new LambdaStep<T> SetVerb(string? verb)
     {
-        base.SetVerb(verb); 
+        base.SetVerb(verb);
         return this;
     }
 
