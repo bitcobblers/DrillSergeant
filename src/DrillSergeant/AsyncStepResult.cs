@@ -5,35 +5,42 @@ using System.Threading.Tasks;
 
 namespace DrillSergeant;
 
-public class AsyncStepResult<T>
+/// <summary>
+/// Defines a step result that can be resolved asynchronously.
+/// </summary>
+/// <typeparam name="T">The result type to resolve.</typeparam>
+public class AsyncStepResult<T> : BaseStepResult
 {
     private AsyncLazy<T>? _value;
 
-    public AsyncStepResult(string? name) => Name = name ?? "<unnamed>";
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AsyncStepResult{T}"/> class.
+    /// </summary>
+    /// <param name="name">The name of the result.</param>
+    public AsyncStepResult(string? name)
+        : base(name)
+    {
+    }
 
-    internal AsyncStepResult(string? name, Func<Task<T>> func) : this(name) =>
-        SetResult(func);
-
-    internal AsyncStepResult(string? name, Func<T> func) : this(name) =>
-        SetResult(func);
-
-    internal void SetResult(Func<T> func) => _value = new AsyncLazy<T>(func);
-
-    internal void SetResult(Func<Task<T>> func) => _value = new AsyncLazy<T>(func);
+    internal AsyncStepResult(string? name, Func<Task<T>>? func = null, Func<bool>? isExecuting = null)
+        : base(name, isExecuting)
+    {
+        if (func != null)
+        {
+            SetResult(func);
+        }
+    }
 
     /// <summary>
-    /// Gets the name of the step result.
+    /// Resolves the step result.
     /// </summary>
-    [PublicAPI]
-    public string Name { get; }
-
-    /// <summary>
-    /// Gets the resolved value of the result.
-    /// </summary>
+    /// <returns>The resolved value of the result.</returns>
+    /// <exception cref="EagerStepResultEvaluationException">Thrown when attempting to resolve the value outside of the behavior execution scope.</exception>
+    /// <exception cref="StepResultNotSetException">Thrown when the result has not been set.</exception>
     [PublicAPI]
     public async Task<T> Resolve()
     {
-        if (BehaviorExecutor.IsExecuting.Value == false)
+        if (IsExecuting == false)
         {
             throw new EagerStepResultEvaluationException(Name);
         }
@@ -46,25 +53,19 @@ public class AsyncStepResult<T>
         return await _value;
     }
 
-    public TaskAwaiter<T> GetAwaiter()
-    {
-        return _value != null ?
-            _value!.GetAwaiter() :
-#pragma warning disable CS8604
-            Task.FromResult<T>(default).GetAwaiter();
-#pragma warning restore CS8604
-    }
+    /// <summary>
+    /// Gets an awaiter to resolve this <see cref="Task{T}"/>.
+    /// </summary>
+    /// <returns>An awaiter for this instance.</returns>
+    public TaskAwaiter<T> GetAwaiter() =>
+        Resolve().GetAwaiter();
+
+    internal void SetResult(Func<Task<T>> func) => _value = new AsyncLazy<T>(func);
 
     /// <summary>
     /// Converts an async step result to an awaitable task.
     /// </summary>
     /// <param name="stepResult">The step result to convert.</param>
     public static implicit operator Task<T>(AsyncStepResult<T> stepResult)
-    {
-        return stepResult._value != null ? 
-            stepResult._value.Value : 
-#pragma warning disable CS8604
-            Task.FromResult<T>(default);
-#pragma warning restore CS8604
-    }
+        => stepResult.Resolve();
 }

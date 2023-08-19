@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace DrillSergeant.Tests;
 
@@ -8,10 +7,13 @@ public class AsyncStepResultTests
     public class Converters : AsyncStepResultTests
     {
         [Fact]
-        public async Task ConversionToTaskCanBeResolved()
+        public async Task ConversionToTaskCanBeAwaited()
         {
             // Arrange.
-            var stepResult = new AsyncStepResult<string>("ignored", () => Task.FromResult("expected"));
+            var stepResult = new AsyncStepResult<string>(
+                "ignored",
+                func: () => Task.FromResult("expected"),
+                isExecuting: () => true);
 
             // Act.
             Task<string> castedResult = stepResult;
@@ -19,13 +21,18 @@ public class AsyncStepResultTests
 
             // Assert.
             result.ShouldBe("expected");
+
+            Task<int> x;
         }
 
         [Fact]
         public async Task CanAwaitConvertInOneOperation()
         {
             // Arrange.
-            var stepResult = new AsyncStepResult<string>("ignored", () => Task.FromResult("expected"));
+            var stepResult = new AsyncStepResult<string>(
+                "ignored",
+                func: () => Task.FromResult("expected"),
+                isExecuting: () => true);
 
             // Act.
             string result = await stepResult;
@@ -35,26 +42,29 @@ public class AsyncStepResultTests
         }
 
         [Fact]
-        public async Task AwaitingWithoutSettingValueReturnsDefault()
+        public async Task AwaitingWithoutSettingValueThrowsStepResultNotSetException()
         {
             // Arrange.
-            var stepResult = new AsyncStepResult<string>("ignored");
-
-            // Act.
-            string? result = await stepResult;
+            var stepResult = new AsyncStepResult<string>(
+                "ignored",
+                func: null,
+                isExecuting: () => true);
 
             // Assert.
-            result.ShouldBeNull();
+            await Should.ThrowAsync<StepResultNotSetException>(async () => await stepResult);
         }
     }
 
     public class ResolveMethod : AsyncStepResultTests
     {
         [Fact]
-        public Task ValueIsOnlyEvaluatedOnce() => RunInState(isExecuting: true, async () =>
+        public async Task ValueIsOnlyEvaluatedOnce()
         {
             // Arrange.
-            var step = new AsyncStepResult<object>("ignored", () => Task.FromResult(new object()));
+            var step = new AsyncStepResult<object>(
+                "ignored",
+                func: () => Task.FromResult(new object()),
+                isExecuting: () => true);
 
             // Act.
             var value1 = await step.Resolve();
@@ -62,41 +72,49 @@ public class AsyncStepResultTests
 
             // Assert.
             value1.ShouldBeSameAs(value2);
-        });
+        }
 
         [Fact]
-        public Task AttemptingToResolveValueOutsideExecutionThrowsEagerStepResultEvaluationException() =>
-            RunInState(isExecuting: false, async () =>
-            {
-                // Arrange.
-                var step = new AsyncStepResult<bool>("ignored", () => Task.FromResult(true));
-
-                // Assert.
-                await Should.ThrowAsync<EagerStepResultEvaluationException>(async () => await step.Resolve());
-            });
-
-        [Fact]
-        public Task AttemptingToResolveWithoutSettingResultThrowsStepResultNotSetException() =>
-            RunInState(isExecuting: true, async () =>
-            {
-                // Arrange.
-                var step = new AsyncStepResult<bool>("ignored");
-
-                // Assert.
-                await Should.ThrowAsync<StepResultNotSetException>(async () => await step.Resolve());
-            });
-
-        private static Task RunInState(bool isExecuting, Func<Task> action)
+        public async Task ValueIsAutomaticallyConvertedToSameType()
         {
-            try
-            {
-                BehaviorExecutor.IsExecuting.Value = isExecuting;
-                return action();
-            }
-            finally
-            {
-                BehaviorExecutor.IsExecuting.Value = false;
-            }
+            // Arrange.
+            var step = new AsyncStepResult<bool>(
+                "ignored",
+                func: () => Task.FromResult(true),
+                isExecuting: () => true);
+
+            // Act.
+            bool value = await step;
+
+            // Assert.
+            value.ShouldBeTrue();
+            Assert.True(await step);
+        }
+
+        [Fact]
+        public async Task AttemptingToResolveValueOutsideExecutionThrowsEagerStepResultEvaluationException()
+        {
+            // Arrange.
+            var step = new AsyncStepResult<bool>(
+                "ignored",
+                func: () => Task.FromResult(true),
+                isExecuting: () => false);
+
+            // Assert.
+            await Should.ThrowAsync<EagerStepResultEvaluationException>(async () => await step.Resolve());
+        }
+
+        [Fact]
+        public async Task AttemptingToResolveWithoutSettingResultThrowsStepResultNotSetException()
+        {
+            // Arrange.
+            var step = new AsyncStepResult<bool>(
+                "ignored",
+                func: null,
+                isExecuting: () => true);
+
+            // Assert.
+            await Should.ThrowAsync<StepResultNotSetException>(async () => await step.Resolve());
         }
     }
 }

@@ -127,7 +127,7 @@ public class BaseStepFeature
         });
 
     public Behavior SetupContextFromInput =>
-        BehaviorBuilder.Build(_ => 
+        BehaviorBuilder.Build(_ =>
             Given("Setup Context", () => CurrentBehavior.Context.Value = CurrentBehavior.Input.Value));
 
     public Behavior SetupContextFromInputAsync =>

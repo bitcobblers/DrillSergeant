@@ -4,33 +4,54 @@ using System;
 namespace DrillSergeant;
 
 /// <summary>
-/// Defines the evaluation of a step.
+/// Defines a step result that can be resolved synchronously.
 /// </summary>
-/// <typeparam name="T">The type returned by the step.</typeparam>
-public class StepResult<T> : AsyncStepResult<T>
+/// <typeparam name="T">The result type to resolve.</typeparam>
+public class StepResult<T> : BaseStepResult
 {
-    public StepResult(string name)
+    private Lazy<T>? _value;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StepResult{T}"/> class.
+    /// </summary>
+    /// <param name="name">The name of the result.</param>
+    public StepResult(string? name)
         : base(name)
     {
     }
 
-    internal StepResult(string name, Func<T> func)
-        : base(name, func)
+    internal StepResult(string? name, Func<T>? func, Func<bool>? isExecuting = null)
+        : base(name, isExecuting)
     {
+        if (func != null)
+        {
+            SetResult(func);
+        }
     }
 
+    /// <summary>
+    /// Resolves the step result.
+    /// </summary>
+    /// <returns>The resolved value of the result.</returns>
+    /// <exception cref="EagerStepResultEvaluationException">Thrown when attempting to resolve the value outside of the behavior execution scope.</exception>
+    /// <exception cref="StepResultNotSetException">Thrown when the result has not been set.</exception>
     [PublicAPI]
-    public new T Resolve()
+    public T Resolve()
     {
-        try
+        if (IsExecuting == false)
         {
-            return base.Resolve().Result;
+            throw new EagerStepResultEvaluationException(Name);
         }
-        catch (AggregateException ex) when (ex.InnerException != null)
+
+        if (_value == null)
         {
-            throw ex.InnerException;
+            throw new StepResultNotSetException(Name);
         }
+
+        return _value.Value;
     }
+
+    internal void SetResult(Func<T> func) => _value = new Lazy<T>(func);
 
     /// <summary>
     /// Converts the step result to its resolved type.
