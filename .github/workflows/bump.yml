@@ -17,10 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
-    steps:
-      - uses: actions/checkout@v3
+    steps:       
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PUSH_KEY }}
+          token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || github.token }}
      
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -48,4 +49,4 @@ jobs:
         run: |
           git add -A
           git commit -m "Bumped ${{ github.event.inputs.version }} Version"
-          git push origin main --follow-tags
+          git push origin ${{ github.ref_name }} --follow-tags

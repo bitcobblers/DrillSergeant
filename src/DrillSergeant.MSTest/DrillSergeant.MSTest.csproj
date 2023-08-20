@@ -7,7 +7,7 @@
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.5.0</Version>
+    <Version>0.6.1-beta</Version>
     <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
@@ -18,7 +18,7 @@
     <Description>Write behavior tests in pure C#.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
     <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
   </ItemGroup>
