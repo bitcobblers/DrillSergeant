@@ -45,49 +45,6 @@ public class VerbStepTests
     public class PickHandlerMethod : VerbStepTests
     {
         [Fact]
-        public void PicksVerbWithMostParameters()
-        {
-            // Arrange.
-            var stub = new StubWithMultipleSyncVerbs();
-            var expected = stub.GetType().GetMethod("Test", new[] { typeof(int) });
-
-            // Act.
-            var verbMethod = stub.PickHandlerWrapper();
-            var handler = verbMethod;
-
-            // Assert.
-            Assert.Equal(expected, handler.Method);
-        }
-
-        [Fact]
-        public void PrefersAsyncOverSyncWhenEqualParameters_SameName()
-        {
-            // Arrange.
-            var stub = new StubWithSyncAndAsyncSameName();
-            var expected = stub.GetType().GetMethod("Test", new[] { typeof(string) });
-
-            // Act.
-            var handler = stub.PickHandlerWrapper();
-
-            // Assert.
-            Assert.Equal(expected, handler.Method);
-        }
-
-        [Fact]
-        public void PrefersAsyncOverSyncWhenEqualParameters_DifferentName()
-        {
-            // Arrange.
-            var stub = new StubWithSyncAndAsyncDifferentName();
-            var expected = stub.GetType().GetMethod("TestAsync", new[] { typeof(int) });
-
-            // Act.
-            var handler = stub.PickHandlerWrapper();
-
-            // Assert.
-            Assert.Equal(expected, handler.Method);
-        }
-
-        [Fact]
         public void ThrowsMissingVerbExceptionIfNoHandlerIsFound()
         {
             // Arrange.
@@ -97,16 +54,28 @@ public class VerbStepTests
             Assert.Throws<MissingVerbHandlerException>(() => stub.PickHandlerWrapper());
         }
 
-        [Theory]
-        [InlineData(typeof(StubWithTwoHandlersSameNumberOfParametersNoAsync))]
-        [InlineData(typeof(StubWithTwoHandlersSameNumberOfParametersTwoAsync))]
-        public void ThrowsAmbiguousVerbException_Scenarios(Type type)
+        [Fact]
+        public void VerbWithParametersThrowsAmbiguousVerbHandlerException()
         {
             // Arrange.
-            var stub = (StubWithExposedPickHandler)Activator.CreateInstance(type)!;
+            var stub = new StubWithMultipleSyncVerbs();
 
             // Assert.
             Assert.Throws<AmbiguousVerbHandlerException>(() => stub.PickHandlerWrapper());
+        }
+
+        [Fact]
+        public void PrefersAsyncOverSync()
+        {
+            // Arrange.
+            var stub = new StubWithSyncAndAsyncDifferentName();
+            var expected = stub.GetType().GetMethod("TestAsync", Array.Empty<Type>());
+
+            // Act.
+            var handler = stub.PickHandlerWrapper();
+
+            // Assert.
+            Assert.Equal(expected, handler.Method);
         }
 
         public class StubWithExposedPickHandler : VerbStep
@@ -122,34 +91,14 @@ public class VerbStepTests
             public void Test(int arg1) { }
         }
 
-        public class StubWithSyncAndAsyncSameName : StubWithExposedPickHandler
-        {
-            public void Test(int arg) { }
-            public Task Test(string arg) => Task.CompletedTask;
-        }
-
         public class StubWithSyncAndAsyncDifferentName : StubWithExposedPickHandler
         {
-            public void Test(int arg) { }
-            public Task TestAsync(int arg) => Task.CompletedTask;
+            public void Test() { }
+            public Task TestAsync() => Task.CompletedTask;
         }
 
         public class StubWithNoVerb : StubWithExposedPickHandler
         {
-        }
-
-        public class StubWithTwoHandlersSameNumberOfParametersNoAsync : StubWithExposedPickHandler
-        {
-            public void Test(int arg) { }
-
-            public void Test(string arg) { }
-        }
-
-        public class StubWithTwoHandlersSameNumberOfParametersTwoAsync : StubWithExposedPickHandler
-        {
-            public Task Test(string arg) => Task.CompletedTask;
-
-            public Task Test(long arg) => Task.CompletedTask;
         }
     }
 }
