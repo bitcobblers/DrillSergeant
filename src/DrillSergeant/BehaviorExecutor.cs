@@ -20,6 +20,7 @@ internal class BehaviorExecutor
 
     public BehaviorExecutor(ITestReporter reporter) => _reporter = reporter;
 
+    // ReSharper disable once MemberCanBeMadeStatic.Global
     public async Task<Behavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
     {
         var input = new Dictionary<string, object?>();

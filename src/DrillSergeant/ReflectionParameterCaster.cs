@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -8,7 +9,7 @@ namespace DrillSergeant;
 /// <summary>
 /// Defines a parameter caster that uses reflection to instantiate the target object being casted to.
 /// </summary>
-internal class ReflectionParameterCaster
+internal static class ReflectionParameterCaster
 {
     /// <summary>
     /// Casts a context dictionary to the given type.
@@ -17,7 +18,7 @@ internal class ReflectionParameterCaster
     /// <param name="type">The type to convert to.</param>
     /// <returns>The casted object.</returns>
     /// <exception cref="ParameterCastFailedException">Thrown when the target type is a primitive or array.</exception>
-    public object Cast(IDictionary<string, object?> source, Type type)
+    public static object Cast(IDictionary<string, object?> source, Type type)
     {
         if (type == typeof(object))
         {
@@ -69,6 +70,7 @@ internal class ReflectionParameterCaster
         return target;
     }
 
+    [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
     private static IEnumerable<PropertyInfo> GetProperties(Type type, ConstructorInfo ctor)
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
@@ -78,6 +80,7 @@ internal class ReflectionParameterCaster
         return properties.Where(p => ctorParameters.Any(x => x.Name == p.Name) == false).ToArray();
     }
 
+    [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
     private static object?[] GetConstructorParameters(IDictionary<string, object?> source, ConstructorInfo ctor)
     {
         var ctorParameters = ctor.GetParameters();

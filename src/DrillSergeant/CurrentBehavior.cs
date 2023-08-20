@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using static DrillSergeant.ReflectionParameterCaster;
 
 namespace DrillSergeant;
 
@@ -12,7 +13,6 @@ namespace DrillSergeant;
 /// </summary>
 public static class CurrentBehavior
 {
-    private static readonly ReflectionParameterCaster Caster = new();
     private static readonly AsyncLocal<BehaviorState?> Instance = new();
 
     internal static void Set(Behavior behavior) =>
@@ -75,7 +75,7 @@ public static class CurrentBehavior
         }
 
         Instance.Value.IsTrackedContextReadonly = isReadonly;
-        Instance.Value.TrackedContext = Caster.Cast(Instance.Value.Behavior.Context, typeof(T));
+        Instance.Value.TrackedContext = Cast(Instance.Value.Behavior.Context, typeof(T));
 
         return (T)Instance.Value.TrackedContext;
     }
@@ -88,7 +88,7 @@ public static class CurrentBehavior
     public static T MapInput<T>()
     {
         AssertBehavior();
-        return (T)Caster.Cast(Instance.Value!.CopiedInput, typeof(T));
+        return (T)Cast(Instance.Value!.CopiedInput, typeof(T));
     }
 
     /// <summary>

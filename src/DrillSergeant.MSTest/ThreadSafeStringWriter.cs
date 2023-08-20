@@ -59,7 +59,7 @@ internal class ThreadSafeStringWriter : StringWriter
     {
         lock (GlobalSync)
         {
-            State.Value ??= new();
+            State.Value ??= new Dictionary<string, ThreadSafeStringBuilder>();
 
             if (State.Value!.TryGetValue(_kind, out var builder))
             {
