@@ -46,16 +46,13 @@ public class VerbStep : BaseStep
             throw new MissingVerbHandlerException(Verb);
         }
 
-        var highestGroup = allCandidates.First().ToArray();
-        var numAsync = highestGroup.Count(x => x.IsAsync);
-
-        if (highestGroup.Length >= 2 && numAsync != 1)
+        if (allCandidates.Any(x => x.Key > 0))
         {
             throw new AmbiguousVerbHandlerException(Verb);
         }
 
-        // Prefer async.
-        var handler = highestGroup.FirstOrDefault(x => x.IsAsync) ?? highestGroup.First();
+        var candidates = allCandidates.First();
+        var handler = candidates.FirstOrDefault(x => x.IsAsync) ?? candidates.First();
 
         return handler.Method.ToDelegate(handler.Target);
     }
