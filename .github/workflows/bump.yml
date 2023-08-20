@@ -50,4 +50,4 @@ jobs:
         run: |
           git add -A
           git commit -m "Bumped ${{ github.event.inputs.version }} Version"
-          git push origin ${{ github.ref_name }} --follow-tags --dry-run
+          git push origin ${{ github.ref_name }} --follow-tags
