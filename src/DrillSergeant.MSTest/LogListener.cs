@@ -9,7 +9,7 @@ internal class LogListener : IDisposable
 {
     private static ThreadSafeStringWriter? _redirectTraceDebug;
     private static BehaviorTraceListener? _traceListener;
-    private static int _traceCount = 0;
+    private static int _traceCount;
     private static readonly object TraceLock = new();
 
     private readonly TextWriter _originalStdOut;

@@ -11,6 +11,7 @@ namespace DrillSergeant;
 /// Defines an attribute used to notify the test runner that the method is a behavior test.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
+[SuppressMessage("ReSharper", "ConditionalAccessQualifierIsNonNullableAccordingToAPIContract")]
 public sealed class BehaviorAttribute : TestMethodAttribute
 {
     // ReSharper disable once UnusedMember.Global
@@ -91,11 +92,6 @@ public sealed class BehaviorAttribute : TestMethodAttribute
             {
                 var exceptions = new List<Exception>();
                 using var behavior = await executor.LoadBehavior(classInstance, method, arguments);
-
-                if (behavior == null)
-                {
-                    return TestResultFailed(new TestFailedException($"Unable to load the behavior for {method.Name}."));
-                }
 
                 executor.StepFailed += (_, e) => exceptions.Add(e.Exception);
 

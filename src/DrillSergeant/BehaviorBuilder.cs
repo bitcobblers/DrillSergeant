@@ -33,7 +33,7 @@ public static class BehaviorBuilder
     /// </summary>
     /// <param name="configure">The callback to execute to configure the behavior.</param>
     /// <returns>The configured behavior.</returns>
-    public static Behavior Build(Action<Behavior> configure)
+    public static Behavior Build(Action<Behavior>? configure)
     {
         var behavior = new Behavior();
         var stack = GetCurrentStack();
@@ -78,7 +78,7 @@ public static class BehaviorBuilder
 
     internal static IDisposable Push(Behavior behavior)
     {
-        GetCurrentStack()?.Push(behavior);
+        GetCurrentStack().Push(behavior);
         return new StackCleanup();
     }
 

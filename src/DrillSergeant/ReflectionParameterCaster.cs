@@ -10,7 +10,13 @@ namespace DrillSergeant;
 /// </summary>
 internal class ReflectionParameterCaster
 {
-    /// <inheritdoc cref="IParameterCaster.Cast(IDictionary{string, object?}, Type)" />
+    /// <summary>
+    /// Casts a context dictionary to the given type.
+    /// </summary>
+    /// <param name="source">The source data to convert.</param>
+    /// <param name="type">The type to convert to.</param>
+    /// <returns>The casted object.</returns>
+    /// <exception cref="ParameterCastFailedException">Thrown when the target type is a primitive or array.</exception>
     public object Cast(IDictionary<string, object?> source, Type type)
     {
         if (type == typeof(object))
@@ -40,7 +46,7 @@ internal class ReflectionParameterCaster
         var ctor = constructors[0];
         var ctorArguments = GetConstructorParameters(source, ctor);
         var properties = GetProperties(type, ctor);
-        var target = ctor.Invoke(ctorArguments)!;
+        var target = ctor.Invoke(ctorArguments);
 
         foreach (var property in from p in properties
                                  where source.ContainsKey(p.Name)
