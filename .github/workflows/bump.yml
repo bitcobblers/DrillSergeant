@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || '' }}
+          token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || github.token }}
           ref: ${{ github.ref_name }}
      
       - name: Setup .NET
