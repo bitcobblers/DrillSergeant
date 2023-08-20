@@ -36,7 +36,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
         using var listener = new LogListener(captureTrace);
         var reporter = new RawTestReporter(listener.StdOut);
 
-        var (elapsed, result) = TimedCall(() =>
+        (TimeSpan elapsed, TestResult result) = TimedCall(() =>
         {
             object? classInstance;
 

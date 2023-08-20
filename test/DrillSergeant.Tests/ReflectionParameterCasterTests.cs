@@ -11,11 +11,10 @@ public class ReflectionParameterCasterTests
         public void NoConversionIsPerformedWhenRawObjectIsPassed()
         {
             // Arrange.
-            var caster = new ReflectionParameterCaster();
             var source = new Dictionary<string, object?>();
 
             // Act.
-            var result = caster.Cast(source, typeof(object));
+            var result = ReflectionParameterCaster.Cast(source, typeof(object));
 
             // Assert.
             result.ShouldBeSameAs(source);
@@ -28,11 +27,10 @@ public class ReflectionParameterCasterTests
         public void CastingToPrimitiveThrowsParameterCastFailedException(Type type)
         {
             // Arrange.
-            var caster = new ReflectionParameterCaster();
             var source = new Dictionary<string, object?>();
 
             // Assert.
-            Assert.Throws<ParameterCastFailedException>(() => caster.Cast(source, type));
+            Assert.Throws<ParameterCastFailedException>(() => ReflectionParameterCaster.Cast(source, type));
         }
     }
 

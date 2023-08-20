@@ -116,7 +116,7 @@ public class Behavior : IBehavior
         input ??= new Dictionary<string, object?>();
         Input.Clear();
 
-        foreach (var (k, v) in input)
+        foreach ((string k, object? v) in input)
         {
             Input[k] = v;
         }

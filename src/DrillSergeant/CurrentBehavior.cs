@@ -107,7 +107,7 @@ public static class CurrentBehavior
         var copy = new ExpandoObject();
         var copyAsDict = (IDictionary<string, object?>)copy;
 
-        foreach (var (key, value) in input)
+        foreach ((string key, object? value) in input)
         {
             copyAsDict[key] = value;
         }
