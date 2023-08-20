@@ -205,6 +205,7 @@ public class LambdaStep : BaseStep
         return _handler ?? new Action(() => { });
     }
 
+    // ReSharper disable once VirtualMemberNeverOverridden.Global
     protected virtual LambdaStep SetHandler(Delegate? handler)
     {
         if (handler != null)

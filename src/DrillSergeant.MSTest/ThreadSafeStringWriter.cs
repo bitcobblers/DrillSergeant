@@ -37,7 +37,7 @@ internal class ThreadSafeStringWriter : StringWriter
             var builder = GetOrAdd();
             var value = builder.ToString();
 
-            builder?.Clear();
+            builder.Clear();
             return value;
         }
         catch (ObjectDisposedException)

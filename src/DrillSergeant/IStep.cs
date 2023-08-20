@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DrillSergeant;
@@ -27,8 +26,6 @@ public interface IStep : IDisposable
     /// <summary>
     /// Executes the step.
     /// </summary>
-    /// <param name="context">The context to bind to the step handler.</param>
-    /// <param name="input">The input to bind to the step handler.</param>
     /// <returns>An awaitable task for the execution.</returns>
-    Task Execute(IDictionary<string, object?> context, IDictionary<string, object?> input);
+    Task Execute();
 }

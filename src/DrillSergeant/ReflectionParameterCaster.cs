@@ -69,7 +69,7 @@ internal class ReflectionParameterCaster
         return target;
     }
 
-    private static PropertyInfo[] GetProperties(Type type, ConstructorInfo ctor)
+    private static IEnumerable<PropertyInfo> GetProperties(Type type, ConstructorInfo ctor)
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
         var ctorParameters = ctor.GetParameters();

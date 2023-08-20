@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 namespace DrillSergeant.MSTest;
 
+[SuppressMessage("ReSharper", "ConvertToAutoPropertyWhenPossible")]
 internal class LogListener : IDisposable
 {
     private static ThreadSafeStringWriter? _redirectTraceDebug;

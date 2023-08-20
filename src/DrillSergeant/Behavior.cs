@@ -17,7 +17,6 @@ public class Behavior : IBehavior
 {
     private readonly List<IStep> _steps = new();
     private readonly HashSet<IDisposable> _ownedDisposables = new();
-    private bool _isFrozen;
     private bool _disposed;
 
     /// <summary>
@@ -58,9 +57,9 @@ public class Behavior : IBehavior
     /// Attempting to call any of the configuration methods on a behavior once it has been thrown will result in a <see cref="BehaviorFrozenException"/> exception being thrown.
     /// </para>
     /// </remarks>
-    public bool IsFrozen => _isFrozen;
+    public bool IsFrozen { get; private set; }
 
-    internal ISet<IDisposable> OwnedDisposables => _ownedDisposables;
+    internal IEnumerable<IDisposable> OwnedDisposables => _ownedDisposables;
 
 
     /// <summary>
@@ -183,7 +182,7 @@ public class Behavior : IBehavior
 
     public Behavior Freeze()
     {
-        _isFrozen = true;
+        IsFrozen = true;
         return this;
     }
 
@@ -219,7 +218,7 @@ public class Behavior : IBehavior
 
     private void AssertNotFrozen([CallerMemberName] string memberName = "")
     {
-        if (_isFrozen)
+        if (IsFrozen)
         {
             throw new BehaviorFrozenException(memberName);
         }

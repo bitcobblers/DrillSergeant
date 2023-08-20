@@ -20,7 +20,7 @@ internal class BehaviorCommand : TestCommand
     /// </summary>
     /// <param name="context">The test execution context.</param>
     /// <returns>The result from running the test.</returns>
-    private async Task<TestResult> ExecuteAsync(TestExecutionContext context)
+    private static async Task<TestResult> ExecuteAsync(TestExecutionContext context)
     {
         var reporter = new RawTestReporter(context.OutWriter);
         var executor = new BehaviorExecutor(reporter);

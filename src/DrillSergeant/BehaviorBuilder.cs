@@ -76,12 +76,6 @@ public static class BehaviorBuilder
         return behavior;
     }
 
-    internal static IDisposable Push(Behavior behavior)
-    {
-        GetCurrentStack().Push(behavior);
-        return new StackCleanup();
-    }
-
     internal static Stack<Behavior> GetCurrentStack()
     {
         Stack<Behavior>? value = CurrentStack.Value;
@@ -91,11 +85,6 @@ public static class BehaviorBuilder
             return value;
         }
 
-        return CurrentStack.Value = new();
-    }
-
-    private class StackCleanup : IDisposable
-    {
-        public void Dispose() => CurrentStack.Value?.Pop();
+        return CurrentStack.Value = new Stack<Behavior>();
     }
 }

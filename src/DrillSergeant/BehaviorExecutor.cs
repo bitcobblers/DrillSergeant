@@ -105,7 +105,7 @@ internal class BehaviorExecutor
                 try
                 {
                     CurrentBehavior.ResetContext();
-                    await step.Execute(behavior.Context, behavior.Input);
+                    await step.Execute();
                 }
                 catch (Exception ex)
                 {
@@ -126,7 +126,7 @@ internal class BehaviorExecutor
                 Context = behavior.LogContext ? behavior.Context : null,
                 Elapsed = elapsed,
                 PreviousStepsFailed = previousStepFailed,
-                Success = !previousStepFailed,
+                Success = !previousStepFailed
             });
         }
     }

@@ -8,7 +8,7 @@ namespace DrillSergeant.Xunit2;
 /// Defines a decoy output helper for xunit.
 /// </summary>
 /// <remarks>
-/// By default the output to an instance of <see cref="ITestOutputHelper"/> is written to a messagebus.  The decoy is used to cache output at the step level so that it can be aggregated in the report.
+/// By default the output to an instance of <see cref="ITestOutputHelper"/> is written to a message bus.  The decoy is used to cache output at the step level so that it can be aggregated in the report.
 /// </remarks>
 internal class DecoyTestOutputHelper : ITestOutputHelper
 {
