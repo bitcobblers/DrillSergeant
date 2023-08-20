@@ -63,7 +63,7 @@ internal class ReflectionParameterCaster
         return target;
     }
 
-    internal static PropertyInfo[] GetProperties(Type type, ConstructorInfo ctor)
+    private static PropertyInfo[] GetProperties(Type type, ConstructorInfo ctor)
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
         var ctorParameters = ctor.GetParameters();
@@ -72,7 +72,7 @@ internal class ReflectionParameterCaster
         return properties.Where(p => ctorParameters.Any(x => x.Name == p.Name) == false).ToArray();
     }
 
-    internal static object?[] GetConstructorParameters(IDictionary<string, object?> source, ConstructorInfo ctor)
+    private static object?[] GetConstructorParameters(IDictionary<string, object?> source, ConstructorInfo ctor)
     {
         var ctorParameters = ctor.GetParameters();
         var arguments = new List<object?>();
