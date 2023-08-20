@@ -75,30 +75,30 @@ public static class CartSteps
 
     public static LambdaStep NewCart(HttpClient client) =>
         new LambdaStep("Create new cart")
-            .HandleAsync(async context =>
+            .HandleAsync(async () =>
             {
                 var url = $"api/cart/new";
                 var response = await client.GetStringAsync(url);
 
-                context.CartId = int.Parse(response);
+                CurrentBehavior.Context.CartId = int.Parse(response);
             });
 
     public static LambdaStep LoadProducts(HttpClient client) =>
         new LambdaStep("Get product list")
-            .HandleAsync(async context =>
+            .HandleAsync(async () =>
             {
                 var url = "api/products";
                 var response = await client.GetFromJsonAsync<Product[]>(url);
 
-                context.Products = response;
+                CurrentBehavior.Context.Products = response;
             });
 
     public static LambdaStep AddRandomProductToCart(HttpClient client) =>
         new LambdaStep("Add random product to cart")
-            .HandleAsync(async context =>
+            .HandleAsync(async () =>
             {
-                var cartId = (int)context.CartId;
-                var products = (Product[])context.Products;
+                var cartId = (int)CurrentBehavior.Context.CartId;
+                var products = (Product[])CurrentBehavior.Context.Products;
                 var product = products[random.Next(0, products.Length)];
 
                 var url = "api/cart/add";
@@ -110,13 +110,11 @@ public static class CartSteps
 And within `OrderingSteps` we define the steps:
 
 ```CSharp
-public static class OrderingSteps
-{
     public static LambdaStep PlaceOrder(HttpClient client) =>
         new LambdaStep("Place order")
-            .HandleAsync(async context =>
+            .HandleAsync(async () =>
             {
-                var cartId = (int)context.CartId;
+                var cartId = (int)CurrentBehavior.Context.CartId;
                 var order = new PlaceOrderRequest(cartId);
                 var url = "api/order/place";
 
@@ -128,20 +126,17 @@ public static class OrderingSteps
                         .Content
                         .ReadFromJsonAsync<PlaceOrderResponse>();
 
-                    context.OrderId = body?.OrderNumber;
+                    CurrentBehavior.Context.OrderId = body?.OrderNumber;
                 }
                 else
                 {
-                    context.OrderId = null;
+                    CurrentBehavior.Context.OrderId = null;
                 }
             });
 
     public static LambdaStep CheckOrderId() =>
         new LambdaStep("Check order id is set")
-            .Handle(context =>
-            {
-                Assert.NotNull(context.OrderId);
-            });
+            .Handle(() => Assert.NotNull(CurrentBehavior.Context.OrderId));
 }
 
 ```
@@ -154,9 +149,9 @@ This time when we run the test we get the following output in our test runner:
 
 Unlike in normal unit tests, which are intended to test the correctness of individual methods, behaviors tests validate whether one or more components actually behave in the way expected when given "normal" inputs.  Because of this, behaviors are composed of a series of pluggable steps that can be re-used in different scenarios.  See the [Cucumber](https://cucumber.io/docs/guides/overview/) documentation for an introduction into behavior testing.
 
-## Comparison with 3rd Party Acceptance Testing Tools (e.g., SpecFlow, Fitnesse, Guage)
+## Comparison with 3rd Party Acceptance Testing Tools (e.g., SpecFlow, Fitnesse, Gauge)
 
-DrillSergeant was borne out of frustration of using 3rd party testing tools.  While tools such as SpecFlow and Guage have gotten easier to use over time, they require installing 3rd party plugins/runners in the developer environment.  Additionally they require separate files for authoring the tests themselves (`.feature` for Specflow, `.wiki` for FitNesse, and `.md` for Gauge).  This relies on a mixture of code generation and reflection magic in order to bind the test specifications with the code that actually runs them, which adds a layer of complexity.
+DrillSergeant was borne out of frustration of using 3rd party testing tools.  While tools such as SpecFlow and Gauge have gotten easier to use over time, they require installing 3rd party plugins/runners in the developer environment.  Additionally they require separate files for authoring the tests themselves (`.feature` for Specflow, `.wiki` for FitNesse, and `.md` for Gauge).  This relies on a mixture of code generation and reflection magic in order to bind the test specifications with the code that actually runs them, which adds a layer of complexity.
 
 DrillSergeant takes a different approach to this problem.  Rather than rely on DSLs and complex translation layers, it engrafts additional capabilities to the xunit framework to make it easy to write behavior-driven with familiar C# syntax.  No new DSLs to learn, no build task fussiness, no reflection shenanigans.  Just a simple API written entirely in C# code that can be tested/debugged the exact same way as all of your other unit tests.
 
