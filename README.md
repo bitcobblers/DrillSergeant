@@ -35,26 +35,10 @@ public class CalculatorTests
     [InlineData(2,3,5)]
     public void TestAdditionBehavior(int a, int b, int expected)
     {
-        Given(NewCalculator());
-        When(AddNumbers(a,b));
-        Then(CheckResult(expected));
+        var calculator = Given("Create a calculator", () => new Calculator());
+        var result = When($"Add {a} and {b}", () => calculator.Add(a, b));
+        Then(CheckResult("Check result", () => Assert.Equal(expected, result));
     }
-
-    private LambdaStep NewCalculator() =>
-        new LambdaStep("Create a calculator")
-            .Handle(context => context.Calculator = new Calculator());
-
-    private LambdaStep AddNumbers(int a, int b) =>
-        new LambdaStep($"Add {a} and {b}")
-            .Handle(context => 
-            {
-                var calculator = context.Calculator;
-                context.Result = calculator.Add(a,b);
-            });
-
-    private LambdaStep CheckResult(int expected) =>
-        new LambdaStep($"Check result matches {expected}")
-            .Handle(context => Assert.Equal(expected, context.Result));
 }
 ```
 
