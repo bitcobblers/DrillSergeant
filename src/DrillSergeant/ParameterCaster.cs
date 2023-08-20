@@ -9,7 +9,7 @@ namespace DrillSergeant;
 /// <summary>
 /// Defines a parameter caster that uses reflection to instantiate the target object being casted to.
 /// </summary>
-internal static class ReflectionParameterCaster
+internal static class ParameterCaster
 {
     /// <summary>
     /// Casts a context dictionary to the given type.

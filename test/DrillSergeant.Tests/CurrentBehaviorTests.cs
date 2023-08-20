@@ -207,6 +207,52 @@ public class CurrentBehaviorTests
         }
     }
 
+    public class BehaviorStateTests : CurrentBehaviorTests
+    {
+        [Fact]
+        public void CopiedInputContainsShallowCopyOfBehaviorInput()
+        {
+            // Arrange.
+            var obj = new object();
+            var behavior = new Behavior();
+
+            behavior.Input.Add("key", obj);
+
+            // Act.
+            var state = new CurrentBehavior.BehaviorState(behavior);
+
+            // Assert.
+            state.CopiedInput.ShouldNotBeSameAs(behavior.Input);
+            state.CopiedInput["key"].ShouldBeSameAs(behavior.Input["key"]);
+        }
+
+        [Fact]
+        public void IsTrackedContextReadonlyIsFalseByDefault()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            var state = new CurrentBehavior.BehaviorState(behavior);
+
+            // Assert.
+            state.IsTrackedContextReadonly.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void TrackedContextReadonlyIsNullByDefault()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            var state = new CurrentBehavior.BehaviorState(behavior);
+
+            // Assert.
+            state.TrackedContext.ShouldBeNull();
+        }
+    }
+
     // ReSharper disable once ClassNeverInstantiated.Local
     private class StubContext
     {

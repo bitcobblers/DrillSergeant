@@ -4,7 +4,7 @@ using System.Dynamic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using static DrillSergeant.ReflectionParameterCaster;
+using static DrillSergeant.ParameterCaster;
 
 namespace DrillSergeant;
 
@@ -133,7 +133,7 @@ public static class CurrentBehavior
         }
     }
 
-    private class BehaviorState
+    internal class BehaviorState
     {
         public BehaviorState(Behavior behavior)
         {
