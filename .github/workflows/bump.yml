@@ -22,7 +22,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || github.token }}
-          # ref: ${{ github.ref_name }}
      
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -50,4 +49,4 @@ jobs:
         run: |
           git add -A
           git commit -m "Bumped ${{ github.event.inputs.version }} Version"
-          git push origin ${{ github.ref_name }} --follow-tags --dry-run
+          git push origin ${{ github.ref_name }} --follow-tags
