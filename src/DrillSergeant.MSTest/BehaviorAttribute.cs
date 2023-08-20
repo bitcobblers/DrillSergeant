@@ -59,7 +59,7 @@ public sealed class BehaviorAttribute : TestMethodAttribute
         });
 
         result.Duration = elapsed;
-        result.DebugTrace = LogListener.GetAndClearTrace();
+        result.DebugTrace = listener.GetAndClearTrace();
         result.LogOutput = listener.GetAndClearStdOut();
         result.LogError = listener.GetAndClearStdErr();
         result.TestContextMessages = context.GetDiagnosticMessages();

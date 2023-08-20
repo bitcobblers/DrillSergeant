@@ -59,8 +59,11 @@ internal class LogListener : IDisposable
     public ThreadSafeStringWriter StdErr => _redirectStdErr;
 
     public string GetAndClearStdOut() => _redirectStdOut.ToStringAndClear();
+
     public string GetAndClearStdErr() => _redirectStdErr.ToStringAndClear();
-    public static string GetAndClearTrace() => _redirectTraceDebug?.ToStringAndClear() ?? string.Empty;
+
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+    public string GetAndClearTrace() => _redirectTraceDebug?.ToStringAndClear() ?? string.Empty;
 
     public void Dispose()
     {
