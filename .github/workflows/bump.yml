@@ -18,10 +18,14 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Dump Branch
+        run: echo running on branch ${GITHUB_REF##*/}
+        
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.PUSH_KEY }}
-          ref: ${{ github.ref_name }}
+          ref: ${GITHUB_REF##*/}
      
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -49,4 +53,4 @@ jobs:
         run: |
           git add -A
           git commit -m "Bumped ${{ github.event.inputs.version }} Version"
-          git push --follow-tags --dry-run
+          git push --follow-tags --dry-run origin ${GITHUB_REF##*/}
