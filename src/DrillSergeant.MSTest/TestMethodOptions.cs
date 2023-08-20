@@ -1,7 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DrillSergeant.MSTest;
 
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 internal class TestMethodOptions
 {
     public int Timeout { get; set; }

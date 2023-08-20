@@ -13,7 +13,7 @@ internal class BehaviorTestRunner : XunitTestRunner
 
     protected override async Task<Tuple<decimal, string>> InvokeTestAsync(ExceptionAggregator aggregator)
     {
-        var (sink, decoy) = GetOutputHelper();
+        (TestOutputHelper sink, DecoyTestOutputHelper decoy) = GetOutputHelper();
         using var reporter = new XunitRawTestReporter(sink, decoy);
         var executionTime = await InvokeTestMethodAsync(aggregator, reporter);
         var output = reporter.Output;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace DrillSergeant;
 
@@ -8,6 +9,7 @@ namespace DrillSergeant;
 /// </summary>
 public static class StepBuilder
 {
+    [PublicAPI]
     public static void AddStep(string verb, string name, Action step)
     {
         BehaviorBuilder.Current.AddStep(
@@ -17,6 +19,7 @@ public static class StepBuilder
                 .Handle(step));
     }
 
+    [PublicAPI]
     public static void AddStepAsync(string verb, string name, Func<Task> step)
     {
         BehaviorBuilder.Current.AddStep(
@@ -26,6 +29,7 @@ public static class StepBuilder
                 .HandleAsync(step));
     }
 
+    [PublicAPI]
     public static StepResult<T> AddStep<T>(string verb, string name, Func<T> step)
     {
         var result = new StepResult<T>(name);
@@ -40,6 +44,7 @@ public static class StepBuilder
         return result;
     }
 
+    [PublicAPI]
     public static AsyncStepResult<T> AddStepAsync<T>(string verb, string name, Func<Task<T>> step)
     {
         var result = new AsyncStepResult<T>(name);
@@ -54,6 +59,7 @@ public static class StepBuilder
         return result;
     }
 
+    [PublicAPI]
     public static void AddStep(string verb, IStep step)
     {
         if (step is LambdaStep lambda)
@@ -64,9 +70,11 @@ public static class StepBuilder
         BehaviorBuilder.Current.AddStep(step);
     }
 
+    [PublicAPI]
     public static StepResult<T> AddStep<T>(string verb, StepFixture<T> fixture) =>
         AddStep(verb, fixture.Name, fixture.Execute);
 
+    [PublicAPI]
     public static AsyncStepResult<T> AddStepAsync<T>(string verb, AsyncStepFixture<T> fixture) =>
         AddStepAsync(verb, fixture.Name, fixture.Execute);
 }

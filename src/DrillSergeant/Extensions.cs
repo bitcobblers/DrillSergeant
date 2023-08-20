@@ -43,6 +43,7 @@ public static class Extensions
     /// <typeparam name="T">The type of object to take ownership of.</typeparam>
     /// <param name="instance">The object instance.</param>
     /// <returns>The object passed in.</returns>
+    // ReSharper disable once UnusedMethodReturnValue.Global
     public static T? OwnedByBehavior<T>(this T? instance) where T : IDisposable
     {
         CurrentBehavior.Owns(instance);

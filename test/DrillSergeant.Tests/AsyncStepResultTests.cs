@@ -21,8 +21,6 @@ public class AsyncStepResultTests
 
             // Assert.
             result.ShouldBe("expected");
-
-            Task<int> x;
         }
 
         [Fact]

@@ -4,7 +4,7 @@
       "name": "dotnet-format",
       "group": "pre-commit",
       "command": "dotnet",
-      "args": [ "dotnet-format", "--include", "${staged}" ],
+      "args": [ "format", "--include", "${staged}" ],
       "include": [ "**/*.cs" ]
     }, {
       "name": "run-tests",

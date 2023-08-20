@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -8,10 +9,16 @@ namespace DrillSergeant;
 /// <summary>
 /// Defines a parameter caster that uses reflection to instantiate the target object being casted to.
 /// </summary>
-internal class ReflectionParameterCaster
+internal static class ParameterCaster
 {
-    /// <inheritdoc cref="IParameterCaster.Cast(IDictionary{string, object?}, Type)" />
-    public object Cast(IDictionary<string, object?> source, Type type)
+    /// <summary>
+    /// Casts a context dictionary to the given type.
+    /// </summary>
+    /// <param name="source">The source data to convert.</param>
+    /// <param name="type">The type to convert to.</param>
+    /// <returns>The casted object.</returns>
+    /// <exception cref="ParameterCastFailedException">Thrown when the target type is a primitive or array.</exception>
+    public static object Cast(IDictionary<string, object?> source, Type type)
     {
         if (type == typeof(object))
         {
@@ -40,7 +47,7 @@ internal class ReflectionParameterCaster
         var ctor = constructors[0];
         var ctorArguments = GetConstructorParameters(source, ctor);
         var properties = GetProperties(type, ctor);
-        var target = ctor.Invoke(ctorArguments)!;
+        var target = ctor.Invoke(ctorArguments);
 
         foreach (var property in from p in properties
                                  where source.ContainsKey(p.Name)
@@ -63,7 +70,8 @@ internal class ReflectionParameterCaster
         return target;
     }
 
-    internal static PropertyInfo[] GetProperties(Type type, ConstructorInfo ctor)
+    [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
+    private static IEnumerable<PropertyInfo> GetProperties(Type type, ConstructorInfo ctor)
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty;
         var ctorParameters = ctor.GetParameters();
@@ -72,7 +80,8 @@ internal class ReflectionParameterCaster
         return properties.Where(p => ctorParameters.Any(x => x.Name == p.Name) == false).ToArray();
     }
 
-    internal static object?[] GetConstructorParameters(IDictionary<string, object?> source, ConstructorInfo ctor)
+    [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
+    private static object?[] GetConstructorParameters(IDictionary<string, object?> source, ConstructorInfo ctor)
     {
         var ctorParameters = ctor.GetParameters();
         var arguments = new List<object?>();

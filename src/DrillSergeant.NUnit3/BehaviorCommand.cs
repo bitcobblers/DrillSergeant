@@ -20,7 +20,7 @@ internal class BehaviorCommand : TestCommand
     /// </summary>
     /// <param name="context">The test execution context.</param>
     /// <returns>The result from running the test.</returns>
-    private async Task<TestResult> ExecuteAsync(TestExecutionContext context)
+    private static async Task<TestResult> ExecuteAsync(TestExecutionContext context)
     {
         var reporter = new RawTestReporter(context.OutWriter);
         var executor = new BehaviorExecutor(reporter);
@@ -35,12 +35,6 @@ internal class BehaviorCommand : TestCommand
         context.CurrentResult.SetResult(ResultState.Success);
 
         using var behavior = await executor.LoadBehavior(obj, method, args);
-
-        if (behavior == null)
-        {
-            context.CurrentResult.SetResult(ResultState.Error, $"Unable to load the behavior {method.Name}.");
-            return context.CurrentResult;
-        }
 
         try
         {

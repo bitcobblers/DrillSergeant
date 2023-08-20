@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -39,7 +38,7 @@ public abstract class BaseStep : IStep
     }
 
     /// <inheritdoc />
-    public virtual async Task Execute(IDictionary<string, object?> context, IDictionary<string, object?> input)
+    public virtual async Task Execute()
     {
         var handler = PickHandler();
         var parameters = Array.Empty<object>();

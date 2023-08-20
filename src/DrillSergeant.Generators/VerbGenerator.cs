@@ -11,7 +11,7 @@ public class VerbGenerator : IIncrementalGenerator
         // Uncomment the following line to debug the generator.
         // System.Diagnostics.Debugger.Launch();
 
-        var files = context.AdditionalTextsProvider.Where(t => new FileInfo(t.Path).Name.ToLower() == "verbdefinitions.txt");
+        var files = context.AdditionalTextsProvider.Where(t => string.Equals(new FileInfo(t.Path).Name, "VerbDefinitions.txt", StringComparison.OrdinalIgnoreCase));
         var providers = files.Select((text, token) => text.GetText(token)!.ToString());
 
         context.RegisterSourceOutput(providers, static (context, text) =>
@@ -29,68 +29,70 @@ public class VerbGenerator : IIncrementalGenerator
         });
     }
 
-    private static string GetVerbGroupStaticsTemplate(string ns, string groupName, string verb) => $@"
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
+    private static string GetVerbGroupStaticsTemplate(string ns, string groupName, string verb) =>
+        $$"""
+          using System;
+          using System.Diagnostics.CodeAnalysis;
+          using System.Threading.Tasks;
 
-namespace {ns};
+          namespace {{ns}};
 
-public static partial class {groupName}
-{{
-    [ExcludeFromCodeCoverage]
-    public static void {verb}(Action step) =>
-        StepBuilder.AddStep(""{verb}"", step.Method.Name, step);
+          public static partial class {{groupName}}
+          {
+              [ExcludeFromCodeCoverage]
+              public static void {{verb}}(Action step) =>
+                  StepBuilder.AddStep("{{verb}}", step.Method.Name, step);
+          
+              [ExcludeFromCodeCoverage]
+              public static void {{verb}}(string name, Action step) =>
+                  StepBuilder.AddStep("{{verb}}", name, step);
+          
+              [ExcludeFromCodeCoverage]
+              public static void {{verb}}Async(Func<Task> step) =>
+                  StepBuilder.AddStepAsync("{{verb}}", step.Method.Name, step);
+          
+              [ExcludeFromCodeCoverage]
+              public static void {{verb}}Async(string name, Func<Task> step) =>
+                  StepBuilder.AddStepAsync("{{verb}}", name, step);
+          
+              // ---
+          
+              [ExcludeFromCodeCoverage]
+              public static StepResult<T> {{verb}}<T>(Func<T> step) =>
+                  StepBuilder.AddStep<T>("{{verb}}", step.Method.Name, step);
+          
+              [ExcludeFromCodeCoverage]
+              public static StepResult<T> {{verb}}<T>(string name, Func<T> step) =>
+                  StepBuilder.AddStep<T>("{{verb}}", name, step);
+          
+              [ExcludeFromCodeCoverage]
+              public static AsyncStepResult<T> {{verb}}Async<T>(Func<Task<T>> step) =>
+                  StepBuilder.AddStepAsync<T>("{{verb}}", step.Method.Name, step);
+          
+              [ExcludeFromCodeCoverage]
+              public static AsyncStepResult<T> {{verb}}Async<T>(string name, Func<Task<T>> step) =>
+                  StepBuilder.AddStepAsync<T>("{{verb}}", name, step);
+          
+              // ---
+          
+              [ExcludeFromCodeCoverage]
+              public static void {{verb}}<TStep>() where TStep : IStep, new() =>
+                  StepBuilder.AddStep("{{verb}}", new TStep());
+          
+              [ExcludeFromCodeCoverage]
+              public static void {{verb}}(IStep step) =>
+                  StepBuilder.AddStep("{{verb}}", step);
+          
+              // ---
+          
+              [ExcludeFromCodeCoverage]
+              public static StepResult<T> {{verb}}<T>(StepFixture<T> fixture) =>
+                  StepBuilder.AddStep("{{verb}}", fixture);
+          
+              [ExcludeFromCodeCoverage]
+              public static AsyncStepResult<T> {{verb}}<T>(AsyncStepFixture<T> fixture) =>
+                  StepBuilder.AddStepAsync("{{verb}}", fixture);
+          }
 
-    [ExcludeFromCodeCoverage]
-    public static void {verb}(string name, Action step) =>
-        StepBuilder.AddStep(""{verb}"", name, step);
-
-    [ExcludeFromCodeCoverage]
-    public static void {verb}Async(Func<Task> step) =>
-        StepBuilder.AddStepAsync(""{verb}"", step.Method.Name, step);
-
-    [ExcludeFromCodeCoverage]
-    public static void {verb}Async(string name, Func<Task> step) =>
-        StepBuilder.AddStepAsync(""{verb}"", name, step);
-
-    // ---
-
-    [ExcludeFromCodeCoverage]
-    public static StepResult<T> {verb}<T>(Func<T> step) =>
-        StepBuilder.AddStep<T>(""{verb}"", step.Method.Name, step);
-
-    [ExcludeFromCodeCoverage]
-    public static StepResult<T> {verb}<T>(string name, Func<T> step) =>
-        StepBuilder.AddStep<T>(""{verb}"", name, step);
-
-    [ExcludeFromCodeCoverage]
-    public static AsyncStepResult<T> {verb}Async<T>(Func<Task<T>> step) =>
-        StepBuilder.AddStepAsync<T>(""{verb}"", step.Method.Name, step);
-
-    [ExcludeFromCodeCoverage]
-    public static AsyncStepResult<T> {verb}Async<T>(string name, Func<Task<T>> step) =>
-        StepBuilder.AddStepAsync<T>(""{verb}"", name, step);
-
-    // ---
-
-    [ExcludeFromCodeCoverage]
-    public static void {verb}<TStep>() where TStep : IStep, new() =>
-        StepBuilder.AddStep(""{verb}"", new TStep());
-
-    [ExcludeFromCodeCoverage]
-    public static void {verb}(IStep step) =>
-        StepBuilder.AddStep(""{verb}"", step);
-
-    // ---
-
-    [ExcludeFromCodeCoverage]
-    public static StepResult<T> {verb}<T>(StepFixture<T> fixture) =>
-        StepBuilder.AddStep(""{verb}"", fixture);
-
-    [ExcludeFromCodeCoverage]
-    public static AsyncStepResult<T> {verb}<T>(AsyncStepFixture<T> fixture) =>
-        StepBuilder.AddStepAsync(""{verb}"", fixture);
-}}
-";
+          """;
 }

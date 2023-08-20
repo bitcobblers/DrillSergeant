@@ -5,55 +5,6 @@ namespace DrillSergeant.Tests;
 
 public class CurrentBehaviorTests
 {
-    public class UpdateContextMethod : BaseStepTests
-    {
-        [Fact]
-        public void UpdatesContextWithNewFields()
-        {
-            // Arrange.
-            var expected = new Dictionary<string, object?>
-            {
-                ["IntValue"] = 1
-            };
-            var context = new Dictionary<string, object?>();
-            var changedContext = new StubWithValue { IntValue = 1 };
-
-            // Act.
-            CurrentBehavior.UpdateContext(context, changedContext);
-
-            // Assert.
-            context.ShouldBe(expected);
-        }
-
-        [Fact]
-        public void UpdatesExistingFieldInContext()
-        {
-            // Arrange.
-            var context = new Dictionary<string, object?>
-            {
-                ["IntValue"] = -1
-            };
-
-            var changedContext = new StubWithValue { IntValue = 1 };
-
-            // Act.
-            CurrentBehavior.UpdateContext(context, changedContext);
-
-            // Assert.
-            context.ShouldContainKey("IntValue");
-            context["IntValue"].ShouldBe(1);
-        }
-
-        public class StubWithValue
-        {
-            public int IntValue { get; set; }
-
-            private int PrivateIntValue { get; set; }
-
-            public static int StaticIntValue { get; set; }
-        }
-    }
-
     public class AccessTests : CurrentBehaviorTests
     {
         [Fact]
@@ -117,60 +68,192 @@ public class CurrentBehaviorTests
         }
     }
 
-    [Fact]
-    public Task MappingContextTwiceThrowsContextAlreadyMappedException()
+    public class UpdateContextMethod : CurrentBehaviorTests
     {
-        // Arrange.
-        CurrentBehavior.Set(new Behavior());
-        _ = CurrentBehavior.MapContext<object>();
-
-        // Assert.
-        Assert.Throws<ContextAlreadyMappedException>(() =>
+        [Fact]
+        public void UpdatesContextWithNewFields()
         {
+            // Arrange.
+            var expected = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1
+            };
+            var context = new Dictionary<string, object?>();
+            var changedContext = new StubWithValue { IntValue = 1 };
+
+            // Act.
+            CurrentBehavior.UpdateContext(context, changedContext);
+
+            // Assert.
+            context.ShouldBe(expected);
+        }
+
+        [Fact]
+        public void UpdatesExistingFieldInContext()
+        {
+            // Arrange.
+            var context = new Dictionary<string, object?>
+            {
+                ["IntValue"] = -1
+            };
+
+            var changedContext = new StubWithValue { IntValue = 1 };
+
+            // Act.
+            CurrentBehavior.UpdateContext(context, changedContext);
+
+            // Assert.
+            context.ShouldContainKey("IntValue");
+            context["IntValue"].ShouldBe(1);
+        }
+
+        [Fact]
+        public Task UpdatingReadonlyContextDoesNotSaveChanges()
+        {
+            // Arrange.
+            CurrentBehavior.Set(new Behavior());
+
+            var rawContext = (IDictionary<string, object?>)CurrentBehavior.Context;
+            var mappedContext = CurrentBehavior.MapContext<StubContext>(isReadonly: true);
+
+            // Act.
+            mappedContext.StringValue = "error";
+            CurrentBehavior.UpdateContext();
+
+            // Assert.
+            rawContext.ShouldBeEmpty();
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public Task UpdatingContextSavesChanges()
+        {
+            // Arrange.
+            CurrentBehavior.Set(new Behavior());
+
+            var rawContext = CurrentBehavior.Context;
+            var mappedContext = CurrentBehavior.MapContext<StubContext>();
+
+            // Act.
+            mappedContext.StringValue = "expected";
+            CurrentBehavior.UpdateContext();
+
+            // Assert.
+            Assert.Equal("expected", rawContext.StringValue);
+
+            return Task.CompletedTask;
+        }
+
+        public class StubWithValue
+        {
+            public int IntValue { get; set; }
+
+            private int PrivateIntValue { get; set; }
+
+            public static int StaticIntValue { get; set; }
+        }
+    }
+
+    public class MapContextMethod : CurrentBehaviorTests
+    {
+        [Fact]
+        public Task MappingContextTwiceThrowsContextAlreadyMappedException()
+        {
+            // Arrange.
+            CurrentBehavior.Set(new Behavior());
             _ = CurrentBehavior.MapContext<object>();
-        });
 
-        return Task.CompletedTask;
+            // Assert.
+            Assert.Throws<ContextAlreadyMappedException>(() =>
+            {
+                _ = CurrentBehavior.MapContext<object>();
+            });
+
+            return Task.CompletedTask;
+        }
     }
 
-    [Fact]
-    public Task UpdatingReadonlyContextDoesNotSaveChanges()
+    public class CopyInputMethod : CurrentBehaviorTests
     {
-        // Arrange.
-        CurrentBehavior.Set(new Behavior());
+        [Fact]
+        public void EmptyInputReturnsEmptyResult()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>();
 
-        var rawContext = (IDictionary<string, object?>)CurrentBehavior.Context;
-        var mappedContext = CurrentBehavior.MapContext<StubContext>(isReadonly: true);
+            // Act.
+            var result = CurrentBehavior.CopyInput(input);
 
-        // Act.
-        mappedContext.StringValue = "error";
-        CurrentBehavior.UpdateContext();
+            // Assert.
+            result.ShouldBeEmpty();
+        }
 
-        // Assert.
-        rawContext.ShouldBeEmpty();
+        [Fact]
+        public void CreatesShallowCopyOfData()
+        {
+            // Arrange.
+            var obj = new object();
+            var input = new Dictionary<string, object?>
+            {
+                ["key"] = obj
+            };
 
-        return Task.CompletedTask;
+            // Act.
+            var result = CurrentBehavior.CopyInput(input);
+
+            // Assert.
+            result["key"].ShouldBeSameAs(obj);
+        }
     }
 
-    [Fact]
-    public Task UpdatingContextSavesChanges()
+    public class BehaviorStateTests : CurrentBehaviorTests
     {
-        // Arrange.
-        CurrentBehavior.Set(new Behavior());
+        [Fact]
+        public void CopiedInputContainsShallowCopyOfBehaviorInput()
+        {
+            // Arrange.
+            var obj = new object();
+            var behavior = new Behavior();
 
-        var rawContext = CurrentBehavior.Context;
-        var mappedContext = CurrentBehavior.MapContext<StubContext>();
+            behavior.Input.Add("key", obj);
 
-        // Act.
-        mappedContext.StringValue = "expected";
-        CurrentBehavior.UpdateContext();
+            // Act.
+            var state = new CurrentBehavior.BehaviorState(behavior);
 
-        // Assert.
-        Assert.Equal("expected", rawContext.StringValue);
+            // Assert.
+            state.CopiedInput.ShouldNotBeSameAs(behavior.Input);
+            state.CopiedInput["key"].ShouldBeSameAs(behavior.Input["key"]);
+        }
 
-        return Task.CompletedTask;
+        [Fact]
+        public void IsTrackedContextReadonlyIsFalseByDefault()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            var state = new CurrentBehavior.BehaviorState(behavior);
+
+            // Assert.
+            state.IsTrackedContextReadonly.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void TrackedContextReadonlyIsNullByDefault()
+        {
+            // Arrange.
+            var behavior = new Behavior();
+
+            // Act.
+            var state = new CurrentBehavior.BehaviorState(behavior);
+
+            // Assert.
+            state.TrackedContext.ShouldBeNull();
+        }
     }
 
+    // ReSharper disable once ClassNeverInstantiated.Local
     private class StubContext
     {
         public string? StringValue { get; set; }

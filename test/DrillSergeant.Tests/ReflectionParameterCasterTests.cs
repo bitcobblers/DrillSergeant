@@ -3,19 +3,18 @@ using System.Collections.Generic;
 
 namespace DrillSergeant.Tests;
 
-public class ReflectionParameterCasterTests
+public class ParameterCasterTests
 {
-    public class CastMethod : ReflectionParameterCasterTests
+    public class CastMethod : ParameterCasterTests
     {
         [Fact]
         public void NoConversionIsPerformedWhenRawObjectIsPassed()
         {
             // Arrange.
-            var caster = new ReflectionParameterCaster();
             var source = new Dictionary<string, object?>();
 
             // Act.
-            var result = caster.Cast(source, typeof(object));
+            var result = ParameterCaster.Cast(source, typeof(object));
 
             // Assert.
             result.ShouldBeSameAs(source);
@@ -28,15 +27,14 @@ public class ReflectionParameterCasterTests
         public void CastingToPrimitiveThrowsParameterCastFailedException(Type type)
         {
             // Arrange.
-            var caster = new ReflectionParameterCaster();
             var source = new Dictionary<string, object?>();
 
             // Assert.
-            Assert.Throws<ParameterCastFailedException>(() => caster.Cast(source, type));
+            Assert.Throws<ParameterCastFailedException>(() => ParameterCaster.Cast(source, type));
         }
     }
 
-    public class InstantiateInstanceMethod : ReflectionParameterCasterTests
+    public class InstantiateInstanceMethod : ParameterCasterTests
     {
         [Fact]
         public void NoPublicConstructorsParameterCastFailedException()
@@ -46,7 +44,7 @@ public class ReflectionParameterCasterTests
 
             // Assert.
             Assert.Throws<ParameterCastFailedException>(() =>
-                ReflectionParameterCaster.InstantiateInstance(source, typeof(ClassWithoutPublicConstructors)));
+                ParameterCaster.InstantiateInstance(source, typeof(ClassWithoutPublicConstructors)));
         }
 
         [Fact]
@@ -57,7 +55,7 @@ public class ReflectionParameterCasterTests
 
             // Assert.
             Assert.Throws<ParameterCastFailedException>(() =>
-                ReflectionParameterCaster.InstantiateInstance(source, typeof(ClassWithMultipleConstructors)));
+                ParameterCaster.InstantiateInstance(source, typeof(ClassWithMultipleConstructors)));
         }
 
         [Fact]
@@ -71,7 +69,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (RecordWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(RecordWithParameters));
+            var result = (RecordWithParameters)ParameterCaster.InstantiateInstance(source, typeof(RecordWithParameters));
 
             // Assert.
             result.IntValue.ShouldBe(1);
@@ -88,7 +86,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (RecordWithOptionalParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(RecordWithOptionalParameters));
+            var result = (RecordWithOptionalParameters)ParameterCaster.InstantiateInstance(source, typeof(RecordWithOptionalParameters));
 
             // Assert.
             result.IntValue.ShouldBe(1);
@@ -105,7 +103,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+            var result = (TargetWithParameters)ParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
 
             // Assert.
             result.IntValue.ShouldBe(1);
@@ -121,7 +119,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+            var result = (TargetWithParameters)ParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
 
             // Assert.
             result.StringValue.ShouldBeNull();
@@ -138,7 +136,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (RecordWithOptionalParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(RecordWithOptionalParameters));
+            var result = (RecordWithOptionalParameters)ParameterCaster.InstantiateInstance(source, typeof(RecordWithOptionalParameters));
 
             // Assert.
             result.StringValue.ShouldBeNull();
@@ -154,7 +152,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+            var result = (TargetWithParameters)ParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
 
             // Assert.
             result.CovariantTypeValue.ShouldNotBeNull();
@@ -170,7 +168,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+            var result = (TargetWithParameters)ParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
 
             // Assert.
             result.CovariantTypeValue.ShouldBeNull();
@@ -186,7 +184,7 @@ public class ReflectionParameterCasterTests
             };
 
             // Act.
-            var result = (TargetWithParameters)ReflectionParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
+            var result = (TargetWithParameters)ParameterCaster.InstantiateInstance(source, typeof(TargetWithParameters));
 
             // Assert.
             result.CovariantTypeValue.ShouldBeNull();

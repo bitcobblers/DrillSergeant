@@ -20,6 +20,7 @@ internal class BehaviorExecutor
 
     public BehaviorExecutor(ITestReporter reporter) => _reporter = reporter;
 
+    // ReSharper disable once MemberCanBeMadeStatic.Global
     public async Task<Behavior> LoadBehavior(object instance, MethodInfo method, object?[] parameters)
     {
         var input = new Dictionary<string, object?>();
@@ -105,7 +106,7 @@ internal class BehaviorExecutor
                 try
                 {
                     CurrentBehavior.ResetContext();
-                    await step.Execute(behavior.Context, behavior.Input);
+                    await step.Execute();
                 }
                 catch (Exception ex)
                 {
@@ -126,7 +127,7 @@ internal class BehaviorExecutor
                 Context = behavior.LogContext ? behavior.Context : null,
                 Elapsed = elapsed,
                 PreviousStepsFailed = previousStepFailed,
-                Success = !previousStepFailed,
+                Success = !previousStepFailed
             });
         }
     }

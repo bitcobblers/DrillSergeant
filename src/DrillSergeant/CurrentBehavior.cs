@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using static DrillSergeant.ParameterCaster;
 
 namespace DrillSergeant;
 
@@ -12,7 +13,6 @@ namespace DrillSergeant;
 /// </summary>
 public static class CurrentBehavior
 {
-    private static readonly ReflectionParameterCaster Caster = new();
     private static readonly AsyncLocal<BehaviorState?> Instance = new();
 
     internal static void Set(Behavior behavior) =>
@@ -75,7 +75,7 @@ public static class CurrentBehavior
         }
 
         Instance.Value.IsTrackedContextReadonly = isReadonly;
-        Instance.Value.TrackedContext = Caster.Cast(Instance.Value.Behavior.Context, typeof(T));
+        Instance.Value.TrackedContext = Cast(Instance.Value.Behavior.Context, typeof(T));
 
         return (T)Instance.Value.TrackedContext;
     }
@@ -88,7 +88,7 @@ public static class CurrentBehavior
     public static T MapInput<T>()
     {
         AssertBehavior();
-        return (T)Caster.Cast(Instance.Value!.CopiedInput, typeof(T));
+        return (T)Cast(Instance.Value!.CopiedInput, typeof(T));
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public static class CurrentBehavior
         var copy = new ExpandoObject();
         var copyAsDict = (IDictionary<string, object?>)copy;
 
-        foreach (var (key, value) in input)
+        foreach ((string key, object? value) in input)
         {
             copyAsDict[key] = value;
         }
@@ -117,7 +117,7 @@ public static class CurrentBehavior
 
     internal static void UpdateContext(IDictionary<string, object?> context, object changedContext)
     {
-        var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
 
         foreach (var property in changedContext.GetType().GetProperties(flags))
         {
@@ -133,7 +133,7 @@ public static class CurrentBehavior
         }
     }
 
-    private class BehaviorState
+    internal class BehaviorState
     {
         public BehaviorState(Behavior behavior)
         {

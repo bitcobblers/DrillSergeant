@@ -35,10 +35,10 @@ internal class ThreadSafeStringWriter : StringWriter
         try
         {
             var builder = GetOrAdd();
-            var value = builder?.ToString();
+            var value = builder.ToString();
 
-            builder?.Clear();
-            return value ?? string.Empty;
+            builder.Clear();
+            return value;
         }
         catch (ObjectDisposedException)
         {
@@ -59,7 +59,7 @@ internal class ThreadSafeStringWriter : StringWriter
     {
         lock (GlobalSync)
         {
-            State.Value ??= new();
+            State.Value ??= new Dictionary<string, ThreadSafeStringBuilder>();
 
             if (State.Value!.TryGetValue(_kind, out var builder))
             {
