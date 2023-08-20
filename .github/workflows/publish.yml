@@ -8,7 +8,9 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+      
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -16,11 +18,10 @@ jobs:
             6.0.x
             7.0.x
     
-      - name: Restore Dependencies
-        run: dotnet restore
-    
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: |
+          dotnet restore
+          dotnet build -c Release --no-restore
         
       - name: Test
         run: dotnet test -c Release --no-build
