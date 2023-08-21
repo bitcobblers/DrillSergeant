@@ -18,9 +18,9 @@
     <Description>Write behavior tests in pure C#.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
+    <PackageReference Include="JetBrains.Annotations" />
+    <PackageReference Include="MSTest.TestAdapter" />
+    <PackageReference Include="MSTest.TestFramework" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DrillSergeant\DrillSergeant.csproj" />
