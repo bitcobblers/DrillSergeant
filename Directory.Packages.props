@@ -9,7 +9,7 @@
         <PackageVersion Include="MSTest.TestFramework" Version="3.0.4" />
         <PackageVersion Include="AutoFixture.NUnit3" Version="4.18.0" />
         <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.0" />
-        <PackageVersion Include="coverlet.collector" Version="6.0.0" PrivateAssets="All" />
+        <PackageVersion Include="coverlet.collector" Version="6.0.0" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
         <PackageVersion Include="FakeItEasy" Version="7.4.0" />
         <PackageVersion Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="All" />
         <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
