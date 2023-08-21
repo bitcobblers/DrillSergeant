@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+		<PackageReference Include="JetBrains.Annotations" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 	</ItemGroup>
