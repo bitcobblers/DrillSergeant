@@ -19,7 +19,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }} # to check out the actual pull request commit, not the merge commit
           fetch-depth: 0 # a full history is required for pull request analysis
-    
+
       - name: "Qodana Scan"
         uses: JetBrains/qodana-action@v2023.2
         with:
@@ -34,17 +34,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
 
-      - name: Build & Test
+      - name: Build and Test
         run: |
           dotnet restore
-          dotnet build --no-restore
-          dotnet test --no-build --collect "XPlat Code Coverage"
+          dotnet test --no-restore --collect "XPlat Code Coverage"
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
