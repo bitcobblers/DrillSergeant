@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version type (major, minor, or patch)'
+        description: "The version type (major, minor, or patch)"
         required: true
         type: choice
         options:
@@ -17,24 +17,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
-    steps:       
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || github.token }}
-     
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: |
             3.1.x
             7.0.x
-          
+
       - name: Setup Git
         run: |
           git config user.name 'Bitcobblers'
           git config user.email 'admin@bitcobblers.com'
-          
+
       - name: Bump Version
         run: |
           dotnet tool install --global Frogvall.DotnetBumpVersion
@@ -42,7 +42,7 @@ jobs:
           bump-version ${{ github.event.inputs.version }} src/DrillSergeant.MSTest/DrillSergeant.MSTest.csproj
           bump-version ${{ github.event.inputs.version }} src/DrillSergeant.NUnit3/DrillSergeant.NUnit3.csproj
           bump-version ${{ github.event.inputs.version }} src/DrillSergeant.Xunit2/DrillSergeant.Xunit2.csproj
-      
+
       - name: Push Latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
