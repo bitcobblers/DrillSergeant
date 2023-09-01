@@ -17,6 +17,8 @@
 	<ItemGroup>
 		<PackageReference Include="coverlet.collector" />
 		<PackageReference Include="FakeItEasy" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
 		<PackageReference Include="Shouldly" />
 		<PackageReference Include="xunit" />
@@ -24,9 +26,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\src\DrillSergeant.Analyzers\DrillSergeant.Analyzers.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant.Generators\DrillSergeant.Generators.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant.Xunit2\DrillSergeant.Xunit2.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
 	</ItemGroup>
-
 </Project>

@@ -29,5 +29,4 @@
 	</ItemGroup>
 
 	<Import Project="..\DrillSergeant.Tests.Shared\DrillSergeant.Tests.Shared.projitems" Label="Shared" />
-
 </Project>
