@@ -5,7 +5,7 @@ using Fixer = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.CodeFixVerifier<DrillS
 
 namespace DrillSergeant.Tests.Analyzers;
 
-public class BehaviorMethodAnalyzerTests
+public class BehaviorMethodAccessibilityAnalyzerTests
 {
     private const string SampleCode = @"
 using System;
