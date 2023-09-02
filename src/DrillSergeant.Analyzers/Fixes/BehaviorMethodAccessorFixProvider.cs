@@ -9,12 +9,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DrillSergeant.Analyzers.Fixes;
 
-public class BehaviorMethodAccessibilityFixProvider : CodeFixProvider
+public class BehaviorMethodAccessorFixProvider : CodeFixProvider
 {
     private const string Title = "Change modifier to public";
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(Rules.BehaviorMethodAccessibilityAnalyzer.DiagnosticId);
+        ImmutableArray.Create(Rules.BehaviorMethodAccessorAnalyzer.DiagnosticId);
 
     public override FixAllProvider? GetFixAllProvider() => null;
 

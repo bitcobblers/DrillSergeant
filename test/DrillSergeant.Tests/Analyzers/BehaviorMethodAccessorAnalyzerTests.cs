@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Verifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<DrillSergeant.Analyzers.Rules.BehaviorMethodAccessibilityAnalyzer>;
-using Fixer = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.CodeFixVerifier<DrillSergeant.Analyzers.Rules.BehaviorMethodAccessibilityAnalyzer, DrillSergeant.Analyzers.Fixes.BehaviorMethodAccessibilityFixProvider>;
+using Verifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<DrillSergeant.Analyzers.Rules.BehaviorMethodAccessorAnalyzer>;
+using Fixer = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.CodeFixVerifier<DrillSergeant.Analyzers.Rules.BehaviorMethodAccessorAnalyzer, DrillSergeant.Analyzers.Fixes.BehaviorMethodAccessorFixProvider>;
 
 namespace DrillSergeant.Tests.Analyzers;
 
-public class BehaviorMethodAccessibilityAnalyzerTests
+public class BehaviorMethodAccessorAnalyzerTests
 {
     private const string SampleCode = @"
 using System;

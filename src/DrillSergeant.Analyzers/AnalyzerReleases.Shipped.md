@@ -5,4 +5,4 @@
 | Rule ID | Category | Severity | Notes                                              |
 |---------|----------|----------|----------------------------------------------------|
 | DS0001  | Design   | Warning  | Behavior methods should be public.                 |
-| DS0002  | Design   | Warning  | Behavior methods should contain at least one step. |
+| DS0004  | Design   | Warning ~~~~ | Behavior methods cannot be static or abstract.      |

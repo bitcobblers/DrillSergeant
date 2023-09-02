@@ -1,19 +1,18 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace DrillSergeant.Analyzers.Rules;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class BehaviorMissingStepsAnalyzer : DiagnosticAnalyzer
+public class EagerStepResultEvaluationAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "DS0002";
+    public const string DiagnosticId = "DS0003";
 
-    private const string Title = "Behavior method does not add any steps";
-    private const string MessageFormat = "Behavior method has no defined steps and will not do anything";
-    private const string Description = "At least one step should be defined within a behavior.";
-    private const string Category = "Design";
+    private const string Title = "Step results can only be evaluated within steps";
+    private const string MessageFormat = "The step result '{0}' is being referenced outside of a step";
+    private const string Description = "Attempting to access a step result outside of a step will result in a EagerStepResultEvaluationException being thrown.";
+    private const string Category = "Usage";
 
     private static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,
@@ -31,14 +30,5 @@ public class BehaviorMissingStepsAnalyzer : DiagnosticAnalyzer
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterCodeBlockAction(AnalyzeBlock);
-    }
-
-    private void AnalyzeBlock(CodeBlockAnalysisContext context)
-    {
-        if (context.CodeBlock is not MethodDeclarationSyntax method)
-        {
-            return;
-        }
     }
 }
