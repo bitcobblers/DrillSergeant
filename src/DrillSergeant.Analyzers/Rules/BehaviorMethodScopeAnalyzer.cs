@@ -12,8 +12,8 @@ public class BehaviorMethodScopeAnalyzer : BehaviorMethodAnalyzer
 
     private static readonly DiagnosticDescriptor Rule = new(
         StaticDiagnosticId,
-        title: "Behavior methods cannot be static or abstract",
-        messageFormat: "Behavior method '{0}' must cannot be static or abstract",
+        title: "Behavior methods cannot be static",
+        messageFormat: "Behavior method '{0}' must cannot be static",
         category: "Design",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -34,7 +34,7 @@ public class BehaviorMethodScopeAnalyzer : BehaviorMethodAnalyzer
         }
 
         // ReSharper disable once InvertIf
-        if (method.IsStatic || method.IsAbstract)
+        if (method.IsStatic)
         {
             var diag = Diagnostic.Create(
                 Rule,

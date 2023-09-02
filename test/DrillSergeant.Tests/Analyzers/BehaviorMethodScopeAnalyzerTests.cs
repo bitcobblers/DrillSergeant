@@ -23,22 +23,6 @@ public class Ignored
     }
 }";
 
-    private const string SampleWithAbstractMethod = @"
-using System;
-
-namespace MyNamespace;
-
-[AttributeUsage(AttributeTargets.Method)]
-public class BehaviorAttribute : Attribute
-{
-}
-
-public abstract class Ignored
-{
-    [Behavior]
-    public abstract void InvalidBehaviorMethod();
-}";
-
     [Fact]
     public async Task IdentifiesMethodWithStaticMethod()
     {
@@ -49,17 +33,5 @@ public abstract class Ignored
 
         // Assert.
         await Verifier.VerifyAnalyzerAsync(SampleWithStaticMethod, result);
-    }
-
-    [Fact]
-    public async Task IdentifiesMethodWithAbstractMethod()
-    {
-        // Act.
-        var result = Verifier.Diagnostic()
-            .WithLocation(13, 5)
-            .WithArguments("InvalidBehaviorMethod");
-
-        // Assert.
-        await Verifier.VerifyAnalyzerAsync(SampleWithAbstractMethod, result);
     }
 }

@@ -27,9 +27,7 @@ public class BehaviorMethodAccessorAnalyzer : BehaviorMethodAnalyzer
         MethodDeclarationSyntax methodDeclaration,
         IMethodSymbol method)
     {
-        if (method.IsStatic ||
-            method.IsAbstract ||
-            HasBehaviorAttribute(method.GetAttributes()) == false)
+        if (method.IsStatic || HasBehaviorAttribute(method.GetAttributes()) == false)
         {
             return;
         }
