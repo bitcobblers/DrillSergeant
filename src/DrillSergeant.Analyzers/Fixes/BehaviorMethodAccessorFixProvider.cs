@@ -33,7 +33,7 @@ public class BehaviorMethodAccessorFixProvider : CodeFixProvider
         context.RegisterCodeFix(
             CodeAction.Create(
                 title: Title,
-                createChangedDocument: c => ReplaceModifier(context.Document, root!, declaration),
+                createChangedDocument: _ => ReplaceModifier(context.Document, root!, declaration),
                 equivalenceKey: Title),
             diag);
     }
@@ -47,17 +47,11 @@ public class BehaviorMethodAccessorFixProvider : CodeFixProvider
             SyntaxKind.InternalKeyword
         };
 
-        var modifiers = declaration
-            .Modifiers
-            .Where(t => nonPublicAccessModifiers.Any(m => t.IsKind(m)) == false)
-            .ToList();
-
+        var nonPublicToken = declaration.Modifiers.First(t => nonPublicAccessModifiers.Any(m => t.IsKind(m)));
         var publicToken = SyntaxFactory.Token(SyntaxKind.PublicKeyword);
-
-        modifiers.Insert(0, publicToken);
-
+        var modifiers = declaration.Modifiers.Replace(nonPublicToken, publicToken);
         var newDeclaration = declaration.WithModifiers(new SyntaxTokenList(modifiers));
-        var newRoot = root?.ReplaceNode(declaration, newDeclaration);
+        var newRoot = root.ReplaceNode(declaration, newDeclaration);
 
         return Task.FromResult(document.WithSyntaxRoot(newRoot!));
     }

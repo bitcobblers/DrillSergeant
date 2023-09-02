@@ -42,7 +42,7 @@ public class Ignored
 
     [Theory]
     [MemberData(nameof(NonPublicAccessors))]
-    public async Task CheckForPublicReturnCode(string accessor)
+    public async Task IdentifiesNonPublicBehaviorMethods(string accessor)
     {
         // Arrange.
         var code = GetSample(accessor);
@@ -58,7 +58,7 @@ public class Ignored
 
     [Theory]
     [MemberData(nameof(NonPublicAccessors))]
-    public async Task FixesReturnCode(string accessor)
+    public async Task ApplyingFixReplacesNonPublicAccessorWithPublic(string accessor)
     {
         // Arrange.
         var invalidCode = GetSample(accessor);
@@ -67,6 +67,24 @@ public class Ignored
         // Act.
         var result = Fixer.Diagnostic()
             .WithLocation(13, 5)
+            .WithArguments("InvalidBehaviorMethod");
+
+        // Assert.
+        await Fixer.VerifyCodeFixAsync(invalidCode, result, expectedCode);
+    }
+
+    [Theory]
+    [InlineData("protected virtual", "public virtual", 5)]
+    [InlineData("virtual protected", "virtual public", 5)]
+    public async Task FixingNonPublicAccessorPreservesKeywordOrder(string nonPublicModifiers, string publicModifiers, int column)
+    {
+        // Arrange.
+        var invalidCode = GetSample(nonPublicModifiers);
+        var expectedCode = GetSample(publicModifiers);
+
+        // Act.
+        var result = Fixer.Diagnostic()
+            .WithLocation(13, column)
             .WithArguments("InvalidBehaviorMethod");
 
         // Assert.
