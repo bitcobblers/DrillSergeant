@@ -9,7 +9,7 @@ namespace DrillSergeant.Tests.Analyzers;
 public class MutatingInputAnalyzerTests
 {
     private const string CodeTemplate =
-@"using System;
+        @"using System;
 
 $PREFIX$
 
@@ -36,14 +36,12 @@ $CODE$";
             .Replace("$PREFIX$", prefix)
             .Replace("$CODE$", code);
 
-    public class DirectPropertyAccess : MutatingInputAnalyzerTests
+    [Fact]
+    public async Task CheckBasicPropertyAssignment()
     {
-        [Fact]
-        public async Task CheckBasicPropertyAssignment()
-        {
-            // Arrange.
-            var code = FormatTemplate(
-                @"public class Ignored
+        // Arrange.
+        var code = FormatTemplate(
+            @"public class Ignored
 {
     [Behavior]
     public void SampleBehavior()
@@ -52,20 +50,20 @@ $CODE$";
     }
 }");
 
-            // Act.
-            var result = Analyzer.Diagnostic()
-                .WithSpan(23, 31, 23, 41);
+        // Act.
+        var result = Analyzer.Diagnostic()
+            .WithSpan(23, 31, 23, 41);
 
-            // Assert.
-            await Analyzer.VerifyAnalyzerAsync(code, result);
-        }
+        // Assert.
+        await Analyzer.VerifyAnalyzerAsync(code, result);
+    }
 
-        [Fact]
-        public async Task CheckFullyQualifiedPropertyAssignment()
-        {
-            // Arrange.
-            var code = FormatTemplate(
-                @"public class Ignored
+    [Fact]
+    public async Task CheckFullyQualifiedPropertyAssignment()
+    {
+        // Arrange.
+        var code = FormatTemplate(
+            @"public class Ignored
 {
     [Behavior]
     public void SampleBehavior()
@@ -74,22 +72,22 @@ $CODE$";
     }
 }");
 
-            // Act.
-            var result = Analyzer.Diagnostic()
-                .WithSpan(23, 45, 23, 55);
+        // Act.
+        var result = Analyzer.Diagnostic()
+            .WithSpan(23, 45, 23, 55);
 
-            // Assert.
-            await Analyzer.VerifyAnalyzerAsync(code, result);
-        }
+        // Assert.
+        await Analyzer.VerifyAnalyzerAsync(code, result);
+    }
 
-        [Fact]
-        public async Task CheckAliasedPropertyAssignment()
-        {
-            // Arrange.
-            var code = FormatTemplate(
-                prefix: "using SubstitutedName=DrillSergeant.CurrentBehavior;",
-                code:
-@"public class Ignored
+    [Fact]
+    public async Task CheckAliasedPropertyAssignment()
+    {
+        // Arrange.
+        var code = FormatTemplate(
+            prefix: "using SubstitutedName=DrillSergeant.CurrentBehavior;",
+            code:
+            @"public class Ignored
 {
     [Behavior]
     public void SampleBehavior()
@@ -98,22 +96,22 @@ $CODE$";
     }
 }");
 
-            // Act.
-            var result = Analyzer.Diagnostic()
-                .WithSpan(23, 31, 23, 41);
+        // Act.
+        var result = Analyzer.Diagnostic()
+            .WithSpan(23, 31, 23, 41);
 
-            // Assert.
-            await Analyzer.VerifyAnalyzerAsync(code, result);
-        }
+        // Assert.
+        await Analyzer.VerifyAnalyzerAsync(code, result);
+    }
 
-        [Fact]
-        public async Task CheckStaticAliasPropertyAssignment()
-        {
-            // Arrange.
-            var code = FormatTemplate(
-                prefix: "using static DrillSergeant.CurrentBehavior;",
-                code:
-@"public class Ignored
+    [Fact]
+    public async Task CheckStaticAliasPropertyAssignment()
+    {
+        // Arrange.
+        var code = FormatTemplate(
+            prefix: "using static DrillSergeant.CurrentBehavior;",
+            code:
+            @"public class Ignored
 {
     [Behavior]
     public void SampleBehavior()
@@ -122,22 +120,22 @@ $CODE$";
     }
 }");
 
-            // Act.
-            var result = Analyzer.Diagnostic()
-                .WithSpan(23, 15, 23, 25);
+        // Act.
+        var result = Analyzer.Diagnostic()
+            .WithSpan(23, 15, 23, 25);
 
-            // Assert.
-            await Analyzer.VerifyAnalyzerAsync(code, result);
-        }
+        // Assert.
+        await Analyzer.VerifyAnalyzerAsync(code, result);
+    }
 
-        [Fact]
-        public async Task CheckLocalDeclarationTakesPrecedenceOverStaticAliasPropertyAssignment()
-        {
-            // Arrange.
-            var code = FormatTemplate(
-                prefix: "using static DrillSergeant.CurrentBehavior;",
-                code:
-@"public class MyInput
+    [Fact]
+    public async Task CheckLocalDeclarationTakesPrecedenceOverStaticAliasPropertyAssignment()
+    {
+        // Arrange.
+        var code = FormatTemplate(
+            prefix: "using static DrillSergeant.CurrentBehavior;",
+            code:
+            @"public class MyInput
 {
     public int MyProperty { get; set; }
 }
@@ -152,72 +150,7 @@ public class Ignored
     }
 }");
 
-            // Assert.
-            await Analyzer.VerifyAnalyzerAsync(code);
-        }
-    }
-
-    public class MappedInputAccess : MutatingInputAnalyzerTests
-    {
-        [Fact(Skip = "Not supported")]
-        public async Task CheckMappedInputPropertyAssignment()
-        {
-            // Arrange.
-            var code = FormatTemplate(@"
-public class MyType
-{
-    public int MyProperty { get; set; }
-}
-
-public class Ignored
-{
-    [Behavior]
-    public void SampleBehavior()
-    {
-        var input = CurrentBehavior.MapInput<MyType>();
-        input.MyProperty = 1;
-    }
-}");
-
-            // Act.
-            var result = Analyzer.Diagnostic()
-                .WithSpan(23, 15, 26, 25);
-
-            // Assert.
-            await Analyzer.VerifyAnalyzerAsync(code, result);
-        }
-
-        [Fact(Skip = "Not supported")]
-        public async Task CheckMethodCallThatModifiesMappedInputProperty()
-        {
-            // Arrange.
-            var code = FormatTemplate(@"
-public class MyType
-{
-    public int MyProperty { get; set; }
-}
-
-public class Ignored
-{
-    [Behavior]
-    public void SampleBehavior()
-    {
-        var input = CurrentBehavior.MapInput<MyType>();
-        UpdateProperty(input);
-    }
-
-    public void UpdateProperty(MyType input)
-    {
-        input.MyProperty = 1;
-    }
-}");
-
-            // Act.
-            var result = Analyzer.Diagnostic()
-                .WithLocation(26, 5);
-
-            // Assert.
-            await Analyzer.VerifyAnalyzerAsync(code, result);
-        }
+        // Assert.
+        await Analyzer.VerifyAnalyzerAsync(code);
     }
 }
