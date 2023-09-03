@@ -22,11 +22,18 @@ public abstract class BehaviorMethodAnalyzer : DiagnosticAnalyzer
                 var declaration = (MethodDeclarationSyntax)c.Node;
                 var method = c.SemanticModel.GetDeclaredSymbol(declaration)!;
 
-                AnalyzeSignature(c, declaration, method);
+                Analyze(c, declaration, method);
             });
     }
 
-    protected abstract void AnalyzeSignature(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax declaration, IMethodSymbol method);
+    protected abstract void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax declaration, IMethodSymbol method);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static bool IsBehaviorMethod(IMethodSymbol method) =>
+        // ReSharper disable once MergeIntoPattern
+        method.DeclaredAccessibility == Accessibility.Public &&
+        method.IsStatic == false &&
+        HasBehaviorAttribute(method.GetAttributes());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static bool HasBehaviorAttribute(ImmutableArray<AttributeData> attributes)

@@ -22,7 +22,7 @@ public class BehaviorMethodAccessorAnalyzer : BehaviorMethodAnalyzer
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(Rule);
 
-    protected override void AnalyzeSignature(
+    protected override void Analyze(
         SyntaxNodeAnalysisContext context,
         MethodDeclarationSyntax methodDeclaration,
         IMethodSymbol method)

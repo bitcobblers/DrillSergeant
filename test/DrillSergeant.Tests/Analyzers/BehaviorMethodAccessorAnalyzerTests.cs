@@ -1,7 +1,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Verifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<DrillSergeant.Analyzers.Rules.BehaviorMethodAccessorAnalyzer>;
-using Fixer = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.CodeFixVerifier<DrillSergeant.Analyzers.Rules.BehaviorMethodAccessorAnalyzer, DrillSergeant.Analyzers.Fixes.BehaviorMethodAccessorFixProvider>;
+
+using Analyzer =
+    Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
+        DrillSergeant.Analyzers.Rules.BehaviorMethodAccessorAnalyzer>;
+
+using Fixer =
+    Microsoft.CodeAnalysis.CSharp.Testing.XUnit.CodeFixVerifier<
+        DrillSergeant.Analyzers.Rules.BehaviorMethodAccessorAnalyzer,
+        DrillSergeant.Analyzers.Fixes.BehaviorMethodAccessorFixProvider>;
 
 namespace DrillSergeant.Tests.Analyzers;
 
@@ -48,12 +55,12 @@ public class Ignored
         var code = GetSample(accessor);
 
         // Act.
-        var result = Verifier.Diagnostic()
+        var result = Analyzer.Diagnostic()
             .WithLocation(13, 5)
             .WithArguments("InvalidBehaviorMethod");
 
         // Assert.
-        await Verifier.VerifyAnalyzerAsync(code, result);
+        await Analyzer.VerifyAnalyzerAsync(code, result);
     }
 
     [Theory]
