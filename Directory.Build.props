@@ -13,9 +13,12 @@
   <PropertyGroup>
     <Authors>BitCobblers</Authors>
     <Company>BitCobblers</Company>
-    <Copyright>Copyright (C) .NET Foundation</Copyright>
   </PropertyGroup>
-
+  
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning"/>
+  </ItemGroup>
+  
   <Choose>
     <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
       <PropertyGroup>
@@ -32,7 +35,6 @@
       </ItemGroup>
       <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" />
-        <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')"/>
       </ItemGroup>
     </When>
     <When Condition=" $(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
