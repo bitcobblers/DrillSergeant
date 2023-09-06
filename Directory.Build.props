@@ -1,7 +1,6 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <DebugType>embedded</DebugType>
     <Nullable>enable</Nullable>
