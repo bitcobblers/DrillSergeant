@@ -1,55 +1,52 @@
 <Project>
-    <PropertyGroup>
-        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <DebugType>embedded</DebugType>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <LangVersion>11.0</LangVersion>
-        <RootNamespace>DrillSergeant</RootNamespace>
-        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
-    </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <DebugType>embedded</DebugType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>11.0</LangVersion>
+    <RootNamespace>DrillSergeant</RootNamespace>
+    <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Authors>BitCobblers</Authors>
+    <Company>BitCobblers</Company>
+    <Copyright>Copyright (C) .NET Foundation</Copyright>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <Authors>BitCobblers</Authors>
-        <Company>BitCobblers</Company>
-        <Copyright>Copyright (C) .NET Foundation</Copyright>
-    </PropertyGroup>
-
-    <Choose>
-        <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
-            <PropertyGroup>
-                <PackageId>$(MSBuildProjectName)</PackageId>
-                <PackageLicenseExpression>MIT</PackageLicenseExpression>
-                <PackageReadmeFile>README.md</PackageReadmeFile>
-                <Product>DrillSergeant Behavior Testing Framework</Product>
-                <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
-                <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
-            </PropertyGroup>
-
-            <ItemGroup>
-                <None Include="$(MSBuildThisFileDirectory)../README.md" Visible="false" Pack="true" PackagePath="_content"/>
-                <None Include="$(MSBuildThisFileDirectory)../.editorconfig" Visible="false" Pack="false" Link=".editorconfig"/>
-            </ItemGroup>
-
-            <ItemGroup>
-                <PackageReference Include="JetBrains.Annotations"/>
-            </ItemGroup>
-        </When>
-
-        <When Condition=" $(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
-            <PropertyGroup>
-                <IsPackable>false</IsPackable>
-                <IsTestProject>true</IsTestProject>
-            </PropertyGroup>
-
-            <ItemGroup>
-                <PackageReference Include="coverlet.collector"/>
-                <PackageReference Include="FakeItEasy"/>
-                <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-                <PackageReference Include="Shouldly"/>
-            </ItemGroup>
-        </When>
-    </Choose>
+  <Choose>
+    <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
+      <PropertyGroup>
+        <PackageId>$(MSBuildProjectName)</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Product>DrillSergeant Behavior Testing Framework</Product>
+        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
+        <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
+      </PropertyGroup>
+      <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)../README.md" Visible="false" Pack="true" PackagePath="_content" />
+        <None Include="$(MSBuildThisFileDirectory)../.editorconfig" Visible="false" Pack="false" Link=".editorconfig" />
+      </ItemGroup>
+      <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" />
+        <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')"/>
+      </ItemGroup>
+    </When>
+    <When Condition=" $(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
+      <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="FakeItEasy" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Shouldly" />
+      </ItemGroup>
+    </When>
+  </Choose>
 </Project>
