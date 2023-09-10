@@ -1,6 +1,5 @@
 <Project>
     <Target Name="UpdateAssemblyVersionInfo" BeforeTargets="GenerateAssemblyVersionInfo" DependsOnTargets="GetBuildVersion">
-        <Warning Text="*** EXECUTING UpdateAssemblyVersion for $(MSBuildProjectName)" />
         <PropertyGroup>
             <PrereleaseSuffix Condition=" '$(GITHUB_ACTIONS)' != 'true' ">-dev</PrereleaseSuffix>
             <AssemblyVersion>$(BuildVersionSimple)</AssemblyVersion>

@@ -22,16 +22,18 @@
   <Choose>
     <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
       <PropertyGroup>
-        <PackageId>$(MSBuildProjectName)</PackageId>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Product>DrillSergeant Behavior Testing Framework</Product>
-        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
         <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
+        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Title>Drill Sergeant</Title>
+        <Description>Write behavior tests in pure C#.</Description>
       </PropertyGroup>
       <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)../README.md" Visible="false" Pack="true" PackagePath="_content" />
-        <None Include="$(MSBuildThisFileDirectory)../.editorconfig" Visible="false" Pack="false" Link=".editorconfig" />
+        <None Include="$(SolutionDir)/.editorconfig" Visible="true" Pack="false" Link=".editorconfig" />
+        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="false" Link="README.md"/>
       </ItemGroup>
       <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" />
