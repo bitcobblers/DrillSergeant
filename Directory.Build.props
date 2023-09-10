@@ -1,0 +1,55 @@
+<Project>
+  <PropertyGroup>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <DebugType>embedded</DebugType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>11.0</LangVersion>
+    <RootNamespace>DrillSergeant</RootNamespace>
+    <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Authors>BitCobblers</Authors>
+    <Company>BitCobblers</Company>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning"/>
+  </ItemGroup>
+  
+  <Choose>
+    <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
+      <PropertyGroup>
+        <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
+        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Title>Drill Sergeant</Title>
+        <Description>Write behavior tests in pure C#.</Description>
+      </PropertyGroup>
+      <ItemGroup>
+        <None Include="$(SolutionDir)/.editorconfig" Visible="true" Pack="false" Link=".editorconfig" />
+        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="false" Link="README.md"/>
+      </ItemGroup>
+      <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" />
+      </ItemGroup>
+    </When>
+    <When Condition=" $(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
+      <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="FakeItEasy" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Shouldly" />
+      </ItemGroup>
+    </When>
+  </Choose>
+</Project>

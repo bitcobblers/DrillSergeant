@@ -1,38 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-
-		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-
 	<ItemGroup>
-	  <Compile Remove="TestResults\**" />
-	  <EmbeddedResource Remove="TestResults\**" />
-	  <None Remove="TestResults\**" />
+		<PackageReference Include="xunit" />
+		<PackageReference Include="xunit.runner.visualstudio" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="coverlet.collector" Version="6.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="FakeItEasy" Version="7.4.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
-		<PackageReference Include="Shouldly" Version="4.2.1" />
-		<PackageReference Include="xunit" Version="2.5.0" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
-
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\DrillSergeant.Generators\DrillSergeant.Generators.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant.Xunit2\DrillSergeant.Xunit2.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
 	</ItemGroup>
-
 </Project>

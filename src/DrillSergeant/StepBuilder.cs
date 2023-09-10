@@ -9,55 +9,73 @@ namespace DrillSergeant;
 /// </summary>
 public static class StepBuilder
 {
+    // --- Methods without return value.
+
     [PublicAPI]
-    public static void AddStep(string verb, string name, Action step)
+    public static void AddStep(string verb, string name, Action handler)
     {
-        BehaviorBuilder.Current.AddStep(
+        AddStep(
             new LambdaStep()
                 .SetName(name)
-                .SetVerb(verb)
-                .Handle(step));
+                .Handle(handler));
     }
 
     [PublicAPI]
-    public static void AddStepAsync(string verb, string name, Func<Task> step)
+    public static void AddStepAsync(string verb, string name, Func<Task> handler)
     {
-        BehaviorBuilder.Current.AddStep(
+        AddStep(
             new LambdaStep()
                 .SetName(name)
-                .SetVerb(verb)
-                .HandleAsync(step));
+                .HandleAsync(handler));
     }
 
+    // --- Methods with return value.
+
     [PublicAPI]
-    public static StepResult<T> AddStep<T>(string verb, string name, Func<T> step)
+    public static StepResult<T> AddStep<T>(string verb, string name, Func<T> handler)
     {
         var result = new StepResult<T>(name);
+        var step = new LambdaStep<T>()
+            .SetName(name)
+            .SetResult(result)
+            .Handle(handler);
 
-        BehaviorBuilder.Current.AddStep(
-            new LambdaStep<T>()
-                .SetName(name)
-                .SetVerb(verb)
-                .SetResult(result)
-                .Handle(step));
-
+        AddStep(verb, step);
         return result;
     }
 
     [PublicAPI]
-    public static AsyncStepResult<T> AddStepAsync<T>(string verb, string name, Func<Task<T>> step)
+    public static AsyncStepResult<T> AddStepAsync<T>(string verb, string name, Func<Task<T>> handler)
     {
         var result = new AsyncStepResult<T>(name);
+        var step = new LambdaStep<T>()
+            .SetName(name)
+            .SetResultAsync(result)
+            .HandleAsync(handler);
 
-        BehaviorBuilder.Current.AddStep(
-            new LambdaStep<T>()
-                .SetName(name)
-                .SetVerb(verb)
-                .SetResultAsync(result)
-                .HandleAsync(step));
-
+        AddStep(verb, step);
         return result;
     }
+
+    // --- Fixtures.
+
+    [PublicAPI]
+    public static StepResult<T> AddStep<T>(string verb, StepFixture<T> fixture) =>
+        AddStep(verb, fixture.Name, fixture.Execute);
+
+    [PublicAPI]
+    public static AsyncStepResult<T> AddStepAsync<T>(string verb, AsyncStepFixture<T> fixture) =>
+        AddStepAsync(verb, fixture.Name, fixture.Execute);
+
+    // --- Step instances.
+
+    [PublicAPI]
+    public static void AddStep<T>() where T : IStep, new() =>
+        AddStep(new T());
+
+    [PublicAPI]
+    public static void AddStep(IStep step) =>
+        AddStep(step.Verb, step);
 
     [PublicAPI]
     public static void AddStep(string verb, IStep step)
@@ -69,12 +87,4 @@ public static class StepBuilder
 
         BehaviorBuilder.Current.AddStep(step);
     }
-
-    [PublicAPI]
-    public static StepResult<T> AddStep<T>(string verb, StepFixture<T> fixture) =>
-        AddStep(verb, fixture.Name, fixture.Execute);
-
-    [PublicAPI]
-    public static AsyncStepResult<T> AddStepAsync<T>(string verb, AsyncStepFixture<T> fixture) =>
-        AddStepAsync(verb, fixture.Name, fixture.Execute);
 }
