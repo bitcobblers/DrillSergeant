@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>DrillSergeant</AssemblyName>
-    <Company>BitCobblers</Company>
-    <Authors>BitCobblers</Authors>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Version>0.7.0</Version>
-    <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
-    <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Title>Drill Sergeant</Title>
-    <Description>Write behavior tests in pure C#.</Description>
   </PropertyGroup>
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
@@ -31,14 +17,6 @@
     <AdditionalFiles Include="VerbDefinitions.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\.editorconfig" Link=".editorconfig" />
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>

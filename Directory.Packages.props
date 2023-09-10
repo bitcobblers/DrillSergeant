@@ -13,6 +13,7 @@
         <PackageVersion Include="FakeItEasy" Version="7.4.0" />
         <PackageVersion Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="All" />
         <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+        <PackageVersion Include="NerdBank.GitVersioning" Version="3.6.133" PrivateAssetts="All" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageVersion Include="NUnit" Version="3.13.3" />
         <PackageVersion Include="NUnit.Analyzers" Version="3.6.1" />
