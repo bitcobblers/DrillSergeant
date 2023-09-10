@@ -32,7 +32,7 @@ jobs:
 
       - name: Restore Tools
         run: |
-          dotnet tool install nbgv
+          dotnet tool install -g nbgv
 
       - name: Setup Git
         run: |
