@@ -30,6 +30,10 @@ jobs:
             3.1.x
             7.0.x
 
+      - name: Restore Tools
+        run: |
+          dotnet tool install nbgv
+
       - name: Setup Git
         run: |
           git config user.name 'Bitcobblers'
@@ -37,16 +41,4 @@ jobs:
 
       - name: Bump Version
         run: |
-          dotnet tool install --global Frogvall.DotnetBumpVersion
-          bump-version ${{ github.event.inputs.version }} src/DrillSergeant/DrillSergeant.csproj
-          bump-version ${{ github.event.inputs.version }} src/DrillSergeant.MSTest/DrillSergeant.MSTest.csproj
-          bump-version ${{ github.event.inputs.version }} src/DrillSergeant.NUnit3/DrillSergeant.NUnit3.csproj
-          bump-version ${{ github.event.inputs.version }} src/DrillSergeant.Xunit2/DrillSergeant.Xunit2.csproj
-
-      - name: Push Latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git add -A
-          git commit -m "Bumped ${{ github.event.inputs.version }} Version"
-          git push origin ${{ github.ref_name }} --follow-tags
+          nbgv prepare-release --versionIncrement ${{ github.event.inputs.version }}
