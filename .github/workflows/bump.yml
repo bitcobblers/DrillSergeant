@@ -41,8 +41,9 @@ jobs:
           git config user.email 'admin@bitcobblers.com'
 
       - name: Bump Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           nbgv prepare-release --versionIncrement ${{ github.event.inputs.version }}
           git push origin main
           git push origin release/v$NBGV_MajorMinorVersion
-          
