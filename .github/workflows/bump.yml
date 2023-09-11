@@ -43,3 +43,6 @@ jobs:
       - name: Bump Version
         run: |
           nbgv prepare-release --versionIncrement ${{ github.event.inputs.version }}
+          git push origin main
+          git push origin release/v$NBGV_MajorMinorVersion
+          
