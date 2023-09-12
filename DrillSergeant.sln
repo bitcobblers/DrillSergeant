@@ -37,12 +37,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests.MSTest"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.MSTest", "src\DrillSergeant.MSTest\DrillSergeant.MSTest.csproj", "{4E047335-5497-4401-8C6D-DAC3F63AE668}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{12A10188-CF03-4A0A-96BF-EEE095E2EE0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12A10188-CF03-4A0A-96BF-EEE095E2EE0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12A10188-CF03-4A0A-96BF-EEE095E2EE0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189}.Release|Any CPU.ActiveCfg = Release|Any CPU
