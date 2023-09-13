@@ -1,44 +1,37 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
+using DrillSergeant.Build;
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.Execution;
-using Nuke.Common.IO;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
-using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.EnvironmentInfo;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
 
-class Build : NukeBuild
+// ReSharper disable once CheckNamespace
+[GitHubActions(
+    "ci",
+    GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
+    FetchDepth = 0,
+    On = new[] { GitHubActionsTrigger.WorkflowDispatch, GitHubActionsTrigger.Push, GitHubActionsTrigger.PullRequest },
+    InvokedTargets = new[] { nameof(ITest.Test) })]
+[GitHubActions(
+    "publish",
+    GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
+    FetchDepth = 0,
+    On = new[] { GitHubActionsTrigger.WorkflowDispatch },
+    InvokedTargets = new[] { nameof(IPack.Pack) })]
+class Build : NukeBuild, IPublish
 {
-    /// Support plugins are available for:
-    ///   - JetBrains ReSharper        https://nuke.build/resharper
-    ///   - JetBrains Rider            https://nuke.build/rider
-    ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
-    ///   - Microsoft VSCode           https://nuke.build/vscode
+    public static int Main() => Execute<Build>();
 
-    public static int Main() => Execute<Build>(x => x.Compile);
+    // ---
 
-    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
-    readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+    [CI] readonly GitHubActions GitHubActions;
 
-    Target Clean => _ => _
-        .Before(Restore)
-        .Executes(() =>
-        {
-        });
+    [Solution(GenerateProjects = true)] readonly Solution Solution;
+    Nuke.Common.ProjectModel.Solution IHaveSolution.Solution => Solution;
 
-    Target Restore => _ => _
-        .Executes(() =>
-        {
-        });
-
-    Target Compile => _ => _
-        .DependsOn(Restore)
-        .Executes(() =>
-        {
-        });
-
+    public IEnumerable<Project> TestProjects =>
+        from p in Solution.GetAllProjects("*")
+        where p.Name.Contains(".Tests") && !p.Name.EndsWith(".Shared")
+        select p;
 }

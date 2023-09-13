@@ -17,10 +17,11 @@
   
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning"/>
+    <PackageReference Include="JetBrains.Annotations"/>
   </ItemGroup>
   
   <Choose>
-    <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
+    <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) And !$(MSBuildProjectName.EndsWith('.Build')) ">
       <PropertyGroup>
         <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -35,9 +36,6 @@
         <None Include="$(SolutionDir)/.editorconfig" Visible="true" Pack="false" Link=".editorconfig" />
         <None Include="$(SolutionDir)/README.md" Visible="true" Pack="false" Link="README.md"/>
       </ItemGroup>
-      <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" />
-      </ItemGroup>
     </When>
     <When Condition=" $(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
       <PropertyGroup>
@@ -47,6 +45,7 @@
       <ItemGroup>
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="FakeItEasy" />
+        <PackageReference Include="GitHubActionsTestLogger" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Shouldly" />
       </ItemGroup>
