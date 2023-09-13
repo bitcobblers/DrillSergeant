@@ -33,52 +33,15 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: Test'
-        run: ./build.cmd Test
+      - name: 'Run: Test, ReportCoverage'
+        run: ./build.cmd Test ReportCoverage
       - name: 'Publish: TestResults'
         uses: actions/upload-artifact@v3
         with:
           name: TestResults
           path: Artifacts/TestResults
-  windows-latest:
-    name: windows-latest
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: 'Cache: .nuke/temp, ~/.nuget/packages'
-        uses: actions/cache@v3
-        with:
-          path: |
-            .nuke/temp
-            ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: Test'
-        run: ./build.cmd Test
-      - name: 'Publish: TestResults'
+      - name: 'Publish: coverage-report.zip'
         uses: actions/upload-artifact@v3
         with:
-          name: TestResults
-          path: Artifacts/TestResults
-  macos-latest:
-    name: macos-latest
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: 'Cache: .nuke/temp, ~/.nuget/packages'
-        uses: actions/cache@v3
-        with:
-          path: |
-            .nuke/temp
-            ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: Test'
-        run: ./build.cmd Test
-      - name: 'Publish: TestResults'
-        uses: actions/upload-artifact@v3
-        with:
-          name: TestResults
-          path: Artifacts/TestResults
+          name: coverage-report.zip
+          path: Artifacts/reports/coverage-report.zip

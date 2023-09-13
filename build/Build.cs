@@ -19,7 +19,7 @@ using Nuke.Common.ProjectModel;
     FetchDepth = 0,
     On = new[] { GitHubActionsTrigger.WorkflowDispatch },
     InvokedTargets = new[] { nameof(IPack.Pack) })]
-class Build : NukeBuild, IPublish
+class Build : NukeBuild, IPublish, IReportCoverage
 {
     public static int Main() => Execute<Build>();
 
