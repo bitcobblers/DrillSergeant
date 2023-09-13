@@ -9,13 +9,13 @@ using Nuke.Common.ProjectModel;
 // ReSharper disable once CheckNamespace
 [GitHubActions(
     "ci",
-    GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
+    GitHubActionsImage.UbuntuLatest,
     FetchDepth = 0,
     On = new[] { GitHubActionsTrigger.WorkflowDispatch, GitHubActionsTrigger.Push, GitHubActionsTrigger.PullRequest },
-    InvokedTargets = new[] { nameof(ITest.Test) })]
+    InvokedTargets = new[] { nameof(ITest.Test), nameof(IReportCoverage.ReportCoverage) })]
 [GitHubActions(
     "publish",
-    GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
+    GitHubActionsImage.UbuntuLatest,
     FetchDepth = 0,
     On = new[] { GitHubActionsTrigger.WorkflowDispatch },
     InvokedTargets = new[] { nameof(IPack.Pack) })]

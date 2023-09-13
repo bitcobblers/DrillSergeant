@@ -20,8 +20,5 @@
   </ItemGroup>
 
 
-  <ItemGroup>
-    <Folder Include="Targets\" />
-  </ItemGroup>
 
 </Project>
