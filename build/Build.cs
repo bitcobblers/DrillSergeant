@@ -11,6 +11,7 @@ using Nuke.Common.ProjectModel;
     "ci",
     GitHubActionsImage.UbuntuLatest,
     FetchDepth = 0,
+    ImportSecrets = new[] { nameof(IReportCoverage.CodecovToken) },
     On = new[] { GitHubActionsTrigger.WorkflowDispatch, GitHubActionsTrigger.Push, GitHubActionsTrigger.PullRequest },
     InvokedTargets = new[] { nameof(ITest.Test), nameof(IReportCoverage.ReportCoverage) })]
 [GitHubActions(

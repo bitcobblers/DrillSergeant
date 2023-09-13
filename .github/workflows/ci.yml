@@ -35,6 +35,8 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
       - name: 'Run: Test, ReportCoverage'
         run: ./build.cmd Test ReportCoverage
+        env:
+          CodecovToken: ${{ secrets.CODECOV_TOKEN }}
       - name: 'Publish: TestResults'
         uses: actions/upload-artifact@v3
         with:
