@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.NUnit3", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.NUnit3.Tests", "test\DrillSergeant.NUnit3.Tests\DrillSergeant.NUnit3.Tests.csproj", "{ACB0FA68-FC24-4F90-979B-7651FC667E5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Tests.Xunit2", "test\DrillSergeant.Tests.Xunit2\DrillSergeant.Tests.Xunit2.csproj", "{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.Xunit2.Tests", "test\DrillSergeant.Xunit2.Tests\DrillSergeant.Xunit2.Tests.csproj", "{E0D70886-43AA-48F0-85C7-2AC1722CD3E2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.MSTest.Tests", "test\DrillSergeant.MSTest.Tests\DrillSergeant.MSTest.Tests.csproj", "{F6874C05-BBF0-4327-9AAE-A3637887F0C0}"
 EndProject
