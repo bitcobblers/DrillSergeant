@@ -34,7 +34,7 @@ public interface ITest : ICompile, IHaveArtifacts
     
     IEnumerable<Project> TestProjects =>
         from p in Solution.GetAllProjects("*")
-        where p.Name.Contains(".Tests") && !p.Name.EndsWith(".Shared")
+        where p.Name.EndsWith(".Tests")
         select p;
     
     sealed Configure<DotNetTestSettings> BaseTestSettings => _ => _

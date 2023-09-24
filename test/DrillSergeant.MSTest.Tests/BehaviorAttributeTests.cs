@@ -2,7 +2,7 @@
 using FakeItEasy;
 using Shouldly;
 
-namespace DrillSergeant.Tests.MSTest;
+namespace DrillSergeant.MSTest.Tests;
 
 public class BehaviorAttributeTests
 {
