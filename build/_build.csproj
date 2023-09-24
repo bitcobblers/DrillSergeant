@@ -15,5 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="..\src\DrillSergeant.Build\DrillSergeant.Build.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageDownload Include="GitVersion.Tool" Version="[5.12.0]" />
+  </ItemGroup>
 
 </Project>

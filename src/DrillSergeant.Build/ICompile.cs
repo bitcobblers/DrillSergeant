@@ -9,7 +9,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 namespace DrillSergeant.Build;
 
 [PublicAPI]
-public interface ICompile : IRestore, IHaveConfiguration
+public interface ICompile : IRestore, IHaveConfiguration, IHaveGitVersion
 {
     Target Compile => _ => _
         .DependsOn(Restore)
@@ -21,11 +21,15 @@ public interface ICompile : IRestore, IHaveConfiguration
         });
 
     Configure<DotNetBuildSettings> CompileSettings => BaseCompileSettings;
-    
+
     sealed Configure<DotNetBuildSettings> BaseCompileSettings => _ => _
         .SetProjectFile(Solution)
         .SetConfiguration(Configuration)
         .When(IsServerBuild, _ => _
             .EnableContinuousIntegrationBuild())
-        .SetNoRestore(SucceededTargets.Contains(Restore));
+        .SetNoRestore(SucceededTargets.Contains(Restore))
+        .EnableNoRestore()
+        .SetAssemblyVersion(GitVersion.AssemblySemVer)
+        .SetFileVersion(GitVersion.AssemblySemFileVer)
+        .SetInformationalVersion(GitVersion.InformationalVersion);
 }
