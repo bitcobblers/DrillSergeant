@@ -4,8 +4,9 @@ using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
-using Nuke.Common.Tools.Coverlet;
 using Nuke.Common.Tools.DotNet;
+// ReSharper disable AllUnderscoreLocalParameterName
+// ReSharper disable VariableHidesOuterVariable
 
 namespace DrillSergeant.Build;
 
@@ -26,20 +27,26 @@ public interface ITest : ICompile, IHaveArtifacts
                         .Apply(TestProjectSettings, p)),
                 completeOnFailure: true);
         });
+    
+    Configure<DotNetTestSettings> TestSettings => BaseTestSettings;
 
-    Configure<DotNetTestSettings> TestSettings => _ => _
+    Configure<DotNetTestSettings, Project> TestProjectSettings => BaseTestProjectSettings;
+    
+    IEnumerable<Project> TestProjects =>
+        from p in Solution.GetAllProjects("*")
+        where p.Name.Contains(".Tests") && !p.Name.EndsWith(".Shared")
+        select p;
+    
+    sealed Configure<DotNetTestSettings> BaseTestSettings => _ => _
         .SetConfiguration(Configuration)
         .SetNoBuild(SucceededTargets.Contains(Compile))
-        .ResetVerbosity()
-        .SetResultsDirectory(TestResultsDirectory);
+        .SetResultsDirectory(TestResultsDirectory)
+        .When(IsServerBuild, _ => _.SetDataCollector("XPlat Code Coverage"))
+        .ResetVerbosity();
 
-    Configure<DotNetTestSettings, Project> TestProjectSettings => (_, p) => _
+    sealed Configure<DotNetTestSettings, Project> BaseTestProjectSettings => (_, p) => _
         .SetProjectFile(p)
         .When(GitHubActions.Instance is not null && p.HasPackageReference("GitHubActionsTestLogger"), _ => _
             .AddLoggers("GitHubActions;report-warnings=false"))
-        .AddLoggers($"trx;LogFileName={p.Name}.trx")
-        .When(InvokedTargets.Contains((this as IReportCoverage)?.ReportCoverage) || IsServerBuild, _ => _
-            .SetCoverletOutput(TestResultsDirectory / $"{p.Name}.xml"));
-
-    IEnumerable<Project> TestProjects { get; }
+        .AddLoggers($"trx;LogFileName={p.Name}.trx");
 }

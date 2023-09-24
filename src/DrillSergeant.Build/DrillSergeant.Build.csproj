@@ -11,4 +11,9 @@
         <PackageReference Include="Nuke.Common"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="IHaveReports.cs" />
+      <Compile Remove="IReportCoverage.cs" />
+    </ItemGroup>
+
 </Project>

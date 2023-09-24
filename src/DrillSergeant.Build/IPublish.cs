@@ -3,6 +3,8 @@ using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+// ReSharper disable AllUnderscoreLocalParameterName
+// ReSharper disable VariableHidesOuterVariable
 
 namespace DrillSergeant.Build;
 

@@ -7,20 +7,13 @@
     <NukeRootDirectory>..</NukeRootDirectory>
     <NukeScriptDirectory>..</NukeScriptDirectory>
     <IsPackable>false</IsPackable>
-    <NukeTelemetryVersion>1</NukeTelemetryVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Nuke.Common" />
-    <PackageDownload Include="ReportGenerator" Version="[5.1.25]" />
-    <PackageDownload Include="Codecov.Tool" Version="[1.13.0]" />
   </ItemGroup>
-
-
   <ItemGroup>
     <ProjectReference Include="..\src\DrillSergeant.Build\DrillSergeant.Build.csproj" />
   </ItemGroup>
-
-
 
 </Project>

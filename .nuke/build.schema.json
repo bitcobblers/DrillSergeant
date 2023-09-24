@@ -6,10 +6,6 @@
     "build": {
       "type": "object",
       "properties": {
-        "CodecovToken": {
-          "type": "string",
-          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
-        },
         "Configuration": {
           "type": "string",
           "enum": [
@@ -85,7 +81,6 @@
               "Compile",
               "Pack",
               "Publish",
-              "ReportCoverage",
               "Restore",
               "Test"
             ]
@@ -104,7 +99,6 @@
               "Compile",
               "Pack",
               "Publish",
-              "ReportCoverage",
               "Restore",
               "Test"
             ]

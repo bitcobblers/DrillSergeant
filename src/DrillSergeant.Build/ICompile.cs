@@ -1,9 +1,10 @@
 using JetBrains.Annotations;
 using Nuke.Common;
-using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+// ReSharper disable AllUnderscoreLocalParameterName
+// ReSharper disable VariableHidesOuterVariable
 
 namespace DrillSergeant.Build;
 
@@ -19,13 +20,12 @@ public interface ICompile : IRestore, IHaveConfiguration
                 .Apply(CompileSettings));
         });
 
-    Configure<DotNetBuildSettings> CompileSettings => _ => _
+    Configure<DotNetBuildSettings> CompileSettings => BaseCompileSettings;
+    
+    sealed Configure<DotNetBuildSettings> BaseCompileSettings => _ => _
         .SetProjectFile(Solution)
         .SetConfiguration(Configuration)
         .When(IsServerBuild, _ => _
             .EnableContinuousIntegrationBuild())
         .SetNoRestore(SucceededTargets.Contains(Restore));
-
-    IEnumerable<(Project Project, string Framework)> PublishConfigurations =>
-        Array.Empty<(Project Project, string Framework)>();
 }

@@ -7,5 +7,6 @@ namespace DrillSergeant.Build;
 [PublicAPI]
 public interface IHaveGitRepository : INukeBuild
 {
-    [Required, GitRepository] GitRepository GitRepository => TryGetValue(() => GitRepository)!;
+    [Required, GitRepository] GitRepository GitRepository => 
+        TryGetValue(() => GitRepository)!;
 }

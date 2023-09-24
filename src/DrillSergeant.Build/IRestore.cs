@@ -3,6 +3,8 @@ using Nuke.Common;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+// ReSharper disable AllUnderscoreLocalParameterName
+// ReSharper disable VariableHidesOuterVariable
 
 namespace DrillSergeant.Build;
 
@@ -16,6 +18,8 @@ public interface IRestore : IHaveSolution
                 .Apply(RestoreSettings));
         });
 
-    Configure<DotNetRestoreSettings> RestoreSettings => _ => _
+    Configure<DotNetRestoreSettings> RestoreSettings => BaseRestoreSettings;
+    
+    sealed Configure<DotNetRestoreSettings> BaseRestoreSettings => _ => _
         .SetProjectFile(Solution);
 }

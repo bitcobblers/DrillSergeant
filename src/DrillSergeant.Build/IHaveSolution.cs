@@ -7,5 +7,6 @@ namespace DrillSergeant.Build;
 [PublicAPI]
 public interface IHaveSolution : INukeBuild
 {
-    [Solution][Required] Solution Solution => TryGetValue(() => Solution)!;
+    [Required, Solution] Solution Solution => 
+        TryGetValue(() => Solution)!;
 }

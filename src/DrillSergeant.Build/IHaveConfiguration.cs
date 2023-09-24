@@ -6,5 +6,8 @@ namespace DrillSergeant.Build;
 [PublicAPI]
 public interface IHaveConfiguration : INukeBuild
 {
-    [Parameter] Configuration Configuration => TryGetValue(() => Configuration) ?? (IsLocalBuild ? Configuration.Debug : Configuration.Release);
+    [Parameter]
+    Configuration Configuration =>
+        TryGetValue(() => 
+            Configuration) ?? (IsLocalBuild ? Configuration.Debug : Configuration.Release);
 }

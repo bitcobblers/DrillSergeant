@@ -7,5 +7,5 @@ namespace DrillSergeant.Build;
 [PublicAPI]
 public interface IHaveArtifacts : INukeBuild
 {
-    AbsolutePath ArtifactDirectory => RootDirectory / "Artifacts";
+    AbsolutePath ArtifactDirectory => RootDirectory / "artifacts";
 }
