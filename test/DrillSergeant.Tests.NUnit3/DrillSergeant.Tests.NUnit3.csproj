@@ -9,6 +9,7 @@
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" />
 		<PackageReference Include="NUnit.Analyzers" />
+		<PackageReference Remove="Nerdbank.GitVersioning" />
 	</ItemGroup>
 
 	<ItemGroup>

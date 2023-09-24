@@ -8,5 +8,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Remove="Nerdbank.GitVersioning" />
 	</ItemGroup>
 </Project>

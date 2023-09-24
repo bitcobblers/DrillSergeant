@@ -5,6 +5,7 @@
 	<ItemGroup>
 		<PackageReference Include="xunit" />
 		<PackageReference Include="xunit.runner.visualstudio" />
+		<PackageReference Remove="Nerdbank.GitVersioning" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\DrillSergeant.Generators\DrillSergeant.Generators.csproj" />
