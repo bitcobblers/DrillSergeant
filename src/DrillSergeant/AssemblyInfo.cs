@@ -5,5 +5,5 @@
 [assembly: InternalsVisibleTo("DrillSergeant.NUnit3")]
 [assembly: InternalsVisibleTo("DrillSergeant.MSTest")]
 [assembly: InternalsVisibleTo("DrillSergeant.Tests.Xunit2")]
-[assembly: InternalsVisibleTo("DrillSergeant.Tests.NUnit3")]
+[assembly: InternalsVisibleTo("DrillSergeant.NUnit3.Tests")]
 [assembly: InternalsVisibleTo("DrillSergeant.MSTest.Tests")]
