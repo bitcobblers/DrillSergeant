@@ -2,7 +2,7 @@
 using DrillSergeant.MSTest;
 using Shouldly;
 
-namespace DrillSergeant.Tests.MSTest;
+namespace DrillSergeant.MSTest.Tests;
 
 [TestClass]
 public class ObjectExtensionsTests
