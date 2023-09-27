@@ -7,7 +7,6 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestAdapter" />
 		<PackageReference Include="MSTest.TestFramework" />
-		<PackageReference Remove="Nerdbank.GitVersioning" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NUnit" />
-    <PackageReference Remove="Nerdbank.GitVersioning" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DrillSergeant\DrillSergeant.csproj" />

@@ -16,7 +16,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning"/>
     <PackageReference Include="JetBrains.Annotations"/>
   </ItemGroup>
   

@@ -8,7 +8,6 @@
 		<PackageReference Include="AutoFixture.Xunit2" />
 		<PackageReference Include="xunit" />
 		<PackageReference Include="xunit.runner.visualstudio" />
-		<PackageReference Remove="Nerdbank.GitVersioning" />
 	</ItemGroup>
 
 	<ItemGroup>
