@@ -1,4 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("DrillSergeant.Tests.Xunit2")]
+[assembly: InternalsVisibleTo("DrillSergeant.Xunit2.Tests")]
 [assembly: InternalsVisibleTo("DrillSergeant.Tests")]

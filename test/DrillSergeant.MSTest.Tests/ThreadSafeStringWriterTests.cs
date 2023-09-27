@@ -2,7 +2,7 @@
 using Shouldly;
 using System.Globalization;
 
-namespace DrillSergeant.Tests.MSTest;
+namespace DrillSergeant.MSTest.Tests;
 
 [TestClass]
 public class ThreadSafeStringWriterTests

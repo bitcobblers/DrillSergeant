@@ -27,7 +27,7 @@ jobs:
             7.0.x
 
       - name: Build and Test
-        run: ./build.ps1 Test
+        run: ./build.sh Test
 
       - name: Publish Test Results
         uses: actions/upload-artifact@v3
