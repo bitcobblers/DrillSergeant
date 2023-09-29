@@ -25,9 +25,7 @@ public interface ICompile : IRestore, IHaveConfiguration, IHaveGitVersion
     sealed Configure<DotNetBuildSettings> BaseCompileSettings => _ => _
         .SetProjectFile(Solution)
         .SetConfiguration(Configuration)
-        .When(IsServerBuild, _ => _
-            .EnableContinuousIntegrationBuild())
-        .SetNoRestore(SucceededTargets.Contains(Restore))
+        .EnableNoLogo()
         .EnableNoRestore()
         .SetAssemblyVersion(GitVersion.AssemblySemVer)
         .SetFileVersion(GitVersion.AssemblySemFileVer)

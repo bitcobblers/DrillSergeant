@@ -25,6 +25,7 @@ public interface IPack : ITest, IHaveArtifacts
                 .Apply(PackSettings));
             
             ReportSummary(_ => _
+                .AddPair("Packed version", GitVersion.SemVer)
                 .AddPair("Packages", PackagesDirectory.GlobFiles("*.nupkg").Count.ToString()));
         });
 
@@ -32,5 +33,9 @@ public interface IPack : ITest, IHaveArtifacts
         .SetProject(Solution)
         .SetConfiguration(Configuration)
         .SetNoBuild(SucceededTargets.Contains(Compile))
+        .EnableNoLogo()
+        .EnableNoRestore()
+        .EnableContinuousIntegrationBuild()
+        .SetVerbosity(GitVersion.SemVer)
         .SetOutputDirectory(PackagesDirectory);
 }
