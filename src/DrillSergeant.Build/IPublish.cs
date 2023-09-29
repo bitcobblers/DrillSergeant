@@ -3,7 +3,7 @@ using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
-using Serilog;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 // ReSharper disable AllUnderscoreLocalParameterName
 // ReSharper disable VariableHidesOuterVariable
@@ -11,29 +11,30 @@ using Serilog;
 namespace DrillSergeant.Build;
 
 [PublicAPI]
-public interface IPublish : IPack, ITest
+public interface IPublish : IPack
 {
     [Parameter] string NuGetSource => TryGetValue(() => NuGetSource) ?? "https://api.nuget.org/v3/index.json";
     [Secret, Parameter] string NuGetApiKey => TryGetValue(() => NuGetApiKey)!;
 
     Target Publish => _ => _
-        .DependsOn(Test, Pack)
+        .DependsOn(Pack)
         .Requires(() => NuGetApiKey)
+        .Requires(() => Configuration == Configuration.Release)
         .OnlyWhenDynamic(() => IsServerBuild)
         .Executes(() =>
         {
-            Log.Information("Executing Publish");
-            // DotNetTasks.DotNetNuGetPush(_ => _
-            //         .Apply(PushSettings)
-            //         .CombineWith(PushPackageFiles, (_, p) => _
-            //             .SetTargetPath(p)),
-            //     degreeOfParallelism: 1,
-            //     completeOnFailure: true);
+            DotNetNuGetPush(_ => _
+                    .Apply(PushSettings)
+                    .CombineWith(PackageFiles, (_, p) => _
+                        .SetTargetPath(p)),
+                degreeOfParallelism: 1,
+                completeOnFailure: true);
         });
 
     Configure<DotNetNuGetPushSettings> PushSettings => _ => _
         .SetSource(NuGetSource)
+        .EnableSkipDuplicate()
         .SetApiKey(NuGetApiKey);
-
-    IEnumerable<AbsolutePath> PushPackageFiles => PackagesDirectory.GlobFiles("*.nupkg");
+    
+    IEnumerable<AbsolutePath> PackageFiles => PackagesDirectory.GlobFiles("*.nupkg");
 }
