@@ -33,7 +33,7 @@
       </PropertyGroup>
       <ItemGroup>
         <None Include="$(SolutionDir)/.editorconfig" Visible="true" Pack="false" Link=".editorconfig" />
-        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="false" Link="README.md"/>
+        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="true" Link="README.md" PackagePath="/"  />
       </ItemGroup>
     </When>
     <When Condition=" $(MSBuildProjectName.EndsWith('.Tests')) ">
