@@ -36,6 +36,6 @@ public interface IPack : ITest, IHaveArtifacts
         .EnableNoLogo()
         .EnableNoRestore()
         .EnableContinuousIntegrationBuild()
-        .SetVerbosity(GitVersion.SemVer)
+        .SetVersion(GitVersion.SemVer)
         .SetOutputDirectory(PackagesDirectory);
 }
