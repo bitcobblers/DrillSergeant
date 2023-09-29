@@ -3,6 +3,8 @@ using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Serilog;
+
 // ReSharper disable AllUnderscoreLocalParameterName
 // ReSharper disable VariableHidesOuterVariable
 
@@ -20,12 +22,13 @@ public interface IPublish : IPack, ITest
         .OnlyWhenDynamic(() => IsServerBuild)
         .Executes(() =>
         {
-            DotNetTasks.DotNetNuGetPush(_ => _
-                    .Apply(PushSettings)
-                    .CombineWith(PushPackageFiles, (_, p) => _
-                        .SetTargetPath(p)),
-                degreeOfParallelism: 1,
-                completeOnFailure: true);
+            Log.Information("Executing Publish");
+            // DotNetTasks.DotNetNuGetPush(_ => _
+            //         .Apply(PushSettings)
+            //         .CombineWith(PushPackageFiles, (_, p) => _
+            //             .SetTargetPath(p)),
+            //     degreeOfParallelism: 1,
+            //     completeOnFailure: true);
         });
 
     Configure<DotNetNuGetPushSettings> PushSettings => _ => _

@@ -4,6 +4,7 @@ using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Utilities.Collections;
+using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 // ReSharper disable AllUnderscoreLocalParameterName
 // ReSharper disable VariableHidesOuterVariable
@@ -20,11 +21,12 @@ public interface IPack : ICompile, IHaveArtifacts
         .Produces(PackagesDirectory / "*.nupkg")
         .Executes(() =>
         {
-            DotNetPack(_ => _
-                .Apply(PackSettings));
-
-            ReportSummary(_ => _
-                .AddPair("Packages", PackagesDirectory.GlobFiles("*.nupkg").Count.ToString()));
+            Log.Information("Executing Pack");
+            // DotNetPack(_ => _
+            //     .Apply(PackSettings));
+            //
+            // ReportSummary(_ => _
+            //     .AddPair("Packages", PackagesDirectory.GlobFiles("*.nupkg").Count.ToString()));
         });
 
     Configure<DotNetPackSettings> PackSettings => _ => _
