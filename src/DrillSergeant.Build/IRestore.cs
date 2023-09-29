@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using Nuke.Common;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 // ReSharper disable AllUnderscoreLocalParameterName
@@ -15,11 +14,6 @@ public interface IRestore : IHaveSolution
         .Executes(() =>
         {
             DotNetRestore(_ => _
-                .Apply(RestoreSettings));
+                .SetProjectFile(Solution));
         });
-
-    Configure<DotNetRestoreSettings> RestoreSettings => BaseRestoreSettings;
-    
-    sealed Configure<DotNetRestoreSettings> BaseRestoreSettings => _ => _
-        .SetProjectFile(Solution);
 }

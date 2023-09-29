@@ -24,17 +24,14 @@ public interface IPublish : IPack
         .Executes(() =>
         {
             DotNetNuGetPush(_ => _
-                    .Apply(PushSettings)
+                    .SetSource(NuGetSource)
+                    .EnableSkipDuplicate()
+                    .SetApiKey(NuGetApiKey)
                     .CombineWith(PackageFiles, (_, p) => _
                         .SetTargetPath(p)),
                 degreeOfParallelism: 1,
                 completeOnFailure: true);
         });
-
-    Configure<DotNetNuGetPushSettings> PushSettings => _ => _
-        .SetSource(NuGetSource)
-        .EnableSkipDuplicate()
-        .SetApiKey(NuGetApiKey);
     
     IEnumerable<AbsolutePath> PackageFiles => PackagesDirectory.GlobFiles("*.nupkg");
 }

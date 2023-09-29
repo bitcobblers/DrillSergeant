@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using Nuke.Common;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 // ReSharper disable AllUnderscoreLocalParameterName
@@ -17,17 +16,12 @@ public interface ICompile : IRestore, IHaveConfiguration, IHaveGitVersion
         .Executes(() =>
         {
             DotNetBuild(_ => _
-                .Apply(CompileSettings));
+                .SetProjectFile(Solution)
+                .SetConfiguration(Configuration)
+                .EnableNoLogo()
+                .EnableNoRestore()
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetFileVersion(GitVersion.AssemblySemFileVer)
+                .SetInformationalVersion(GitVersion.InformationalVersion));
         });
-
-    Configure<DotNetBuildSettings> CompileSettings => BaseCompileSettings;
-
-    sealed Configure<DotNetBuildSettings> BaseCompileSettings => _ => _
-        .SetProjectFile(Solution)
-        .SetConfiguration(Configuration)
-        .EnableNoLogo()
-        .EnableNoRestore()
-        .SetAssemblyVersion(GitVersion.AssemblySemVer)
-        .SetFileVersion(GitVersion.AssemblySemFileVer)
-        .SetInformationalVersion(GitVersion.InformationalVersion);
 }
