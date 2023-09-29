@@ -12,21 +12,20 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 namespace DrillSergeant.Build;
 
 [PublicAPI]
-public interface IPack : ICompile, IHaveArtifacts
+public interface IPack : ITest, IHaveArtifacts
 {
     AbsolutePath PackagesDirectory => ArtifactDirectory / "packages";
 
     Target Pack => _ => _
-        .DependsOn(Compile)
+        .DependsOn(Test)
         .Produces(PackagesDirectory / "*.nupkg")
         .Executes(() =>
         {
-            Log.Information("Executing Pack");
-            // DotNetPack(_ => _
-            //     .Apply(PackSettings));
-            //
-            // ReportSummary(_ => _
-            //     .AddPair("Packages", PackagesDirectory.GlobFiles("*.nupkg").Count.ToString()));
+            DotNetPack(_ => _
+                .Apply(PackSettings));
+            
+            ReportSummary(_ => _
+                .AddPair("Packages", PackagesDirectory.GlobFiles("*.nupkg").Count.ToString()));
         });
 
     Configure<DotNetPackSettings> PackSettings => _ => _

@@ -16,9 +16,9 @@ jobs:
           fetch-depth: 0
 
       - name: Publish to Nuget
-        run: ./build.sh Test Publish
+        run: ./build.sh Publish
         env:
-          CONFIGURATION: Release
+          Configuration: Release
           NuGetApiKey: ${{ secrets.NUGET_API_KEY }}
 
       - name: Upload coverage reports to Codecov

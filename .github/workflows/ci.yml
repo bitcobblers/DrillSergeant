@@ -23,7 +23,7 @@ jobs:
       - name: Build and Test
         run: ./build.sh Test
         env:
-          CONFIGURATION: Debug
+          Configuration: Debug
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
