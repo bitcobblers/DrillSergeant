@@ -1,0 +1,42 @@
+name: common
+on:
+  workflow_call:
+    inputs: 
+      target:
+        required: true
+        type: string
+      configuration:
+        required: true
+        type: string
+      uploadCoverage:
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  common-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version:
+            6.0.x
+            7.0.x
+
+      - name: Run Build
+        run: ./build.sh ${{ input.target }}
+        env:
+          Configuration: ${{ input.configuration }}
+          NuGetApiKey: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        if: input.uploadCoverage == true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

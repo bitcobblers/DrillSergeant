@@ -12,27 +12,8 @@ on:
       - 'hotfixes/*'
 
 jobs:
-  cd:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version:
-            6.0.x
-            7.0.x
-
-      - name: Build and Test
-        run: ./build.sh Test
-        env:
-          Configuration: Debug
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  ci:
+    uses: ./.github/workflows/common.yml
+    with:
+      target: Test
+      configuration: Debug
