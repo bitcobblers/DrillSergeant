@@ -20,14 +20,14 @@ public interface IPack : ITest
         .Executes(() =>
         {
             DotNetPack(_ => _
+                .EnableNoLogo()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .EnableIncludeSymbols()
                 .SetProject(Solution)
                 .SetVersion(GitVersion.SemVer)
                 .SetConfiguration(Configuration)
-                .SetOutputDirectory(PackagesDirectory)
-                .SetNoBuild(SucceededTargets.Contains(Compile))
-                .EnableNoLogo()
-                .EnableNoRestore()
-                .EnableContinuousIntegrationBuild());
+                .SetOutputDirectory(PackagesDirectory));
             
             ReportSummary(_ => _
                 .AddPair("Packed version", GitVersion.SemVer)

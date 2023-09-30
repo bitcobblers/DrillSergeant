@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
     <PackageVersion Include="Microsoft.NET.Test.SDK" Version="17.6.3" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.0.4" />
     <PackageVersion Include="MSTest.TestFramework" Version="3.0.4" />
     <PackageVersion Include="AutoFixture.NUnit3" Version="4.18.0" />
