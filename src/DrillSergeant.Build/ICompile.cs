@@ -16,10 +16,11 @@ public interface ICompile : IRestore, IHaveConfiguration, IHaveGitVersion
         .Executes(() =>
         {
             DotNetBuild(_ => _
-                .SetProjectFile(Solution)
-                .SetConfiguration(Configuration)
                 .EnableNoLogo()
                 .EnableNoRestore()
+                .EnableContinuousIntegrationBuild()
+                .SetProjectFile(Solution)
+                .SetConfiguration(Configuration)
                 .SetAssemblyVersion(GitVersion.AssemblySemVer)
                 .SetFileVersion(GitVersion.AssemblySemFileVer)
                 .SetInformationalVersion(GitVersion.InformationalVersion));

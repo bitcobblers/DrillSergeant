@@ -3,10 +3,20 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
-  <ItemGroup>
+
+  <PropertyGroup Label="SourceLink">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeDebugSymbolsProjectOutputGroup>true</IncludeDebugSymbolsProjectOutputGroup>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  
+  <ItemGroup Label="Dependencies">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
     <PackageReference Include="NUnit" />
   </ItemGroup>
-  <ItemGroup>
+  
+  <ItemGroup Label="Project References">
     <ProjectReference Include="..\DrillSergeant\DrillSergeant.csproj" />
   </ItemGroup>
 </Project>
