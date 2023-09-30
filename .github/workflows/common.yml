@@ -30,13 +30,13 @@ jobs:
             7.0.x
 
       - name: Run Build
-        run: ./build.sh ${{ input.target }}
+        run: ./build.sh ${{ inputs.target }}
         env:
-          Configuration: ${{ input.configuration }}
+          Configuration: ${{ inputs.configuration }}
           NuGetApiKey: ${{ secrets.NUGET_API_KEY }}
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
-        if: input.uploadCoverage == true
+        if: inputs.uploadCoverage == true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
