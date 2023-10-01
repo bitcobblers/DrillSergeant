@@ -9,7 +9,7 @@ jobs:
             nuke: ./build.sh
           - os: macos-latest
             nuke: ./build.sh
-          - os: windows-latest
+          - os: windows-2019
             nuke: ./build.ps1
         
     runs-on: ${{ matrix.os }}
@@ -19,6 +19,14 @@ jobs:
         with:
           show-progress: false
           fetch-depth: 0
+          
+      - name: 'Cache: .nuke/temp, ~/.nuget/packages'
+        uses: actions/cache@v3
+        with:
+          path: |
+            .nuke/temp
+            ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
