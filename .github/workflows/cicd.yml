@@ -9,7 +9,7 @@ jobs:
             nuke: ./build.sh
           - os: macos-latest
             nuke: ./build.sh
-          - os: windows-2019
+          - os: windows-latest
             nuke: ./build.ps1
         
     runs-on: ${{ matrix.os }}
