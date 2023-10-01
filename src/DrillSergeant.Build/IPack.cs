@@ -16,6 +16,7 @@ public interface IPack : ITest, IHaveGitHubActions
 
     Target Pack => _ => _
         .DependsOn(Test)
+        .OnlyWhenDynamic(() => IsTag)
         .Produces(PackagesDirectory / "*.nupkg")
         .Executes(() =>
         {
@@ -39,5 +40,6 @@ public interface IPack : ITest, IHaveGitHubActions
         });
 
     bool IsPullRequest => GitHubActions?.IsPullRequest ?? false;
+    bool IsTag => (GitHubActions?.Ref ?? string.Empty).Contains("refs/tags", StringComparison.OrdinalIgnoreCase);
     string[] BuildNumber => GitHubActions is not null ? new[] { GitHubActions.RunNumber.ToString() } : Array.Empty<string>();
 }

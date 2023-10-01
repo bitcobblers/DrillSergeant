@@ -37,5 +37,4 @@ public interface IPublish : IPack
         });
     
     IEnumerable<AbsolutePath> PackageFiles => PackagesDirectory.GlobFiles("*.nupkg");
-    bool IsTag => (GitHubActions?.Ref ?? string.Empty).Contains("refs/tags", StringComparison.OrdinalIgnoreCase);
 }
