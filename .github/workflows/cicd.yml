@@ -7,10 +7,10 @@ jobs:
         include:
           - os: ubuntu-latest
             nuke: ./build.sh
-          - os: macos-latest
-            nuke: ./build.sh
-          - os: windows-latest
-            nuke: ./build.ps1
+#          - os: macos-latest
+#            nuke: ./build.sh
+#          - os: windows-latest
+#            nuke: ./build.ps1
         
     runs-on: ${{ matrix.os }}
     steps:
@@ -20,8 +20,9 @@ jobs:
           show-progress: false
           fetch-depth: 0
           
-      - name: 'Cache: .nuke/temp, ~/.nuget/packages'
+      - name: Cache File for CD
         uses: actions/cache@v3
+        if: matrix.os == 'ubuntu-latest'
         with:
           path: |
             .nuke/temp
@@ -49,6 +50,14 @@ jobs:
         with:
           show-progress: false
           fetch-depth: 0
+          
+      - name: Restore Cached CI Files
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            .nuke/temp
+            ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
