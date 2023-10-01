@@ -10,27 +10,36 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 namespace DrillSergeant.Build;
 
 [PublicAPI]
-public interface IPack : ITest
+public interface IPack : ITest, IHaveGitHubActions
 {
     AbsolutePath PackagesDirectory => ArtifactDirectory / "packages";
 
     Target Pack => _ => _
         .DependsOn(Test)
+        .OnlyWhenDynamic(() => IsTag)
         .Produces(PackagesDirectory / "*.nupkg")
         .Executes(() =>
         {
+            var version = IsPullRequest
+                ? string.Join('.', GitVersion.SemVer.Split('.').Take(3).Union(BuildNumber))
+                : GitVersion.SemVer;
+            
             DotNetPack(_ => _
                 .EnableNoLogo()
                 .EnableNoRestore()
                 .EnableNoBuild()
                 .EnableIncludeSymbols()
                 .SetProject(Solution)
-                .SetVersion(GitVersion.SemVer)
+                .SetVersion(version)
                 .SetConfiguration(Configuration)
                 .SetOutputDirectory(PackagesDirectory));
             
             ReportSummary(_ => _
-                .AddPair("Packed version", GitVersion.SemVer)
+                .AddPair("Packed version", version)
                 .AddPair("Packages", PackagesDirectory.GlobFiles("*.nupkg").Count.ToString()));
         });
+
+    bool IsPullRequest => GitHubActions?.IsPullRequest ?? false;
+    bool IsTag => (GitHubActions?.Ref ?? string.Empty).Contains("refs/tags", StringComparison.OrdinalIgnoreCase);
+    string[] BuildNumber => GitHubActions is not null ? new[] { GitHubActions.RunNumber.ToString() } : Array.Empty<string>();
 }

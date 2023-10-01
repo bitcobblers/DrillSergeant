@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using Nuke.Common;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
@@ -18,6 +19,8 @@ public interface IPublish : IPack
 
     Target Publish => _ => _
         .DependsOn(Pack)
+        .OnlyWhenDynamic(() => IsTag)
+        .ProceedAfterFailure()
         .Requires(() => NuGetApiKey)
         .Requires(() => Configuration == Configuration.Release)
         .OnlyWhenDynamic(() => IsServerBuild)
