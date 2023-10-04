@@ -19,9 +19,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || github.token }}
+          show-progress: false
           fetch-depth: 0
           
           #      - name: Setup Git
@@ -42,7 +43,7 @@ jobs:
         shell: pwsh
         run: |
           function inc($comp, $value) { 
-            if($comp -eq ${{ inputs.version.options }}) {
+            if($comp -eq ${{ inputs.version }}) {
               return $value + 1
             }
             else {
