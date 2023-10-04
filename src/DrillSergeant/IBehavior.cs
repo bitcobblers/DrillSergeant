@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DrillSergeant;
+﻿namespace DrillSergeant;
 
 /// <summary>
 /// Defines the contract for a behavior.

@@ -1,5 +1,4 @@
-﻿using DrillSergeant.MSTest;
-using Shouldly;
+﻿using Shouldly;
 using System.Globalization;
 
 namespace DrillSergeant.MSTest.Tests;

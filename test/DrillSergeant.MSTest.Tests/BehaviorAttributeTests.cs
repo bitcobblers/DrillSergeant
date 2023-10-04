@@ -1,5 +1,4 @@
-﻿using DrillSergeant.MSTest;
-using FakeItEasy;
+﻿using FakeItEasy;
 using Shouldly;
 
 namespace DrillSergeant.MSTest.Tests;
@@ -41,6 +40,7 @@ public class BehaviorAttributeTests
 
         private class StubWithNonEmptyCtor
         {
+            // ReSharper disable once UnusedParameter.Local
             public StubWithNonEmptyCtor(int ignored)
             {
             }
