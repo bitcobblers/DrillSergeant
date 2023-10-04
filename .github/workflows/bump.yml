@@ -11,6 +11,7 @@ on:
           - patch
           - minor
           - major
+          - none
 
 jobs:
   bump:
@@ -21,14 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.DS_PUSH_KEY }}
           show-progress: false
           fetch-depth: 0
-          
-          #      - name: Setup Git
-          #        run: |
-          #          git config user.name 'Bitcobblers'
-          #          git config user.email 'admin@bitcobblers.com'      
           
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.10.2
@@ -60,4 +55,4 @@ jobs:
 
           Write-Output "New tagged version: $TagName"
           & git tag $TagName
-          & git push origin $TagName --dry-run
+          & git push origin $TagName
