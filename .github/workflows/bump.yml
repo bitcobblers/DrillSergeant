@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || github.token }}
+          token: ${{ secrets.DS_PUSH_KEY }}
           show-progress: false
           fetch-depth: 0
           
@@ -42,7 +42,7 @@ jobs:
       - name: Create New Tag
         shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DS_PUSH_KEY }}
         run: |
           function inc($comp, $value) { 
             if($comp -eq '${{ inputs.version }}') {
