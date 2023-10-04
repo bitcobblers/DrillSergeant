@@ -46,7 +46,7 @@ jobs:
         run: |
           function inc($comp, $value) { 
             if($comp -eq '${{ inputs.version }}') {
-              return $value + 1
+              return [int]$value + 1
             }
             else {
               return $value
