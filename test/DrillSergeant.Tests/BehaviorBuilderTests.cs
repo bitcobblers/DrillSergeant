@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace DrillSergeant.Tests;
+﻿namespace DrillSergeant.Tests;
 
 public class BehaviorBuilderTests
 {

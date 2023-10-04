@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
-using DrillSergeant.MSTest;
-using Shouldly;
+﻿using Shouldly;
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace DrillSergeant.MSTest.Tests;
 

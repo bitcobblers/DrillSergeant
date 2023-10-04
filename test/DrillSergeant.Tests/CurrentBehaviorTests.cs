@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
+﻿// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace DrillSergeant.Tests;
 
 public class CurrentBehaviorTests
@@ -145,7 +144,7 @@ public class CurrentBehaviorTests
             return Task.CompletedTask;
         }
 
-        public class StubWithValue
+        class StubWithValue
         {
             public int IntValue { get; set; }
 
@@ -256,6 +255,7 @@ public class CurrentBehaviorTests
     // ReSharper disable once ClassNeverInstantiated.Local
     private class StubContext
     {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         public string? StringValue { get; set; }
     }
 }

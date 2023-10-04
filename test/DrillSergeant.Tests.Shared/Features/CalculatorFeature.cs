@@ -3,11 +3,11 @@ using Shouldly;
 
 #if NUNIT
 using AutoFixture.NUnit3;
+// ReSharper disable NUnit.AutoFixture.MissedTestOrTestFixtureAttribute
 #endif
 
 #if XUNIT
 using AutoFixture.Xunit2;
-using Xunit.Abstractions;
 #endif
 
 namespace DrillSergeant.Tests.Features;
@@ -17,17 +17,10 @@ namespace DrillSergeant.Tests.Features;
 #endif
 public class CalculatorFeature
 {
-#if XUNIT
-    private readonly ITestOutputHelper _outputHelper;
-#endif
+    // ReSharper disable once UnusedMember.Local
     private readonly Calculator _calculator = new();
 
     public record Input(int a, int b, int expected);
-
-
-#if XUNIT
-    public CalculatorFeature(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-#endif
 
     public static IEnumerable<object[]> AdditionInputs
     {
@@ -127,13 +120,8 @@ public class CalculatorFeature
     }
 
     // Step implemented as a normal method.
+    // ReSharper disable once UnusedMember.Local
     private void SetSecondNumber(int b) => CurrentBehavior.Context.b = b;
-
-    private Task SetSecondNumberAsync()
-    {
-        CurrentBehavior.Context.b = CurrentBehavior.Input.b;
-        return Task.CompletedTask;
-    }
 
     // Step implemented as a lambda step for greater flexibility.
     public LambdaStep AddNumbers(Calculator calculator) =>

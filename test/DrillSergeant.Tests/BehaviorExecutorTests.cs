@@ -1,9 +1,8 @@
 ﻿using DrillSergeant.Xunit2;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Xunit.Sdk;
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Local
 
 namespace DrillSergeant.Tests;
 
@@ -22,13 +21,13 @@ public class BehaviorExecutorTests
             var executor = new BehaviorExecutor(reporter);
 
             // Act.
-            using var behavior = (Behavior)await executor.LoadBehavior(instance, method!, parameters);
+            using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Assert.
             behavior.IsFrozen.ShouldBeTrue();
         }
 
-        public class StubWithBehavior
+        class StubWithBehavior
         {
             public void SampleBehavior()
             {
@@ -45,7 +44,7 @@ public class BehaviorExecutorTests
             var parameters = Array.Empty<object?>();
             var executor = new BehaviorExecutor(reporter);
 
-            return (Behavior)await executor.LoadBehavior(instance, method!, parameters);
+            return await executor.LoadBehavior(instance, method!, parameters);
         }
     }
 
@@ -72,10 +71,10 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior!, CancellationToken.None);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
-            behavior!.Context["IsSuccess"].ShouldBe(true);
+            behavior.Context["IsSuccess"].ShouldBe(true);
         }
 
         [Fact]
@@ -94,7 +93,7 @@ public class BehaviorExecutorTests
             executor.StepFailed += (_, _) => errorCalled = true;
 
             // Act.
-            await executor.Execute(behavior!, CancellationToken.None);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
             errorCalled.ShouldBeTrue();
@@ -112,10 +111,10 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior!, CancellationToken.None);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
-            behavior!.Context["IsSuccess"].ShouldBe(true);
+            behavior.Context["IsSuccess"].ShouldBe(true);
         }
 
         [Fact]
@@ -150,10 +149,10 @@ public class BehaviorExecutorTests
             using var behavior = await executor.LoadBehavior(instance, method!, parameters);
 
             // Act.
-            await executor.Execute(behavior!, CancellationToken.None);
+            await executor.Execute(behavior, CancellationToken.None);
 
             // Assert.
-            behavior!.Context["IsSuccess"].ShouldBe(true);
+            behavior.Context["IsSuccess"].ShouldBe(true);
         }
 
         [Fact]
@@ -170,10 +169,10 @@ public class BehaviorExecutorTests
 
             // Act.
             tokenSource.CancelAfter(100);
-            await executor.Execute(behavior!, tokenSource.Token);
+            await executor.Execute(behavior, tokenSource.Token);
 
             // Assert.
-            behavior!.Context["IsSuccess"].ShouldBe(true);
+            behavior.Context["IsSuccess"].ShouldBe(true);
         }
 
         [Fact]
@@ -189,7 +188,7 @@ public class BehaviorExecutorTests
 
             // Act and assert.
             await Assert.ThrowsAsync<BehaviorTimeoutException>(
-                () => executor.Execute(behavior!, CancellationToken.None, 100));
+                () => executor.Execute(behavior, CancellationToken.None, 100));
         }
 
         [Fact]
@@ -226,7 +225,7 @@ public class BehaviorExecutorTests
 
             // Act.
             await Assert.ThrowsAsync<BehaviorTimeoutException>(
-                () => executor.Execute(behavior!, CancellationToken.None, 100));
+                () => executor.Execute(behavior, CancellationToken.None, 100));
 
             var afterStackSize = BehaviorBuilder.GetCurrentStack().Count;
 

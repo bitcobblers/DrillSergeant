@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DrillSergeant.Tests;
+﻿namespace DrillSergeant.Tests;
 
 public class ParameterCasterTests
 {
@@ -216,6 +213,7 @@ public class ParameterCasterTests
             {
             }
 
+            // ReSharper disable once UnusedParameter.Local
             public ClassWithMultipleConstructors(int ignored)
             {
             }
