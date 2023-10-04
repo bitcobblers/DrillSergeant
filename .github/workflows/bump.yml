@@ -33,10 +33,6 @@ jobs:
         uses: gittools/actions/gitversion/setup@v0.10.2
         with:
           versionSpec: '5.x'
-      
-      - name: Get Current Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.7
         
       - name: Create New Tag
         shell: pwsh
@@ -50,9 +46,9 @@ jobs:
             }
           }
 
-          $Major = inc 'major' ${{ steps.gitversion.output.major }}
-          $Minor = inc 'minor' ${{ steps.gitversion.output.minor }}
-          $Patch = inc 'patch' ${{ steps.gitversion.output.patch }}
+          $Major = inc 'major' $env:GitVersion_Major
+          $Minor = inc 'minor' $env:GitVersion_Minor
+          $Patch = inc 'patch' $env:GitVersion_Patch
           $TagName = "v$Major.$Minor.$Patch"
 
           Write-Output "New tagged version: $TagName"
