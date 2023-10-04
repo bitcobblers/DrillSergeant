@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace DrillSergeant;
+﻿namespace DrillSergeant;
 
 /// <summary>
 /// Defines an executable fixture that acts as a step..

@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>11.0</LangVersion>
-    <RootNamespace>DrillSergeant</RootNamespace>
     <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
   </PropertyGroup>
   
@@ -16,11 +15,11 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning"/>
+    <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
   </ItemGroup>
   
   <Choose>
-    <When Condition=" !$(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
+    <When Condition=" !$(MSBuildProjectName.EndsWith('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) And !$(MSBuildProjectName.EndsWith('.Build')) ">
       <PropertyGroup>
         <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -33,13 +32,10 @@
       </PropertyGroup>
       <ItemGroup>
         <None Include="$(SolutionDir)/.editorconfig" Visible="true" Pack="false" Link=".editorconfig" />
-        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="false" Link="README.md"/>
-      </ItemGroup>
-      <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" />
+        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="true" Link="README.md" PackagePath="/"  />
       </ItemGroup>
     </When>
-    <When Condition=" $(MSBuildProjectName.Contains('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
+    <When Condition=" $(MSBuildProjectName.EndsWith('.Tests')) ">
       <PropertyGroup>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
@@ -47,6 +43,7 @@
       <ItemGroup>
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="FakeItEasy" />
+        <PackageReference Include="GitHubActionsTestLogger" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Shouldly" />
       </ItemGroup>

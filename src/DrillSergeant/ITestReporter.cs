@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DrillSergeant;
+﻿namespace DrillSergeant;
 
 /// <summary>
 /// Defines a reporter used to output behavior results to the test runner.

@@ -228,6 +228,7 @@ public class BehaviorTests
         {
             public bool DisposeCalled { get; private set; }
 
+            // ReSharper disable once UnusedMember.Local
             public void Test()
             {
             }

@@ -1,4 +1,4 @@
-name: Bump Version
+﻿name: Bump Version
 
 on:
   workflow_dispatch:
@@ -23,27 +23,27 @@ jobs:
         with:
           token: ${{ github.ref_name == 'main' && secrets.PUSH_KEY || github.token }}
           fetch-depth: 0
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+          
+          #      - name: Setup Git
+          #        run: |
+          #          git config user.name 'Bitcobblers'
+          #          git config user.email 'admin@bitcobblers.com'      
+          
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.10.2
         with:
-          dotnet-version: |
-            3.1.x
-            7.0.x
-
-      - name: Restore Tools
+          versionSpec: '5.x'
+      
+      - name: Get Current Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+        
+      - name: Create New Tag
         run: |
-          dotnet tool restore
-
-      - name: Setup Git
-        run: |
-          git config user.name 'Bitcobblers'
-          git config user.email 'admin@bitcobblers.com'
-
-      - name: Bump Version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          nbgv prepare-release --versionIncrement ${{ github.event.inputs.version }}
-          git push origin main
-          git push origin release/v$NBGV_MajorMinorVersion
+          MAJOR=${{ inputs.version.options == 'major' && steps.gitversion.outputs.major + 1 ?? steps.gitversion.outputs.major }}
+          MINOR=${{ inputs.version.options == 'minor' && steps.gitversion.outputs.minor + 1 ?? steps.gitversion.outputs.minor }}
+          PATCH=${{ inputs.version.options == 'patch' && steps.gitversion.outputs.patch + 1 ?? steps.gitversion.outputs.patch }}
+          TAG_NAME=v$MAJOR.$MINOR.$PATCH
+          echo "New tagged version: $TAG_NAME"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME --dry-run

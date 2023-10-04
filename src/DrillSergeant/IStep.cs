@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace DrillSergeant;
+﻿namespace DrillSergeant;
 
 /// <summary>
 /// Defines the contract for all behavior steps.

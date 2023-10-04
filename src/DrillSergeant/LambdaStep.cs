@@ -1,6 +1,4 @@
 ﻿using JetBrains.Annotations;
-using System;
-using System.Threading.Tasks;
 
 namespace DrillSergeant;
 

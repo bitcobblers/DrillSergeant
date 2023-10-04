@@ -1,0 +1,9 @@
+next-version: 1.0.0
+branches:
+  release:
+    tag: rc
+  pull-request:
+    mode: ContinuousDeployment
+    tag: pr
+    regex: ^((pull|pull\-requests|pr)[/-]|[/-](merge))
+    prevent-increment-of-merged-branch-version: false

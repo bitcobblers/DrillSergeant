@@ -2,24 +2,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <RootNamespace>DrillSergeant</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup>
+  
+  <PropertyGroup Label="SourceLink">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeDebugSymbolsProjectOutputGroup>true</IncludeDebugSymbolsProjectOutputGroup>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Codegen Settings">
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
   </PropertyGroup>
-  <ItemGroup>
+  
+  <ItemGroup Label="Generated Files">
     <Compile Remove="Generated\**" />
     <EmbeddedResource Remove="Generated\**" />
     <None Remove="Generated\**" />
   </ItemGroup>
-  <ItemGroup>
+  
+  <ItemGroup Label="Resources">
     <AdditionalFiles Include="VerbDefinitions.txt" />
   </ItemGroup>
-  <ItemGroup>
+  
+  <ItemGroup Label="Dependencies">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
-  <ItemGroup>
+  
+  <ItemGroup Label="Project References">
     <ProjectReference Include="..\DrillSergeant.Generators\DrillSergeant.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,4 @@
 ﻿using DrillSergeant.Generators;
-using Shouldly;
-using Xunit;
 
 namespace DrillSergeant.Tests.Generators;
 
