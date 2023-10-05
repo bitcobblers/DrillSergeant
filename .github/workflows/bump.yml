@@ -39,7 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.DS_PUSH_KEY }}
         run: |
-          function inc($comp, $value) { 
+          function bumpVersion($comp, $value) { 
             if($comp -eq '${{ inputs.version }}') {
               return [int]$value + 1
             }
@@ -47,12 +47,15 @@ jobs:
               return $value
             }
           }
+          
+          $Major = bumpVersion 'major' $env:GitVersion_Major
+          $Minor = bumpVersion 'minor' $env:GitVersion_Minor
+          $Patch = bumpVersion 'patch' $env:GitVersion_Patch
 
-          $Major = inc 'major' $env:GitVersion_Major
-          $Minor = inc 'minor' $env:GitVersion_Minor
-          $Patch = inc 'patch' $env:GitVersion_Patch
-          $TagName = "v$Major.$Minor.$Patch"
+          $OldVersion = "$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
+          $NewVersion = "$Major.$Minor.$Patch"
+          $TagName = "v$NewVersion"
 
           Write-Output "New tagged version: $TagName"
-          & git tag $TagName
+          & git tag -a $TagName -m "Bumped $OldVersion to $NewVersion"
           & git push origin $TagName
