@@ -24,6 +24,11 @@ jobs:
         with:
           show-progress: false
           fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config user.name 'Bitcobblers'
+          git config user.email 'admin@bitcobblers.com'      
           
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.10.2
