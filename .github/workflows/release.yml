@@ -77,7 +77,7 @@ jobs:
             await github.request('POST /repos/{owner}/{repo}/releases', {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              target_commitish: "${ github.sha }}",
+              target_commitish: "${{ github.sha }}",
               name: "${{ env.VERSION }}",
               tag_name: "v${{ env.TAG_NAME }}",
               generate_release_notes: true,
