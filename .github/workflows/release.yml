@@ -11,6 +11,8 @@ on:
           - patch
           - minor
           - major
+          
+permissions: write-all
 
 jobs:
   release:
