@@ -11,7 +11,7 @@ on:
           - patch
           - minor
           - major
-          
+
 permissions: write-all
 
 jobs:
@@ -42,8 +42,8 @@ jobs:
         
       - name: Create New Tag
         shell: pwsh
-        env:
-          GITHUB_TOKEN: ${{ secrets.DS_PUSH_KEY }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.DS_PUSH_KEY }}
         run: |
           function bumpVersion($comp, $value) { 
             if($comp -eq '${{ inputs.version }}') {
