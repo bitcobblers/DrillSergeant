@@ -43,8 +43,8 @@ jobs:
         
       - name: Create New Tag
         shell: pwsh
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.DS_PUSH_KEY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           function bumpVersion($comp, $value) { 
             if($comp -eq '${{ inputs.version }}') {
