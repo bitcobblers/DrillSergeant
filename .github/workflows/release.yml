@@ -21,6 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.DS_PUSH_KEY }}
           show-progress: false
           fetch-depth: 0
 
@@ -61,7 +62,8 @@ jobs:
           $tagName = "v$newVersion"
 
           Write-Output "New tagged version: $tagName"
-          & git tag -a $tagName -m "Create release for $tagName"
+          # & git tag -a $tagName -m "Create release for $tagName"
+          & git tag $tagName
           & git push origin $tagName
           
           @(
@@ -79,7 +81,7 @@ jobs:
               repo: context.repo.repo,
               target_commitish: "${{ github.sha }}",
               name: "${{ env.VERSION }}",
-              tag_name: "v${{ env.TAG_NAME }}",
+              tag_name: "${{ env.TAG_NAME }}",
               generate_release_notes: true,
               draft: false
             });
