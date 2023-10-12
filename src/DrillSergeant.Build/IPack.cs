@@ -16,7 +16,6 @@ public interface IPack : ITest, IHaveGitHubActions
 
     Target Pack => _ => _
         .DependsOn(Test)
-        .OnlyWhenDynamic(() => IsTag)
         .Produces(PackagesDirectory / "*.nupkg")
         .Executes(() =>
         {
