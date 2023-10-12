@@ -1,5 +1,11 @@
 ﻿name: cicd
-on: [push, pull_request, workflow_dispatch, release]
+on: 
+  push:
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
 jobs:
   ci:
     strategy: 
@@ -33,6 +39,7 @@ jobs:
           Configuration: Debug
   cd:
     runs-on: ubuntu-latest
+    if: ${{ github.ref_type == 'tag' }}
     needs: [ci]
     
     steps:

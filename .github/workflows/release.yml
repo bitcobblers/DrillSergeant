@@ -1,4 +1,4 @@
-name: Bump Version
+name: Release
 
 on:
   workflow_dispatch:
@@ -11,7 +11,6 @@ on:
           - patch
           - minor
           - major
-          - none
 
 jobs:
   bump:
@@ -53,14 +52,34 @@ jobs:
             }
           }
           
-          $Major = bumpVersion 'major' $env:GitVersion_Major
-          $Minor = bumpVersion 'minor' $env:GitVersion_Minor
-          $Patch = bumpVersion 'patch' $env:GitVersion_Patch
+          $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
+          $major = bumpVersion 'major' $version.Major
+          $minor = bumpVersion 'minor' $version.Minor
+          $patch = bumpVersion 'patch' $version.Build
 
-          $OldVersion = "$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
-          $NewVersion = "$Major.$Minor.$Patch"
-          $TagName = "v$NewVersion"
+          $newVersion = "$major.$minor.$patch"
+          $tagName = "v$newVersion"
 
-          Write-Output "New tagged version: $TagName"
-          & git tag -a $TagName -m "Bumped $OldVersion to $NewVersion"
-          & git push origin $TagName
+          Write-Output "New tagged version: $tagName"
+          & git tag -a $tagName -m "Create release for $tagName"
+          & git push origin $tagName
+          
+          @(
+            "VERSION=$newVersion",
+            "TAG_NAME=$tagName"
+          ) | Out-File -Append $env:GITHUB_ENV
+          
+      - name: Create Release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.request('POST /repos/{owner}/{repo}/releases', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              target_commitish: "${ github.sha }}",
+              name: "${{ env.VERSION }}",
+              tag_name: "v${{ env.TAG_NAME }}",
+              generate_release_notes: true,
+              draft: false
+            });
