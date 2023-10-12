@@ -19,9 +19,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.DS_PUSH_KEY }}
+          token: ${{ secrets.DS_CLONE_KEY }}
           fetch-depth: 0
 
       - name: Setup Git
