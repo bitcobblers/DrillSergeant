@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.DS_CLONE_KEY }}
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Setup Git
