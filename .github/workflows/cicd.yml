@@ -1,4 +1,4 @@
-﻿name: cicd
+﻿name: CICD
 on: 
   push:
   pull_request:
