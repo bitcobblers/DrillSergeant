@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.DS_CLONE_KEY }}
+          token: ${{ secrets.DS_PUSH_KEY }}
           fetch-depth: 0
 
       - name: Setup Git
@@ -42,8 +42,8 @@ jobs:
         
       - name: Create New Tag
         shell: pwsh
-        env:
-          GITHUB_TOKEN: ${{ secrets.DS_PUSH_KEY }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.DS_PUSH_KEY }}
         run: |
           function bumpVersion($comp, $value) { 
             if($comp -eq '${{ inputs.version }}') {
