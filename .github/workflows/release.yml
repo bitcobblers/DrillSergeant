@@ -18,10 +18,17 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Generate Token
+        id: generate_token
+        uses: actions/create-github-token@v1
+        with:
+          app_id: ${{ secrets.RELEASE_TAGGER_APP_ID }}
+          private_key: ${{ secrets.RELEASE_TAGGER_APP_PRIVATE_KEY }}
+    
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.DS_PUSH_KEY }}
+          token: ${{ steps.generate_token.outputs.token }}
           fetch-depth: 0
 
       - name: Setup Git
