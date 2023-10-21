@@ -3,12 +3,7 @@
 on:
   push:
     branches: [ main, dev ]
-    paths-ignore:
-      - '.github/**'
   pull_request:
-    branches: [ main, dev ]
-    paths-ignore:
-      - '.github/**'
   schedule:
     - cron: '34 19 * * 2'
 
@@ -48,5 +43,3 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-        with:
-          category: "/language:csharp"
