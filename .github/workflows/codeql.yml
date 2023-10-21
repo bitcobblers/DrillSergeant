@@ -49,4 +49,6 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-          category: "/language:csharp"
+          languages: csharp
+          config-file: .github/codeql-config.yml
+
