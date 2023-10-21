@@ -1,11 +1,6 @@
 ﻿name: CICD
 on: 
   push:
-    paths-ignore:
-      - '.github/**'
-      - '**.md'
-      - '**/.*'
-      - LICENSE
   pull_request:
   workflow_dispatch:
   release:
@@ -34,7 +29,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version:
+          dotnet-version: |
             6.0.x
             7.0.x
 
