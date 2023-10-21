@@ -7,11 +7,6 @@ on:
       - '**/.*'
       - LICENSE
   pull_request:
-    paths-ignore:
-      - '.github/**'
-      - '**.md'
-      - '**/.*'
-      - LICENSE
   workflow_dispatch:
   release:
     types: [published]
