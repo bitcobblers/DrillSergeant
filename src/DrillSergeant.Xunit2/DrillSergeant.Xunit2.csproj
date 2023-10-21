@@ -12,6 +12,11 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <DebugType>portable</DebugType>
   </PropertyGroup>
+
+  <ItemGroup Label="Internals Visible To">
+    <InternalsVisibleTo Include="DrillSergeant.Xunit2.Tests" Key="$(DrillSergeantPublicKey)" />
+    <InternalsVisibleTo Include="DrillSergeant.Tests" Key="$(DrillSergeantPublicKey)" />
+  </ItemGroup>
   
   <ItemGroup Label="Dependencies">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
