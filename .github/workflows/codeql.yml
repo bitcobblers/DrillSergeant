@@ -32,6 +32,7 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: csharp
+          config-file: .github/codeql-config.yml
           
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -48,4 +49,4 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-          category: "/language:${{matrix.language}}"
+          category: "/language:csharp"
