@@ -13,6 +13,16 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
   
+  <ItemGroup Label="Internals Visible To">
+    <InternalsVisibleTo Include="DrillSergeant.Tests" Key="$(DrillSergeantPublicKey)" />
+    <InternalsVisibleTo Include="DrillSergeant.Xunit2" Key="$(DrillSergeantPublicKey)" />
+    <InternalsVisibleTo Include="DrillSergeant.NUnit3" Key="$(DrillSergeantPublicKey)" />
+    <InternalsVisibleTo Include="DrillSergeant.MSTest" Key="$(DrillSergeantPublicKey)" />
+    <InternalsVisibleTo Include="DrillSergeant.Xunit2.Tests" Key="$(DrillSergeantPublicKey)" />
+    <InternalsVisibleTo Include="DrillSergeant.NUnit3.Tests" Key="$(DrillSergeantPublicKey)" />
+    <InternalsVisibleTo Include="DrillSergeant.MSTest.Tests" Key="$(DrillSergeantPublicKey)" />
+  </ItemGroup>
+  
   <PropertyGroup Label="Codegen Settings">
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>

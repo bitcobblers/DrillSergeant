@@ -1,11 +1,7 @@
 ﻿name: CICD
 on: 
   push:
-    paths-ignore:
-      - '.github/**'
   pull_request:
-    paths-ignore:
-      - '.github/**'
   workflow_dispatch:
   release:
     types: [published]
@@ -33,7 +29,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version:
+          dotnet-version: |
             6.0.x
             7.0.x
 
@@ -41,6 +37,13 @@ jobs:
         run: ${{ matrix.nuke }} Test
         env:
           Configuration: Debug
+
+      - name: Upload coverage reports to Codecov
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   cd:
     runs-on: ubuntu-latest
     if: ${{ github.ref_type == 'tag' }}
@@ -65,8 +68,3 @@ jobs:
         env:
           Configuration: Release
           NuGetApiKey: ${{ secrets.NUGET_API_KEY }}
-          
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

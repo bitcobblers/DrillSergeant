@@ -3,12 +3,7 @@
 on:
   push:
     branches: [ main, dev ]
-    paths-ignore:
-      - '.github/**'
   pull_request:
-    branches: [ main, dev ]
-    paths-ignore:
-      - '.github/**'
   schedule:
     - cron: '34 19 * * 2'
 
@@ -22,11 +17,6 @@ jobs:
       contents: read
       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'csharp' ]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -36,7 +26,8 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          languages: ${{ matrix.language }}
+          languages: csharp
+          config-file: .github/codeql-config.yml
           
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -52,5 +43,3 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-        with:
-          category: "/language:${{matrix.language}}"
