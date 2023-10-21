@@ -3,12 +3,8 @@
 on:
   push:
     branches: [ main, dev ]
-    paths-ignore:
-      - '.github/**'
   pull_request:
     branches: [ main, dev ]
-    paths-ignore:
-      - '.github/**'
   schedule:
     - cron: '34 19 * * 2'
 
