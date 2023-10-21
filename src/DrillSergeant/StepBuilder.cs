@@ -13,6 +13,7 @@ public static class StepBuilder
     public static void AddStep(string verb, string name, Action handler)
     {
         AddStep(
+            verb,
             new LambdaStep()
                 .SetName(name)
                 .Handle(handler));
@@ -22,6 +23,7 @@ public static class StepBuilder
     public static void AddStepAsync(string verb, string name, Func<Task> handler)
     {
         AddStep(
+            verb,
             new LambdaStep()
                 .SetName(name)
                 .HandleAsync(handler));
