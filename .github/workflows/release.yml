@@ -93,6 +93,11 @@ jobs:
     needs: [ calculate-version, build-package, cicd ]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+          
       - name: Setup Git
         run: |
           git config user.name '${{ github.actor }}'
