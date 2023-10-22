@@ -10,7 +10,6 @@ on:
 
 jobs:
   create-tags:
-    needs: [ calculate-version, build-packages, cicd ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
