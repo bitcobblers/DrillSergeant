@@ -60,7 +60,7 @@ jobs:
           assembly-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
           file-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
         shell: pwsh
-        run: |
+        run: >
           dotnet build \
             --configuration Release \
             /property:ContinuousIntegrationBuild=true \
