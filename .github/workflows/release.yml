@@ -28,7 +28,7 @@ jobs:
     with:
       version: ${{ inputs.version }}
 
-  build-package:
+  build-packages:
     needs: [calculate-version]
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +59,6 @@ jobs:
           packages-directory: ${{ github.workspace }}/Artifacts/Packages
           assembly-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
           file-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
-        shell: pwsh
         run: |
           dotnet restore
           dotnet build --no-restore --configuration Release /property:ContinuousIntegrationBuild=true
@@ -67,7 +66,7 @@ jobs:
           dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ needs.calculate-version.outputs.version }}
 
   push-packages:
-    needs: [ build-package, create-tags ]
+    needs: [ build-packages, create-tags ]
     runs-on: ubuntu-latest
     steps:
       - name: Restore Packages
@@ -75,29 +74,22 @@ jobs:
         with:
           path: ${{ github.workspace }}/Artifacts/Packages
           key: ${{ runner.os }}-packages-${{ needs.calculate-version.outputs.version }}
+          lookup-only: true
+          fail-on-cache-miss: true
           restore-keys: |
             ${{ runner.os }}-packages-
 
       - name: Push Packages
-        # shell: pwsh
         env:
           NUGET_SOURCE: https://api.nuget.org/v3/index.json
-          # package-path: ${{ env.GITHUB_WORKSPACE }}/Artifacts/Packages
           package-glob: ${{ github.workspace }}/Artifacts/Packages/*.nupkg
         run: |
           for FILE in ${{ env.package-glob }}; do
             echo "Pushing package: $FILE";
           done
 
-        # run: |
-        #     $packages = Get-ChildItem -Path ${{ env.package-path }} -Filter *.nupkg -Recurse
-        #     foreach($package in $packages) {
-        #         Write-Output "Pushing package: $package"
-        #         # dotnet nuget push $package.FullName --source $env:NUGET_SOURCE --api-key ${{ secrets.NUGET_API_KEY }}
-        #     }
-
   create-tags:
-    needs: [ calculate-version, build-package, cicd ]
+    needs: [ calculate-version, build-packages, cicd ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -130,7 +122,7 @@ jobs:
               repo: context.repo.repo,
               target_commitish: "${{ github.sha }}",
               name: "${{ needs.calculate-version.outputs.version }}",
-              tag-name: "${{ needs.calculate-version.outputs.tag-name }}",
+              tag_name: "${{ needs.calculate-version.outputs.tag-name }}",
               generate_release_notes: true,
               draft: false
             });
