@@ -78,6 +78,3 @@
             
             saveOutput 'VERSION' $newVersion
             saveOutput 'TAG_NAME' $tagName
-
-            echo "Env contents:"
-            Get-Contents $env:GITHUB_ENV | Write-Output
