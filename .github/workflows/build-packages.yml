@@ -43,4 +43,4 @@ jobs:
           dotnet restore
           dotnet build --no-restore --configuration Release /property:ContinuousIntegrationBuild=true
           dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}" /property:AssemblyVersion=${{ env.assembly-version }} /property:FileVersion=${{ env.file-version }}
-          dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ needs.calculate-version.outputs.version }}
+          dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ inputs.version }}
