@@ -24,20 +24,21 @@
               7.0.x
 
         - name: Build and Test
+          pwsh:
           env:
             DOTNET_NOLOGO: true
             logger: GitHubActions;report-warnings=false
             results-directory: ${{ github.workspace }}/Artifacts/TestResults
             collect: "XPlat Code Coverage"
           run: |
-            dotnet restore
+            dotnet restore 
             dotnet build --configuration ${{ matrix.config }}
-            dotnet test \
-              --no-build \
-              --no-restore \
-              --configuration ${{ matrix.config }} \
-              --collect:"${{ env.collect }}" \
-              --logger:"${{ env.logger }}" \
+            dotnet test `
+              --no-build `
+              --no-restore `
+              --configuration ${{ matrix.config }} `
+              --collect:"${{ env.collect }}" `
+              --logger:"${{ env.logger }}" `
               --results-directory:"${{ env.results-directory }}"
 
         - name: Upload coverage reports to Codecov
