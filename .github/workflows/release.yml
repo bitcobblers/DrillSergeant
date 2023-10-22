@@ -13,7 +13,7 @@ on:
           - major
           - none
       run-codeql:
-        description: "Run CodeQL Analysis scan"
+        description: "Run CodeQL analysis"
         required: false
         type: boolean
         default: false
@@ -60,26 +60,11 @@ jobs:
           assembly-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
           file-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
         shell: pwsh
-        run: >
-          dotnet build \
-            --configuration Release \
-            /property:ContinuousIntegrationBuild=true \
-
-          dotnet test \
-            --no-restore \
-            --no-build \
-            --configuration Release \
-            --logger:"${{ env.logger }}" \
-            /property:AssemblyVersion=${{ env.assembly-version }} \
-            /property:FileVersion=${{ env.file-version }}
-
-          dotnet pack \
-            --no-restore \
-            --no-build \
-            --include-symbols \
-            --configuration Release \
-            --output ${{ env.packages-directory }} \
-            /property:Version=${{ needs.calculate-version.outputs.version }}
+        run: |
+          dotnet restore
+          dotnet build --no-restore --configuration Release /property:ContinuousIntegrationBuild=true
+          dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}" /property:AssemblyVersion=${{ env.assembly-version }} /property:FileVersion=${{ env.file-version }}
+          dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ needs.calculate-version.outputs.version }}
 
   push-packages:
     needs: [ build-package, create-tags ]

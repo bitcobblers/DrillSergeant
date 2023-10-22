@@ -9,6 +9,7 @@ on:
       run-codeql:
         description: "Run CodeQL analysis"
         required: false
+        type: boolean
         default: false
 
 jobs:
