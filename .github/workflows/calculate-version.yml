@@ -1,0 +1,60 @@
+﻿  name: calculate-version
+
+  on:
+    workflow_call:
+      inputs:
+        version:
+          description: "The version type (major, minor, or patch)"
+          required: true
+          type: string
+  jobs:
+    calculate-version:
+      runs-on: ubuntu-latest
+      outputs:
+        version: ${{ steps.gitversion.outputs.VERSION }}
+        tag-name: ${{ steps.gitversion.outputs.TAG_NAME }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: |
+              6.0.x
+
+        - name: Install GitVersion
+          uses: gittools/actions/gitversion/setup@v0.10.2
+          with:
+            versionSpec: '5.x'
+
+        - name: Get Current Version
+          id: gitversion
+          uses: gittools/actions/gitversion/execute@v0.10.2
+
+        - name: Create New Tag
+          shell: pwsh
+          run: |
+            function bumpVersion($comp, $value) { 
+              if($comp -eq '${{ inputs.version }}') {
+                return [int]$value + 1
+              }
+              else {
+                return $value
+              }
+            }
+            
+            $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
+            $major = bumpVersion 'major' $version.Major
+            $minor = bumpVersion 'minor' $version.Minor
+            $patch = bumpVersion 'patch' $version.Build
+  
+            $newVersion = "$major.$minor.$patch"
+            $tagName = "v$newVersion"
+            
+            @(
+              "VERSION=$newVersion",
+              "TAG_NAME=$tagName"
+            ) | Out-File -Append $env:GITHUB_ENV

@@ -13,67 +13,109 @@ on:
           - major
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+  cicd:
+    uses: ./.github/workflows/cicd.yml
+    secrets: inherit
 
+  calculate-version:
+    uses: ./.github/workflows/calculate-version.yml
+    with:
+      version: ${{ inputs.version }}
+
+  build-package:
+    needs: [calculate-version]
+    runs-on: ubuntu-latest
     steps:
-      - name: Generate Token
-        id: generate_token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.RELEASE_TAGGER_APP_ID }}
-          private-key: ${{ secrets.RELEASE_TAGGER_APP_PRIVATE_KEY }}
-    
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ steps.generate_token.outputs.token }}
-          fetch-depth: 0
+          show-progress: false
 
+      - name: Cache Packages
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/Artifacts/Packages
+          key: ${{ runner.os }}-packages-${{ needs.calculate-version.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-packages-
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+
+      - name: Build and Test
+        env:
+          DOTNET_NOLOGO: true
+          logger: GitHubActions;report-warnings=false
+          packages-directory: ${{ github.workspace }}/Artifacts/Packages
+          assembly-version: ${{ needs.calculate-version.outputs.version }}.0
+          file-version: ${{ needs.calculate-version.outputs.version }}.0
+        run: |
+          dotnet restore
+          dotnet build --no-logo --configuration Release
+          dotnet test \
+            --no-logo \
+            --no-build \
+            --no-restore \ 
+            --configuration Release \
+            --logger:"${{ env.logger }}" \
+            /property:AssemblyVersion=${{ env.assembly-version }} \
+            /property:FileVersion=${{ env.file-version }}
+          dotnet pack \
+            --no-build \
+            --no-restore \
+            --include-symbols \ 
+            --configuration Release \ 
+            --output ${{ env.packages-directory }} \
+            /property:ContinuousIntegrationBuild=true \
+            /property:Version=${{ needs.calculate-version.outputs.version }}
+
+  push-packages:
+    needs: [ build-package, create-tags ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore Packages
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/Artifacts/Packages
+          key: ${{ runner.os }}-packages-${{ needs.calculate-version.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-packages-
+
+      - name: Push Packages
+        shell: pwsh
+        env:
+          NUGET_SOURCE: https://api.nuget.org/v3/index.json
+        run: |
+            $packages = Get-ChildItem -Path $env:GITHUB_WORKSPACE/Artifacts/Packages -Filter *.nupkg -Recurse
+            foreach($package in $packages) {
+                Write-Output "Pushing package: $package"
+                # dotnet nuget push $package.FullName --source $env:NUGET_SOURCE --api-key ${{ secrets.NUGETAPIKEY }}
+            }
+
+  create-tags:
+    needs: [ calculate-version, build-package ]
+    runs-on: ubuntu-latest
+    steps:
       - name: Setup Git
         run: |
           git config user.name '${{ github.actor }}'
-          git config user.email '${{ github.actor }}@bitcobblers.com'      
-          
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.10.2
-        with:
-          versionSpec: '5.x'
-      
-      - name: Get Current Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.10.2
-        
-      - name: Create New Tag
-        shell: pwsh
+          git config user.email '${{ github.actor }}@bitcobblers.com'
+
+      - name: Create Tags
         run: |
-          function bumpVersion($comp, $value) { 
-            if($comp -eq '${{ inputs.version }}') {
-              return [int]$value + 1
-            }
-            else {
-              return $value
-            }
-          }
-          
-          $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
-          $major = bumpVersion 'major' $version.Major
-          $minor = bumpVersion 'minor' $version.Minor
-          $patch = bumpVersion 'patch' $version.Build
+          echo "New tagged version: $tagName"
+          git tag ${{ needs.calculate-version.outputs.tag-name }}
+          git push origin ${{ needs.calculate-version.outputs.tag-name }}
 
-          $newVersion = "$major.$minor.$patch"
-          $tagName = "v$newVersion"
+  create-release:
+    needs: [calculate-version, push-packages]
+    runs-on: ubuntu-latest
 
-          Write-Output "New tagged version: $tagName"
-          & git tag $tagName
-          & git push origin $tagName
-          
-          @(
-            "VERSION=$newVersion",
-            "TAG_NAME=$tagName"
-          ) | Out-File -Append $env:GITHUB_ENV
-          
+    steps:
       - name: Create Release
         uses: actions/github-script@v6
         with:
@@ -82,8 +124,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               target_commitish: "${{ github.sha }}",
-              name: "${{ env.VERSION }}",
-              tag_name: "${{ env.TAG_NAME }}",
+              name: "${{ needs.calculate-version.outputs.version }}"
+              tag-name: "${{ needs.calculate-version.outputs.tag-name }}",
               generate_release_notes: true,
               draft: false
             });
