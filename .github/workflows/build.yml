@@ -32,18 +32,8 @@
             collect: "XPlat Code Coverage"
           run: |
             dotnet restore
-            dotnet build 
-              --no-restore 
-              --configuration 
-              ${{ matrix.config }}
-            
-            dotnet test 
-              --no-restore 
-              --no-build 
-              --configuration ${{ matrix.config }} 
-              --collect:"${{ env.collect }}" 
-              --logger:"${{ env.logger }}" 
-              --results-directory:"${{ env.results-directory }}"
+            dotnet build --no-restore --configuration ${{ matrix.config }}
+            dotnet test --no-restore --no-build --configuration ${{ matrix.config }} --collect:"${{ env.collect }}" --logger:"${{ env.logger }}" --results-directory:"${{ env.results-directory }}"
 
         - name: Upload coverage reports to Codecov
           if: ${{ matrix.os == 'ubuntu-latest' }}
