@@ -28,5 +28,5 @@ jobs:
           package-glob: ${{ github.workspace }}/Artifacts/Packages/*.nupkg
         run: |
           for FILE in ${{ env.package-glob }}; do
-            echo "Pushing package: $FILE";
+            dotnet nuget push "$FILE" --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
           done

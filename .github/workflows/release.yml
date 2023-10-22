@@ -31,10 +31,16 @@ jobs:
       version: ${{ inputs.version }}
 
   build-packages:
-    needs: [calculate-version]
+    needs: [ calculate-version ]
     uses: ./.github/workflows/build-packages.yml
     with:
       version: ${{ needs.calculate-version.outputs.version }}
+
+  create-tags:
+    needs: [ calculate-version, build-packages, cicd ]
+    uses: ./.github/workflows/create-tags.yml
+    with:
+      tag-name: ${{ needs.calculate-version.outputs.tag-name }}
 
   push-packages:
     needs: [ build-packages, create-tags ]
@@ -43,15 +49,9 @@ jobs:
       version: ${{ needs.calculate-version.outputs.version }}
     secrets: inherit
 
-  create-tags:
-    needs: [ calculate-version, build-packages, cicd ]
-    uses: ./.github/workflows/create-tags.yml
-    with:
-      tag-name: ${{ needs.calculate-version.outputs.tag-name }}
-
   create-release:
     needs: [calculate-version, push-packages]
     uses: ./.github/workflows/create-release.yml
     with:
-        version: ${{ needs.calculate-version.outputs.version }}
-        tag-name: ${{ needs.calculate-version.outputs.tag-name }}
+      version: ${{ needs.calculate-version.outputs.version }}
+      tag-name: ${{ needs.calculate-version.outputs.tag-name }}
