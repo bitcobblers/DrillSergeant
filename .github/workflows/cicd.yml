@@ -16,14 +16,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets: inherit
 
-  dummy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dummy
-        run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Ref: ${{ github.ref_name }}"
-
   codeql:
     if: |
       (github.event_name == 'workflow_dispatch' && inputs.run-codeql) ||
