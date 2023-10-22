@@ -5,6 +5,11 @@ on:
   pull_request:
   workflow_call:
   workflow_dispatch:
+    inputs:
+      run-codeql:
+        description: "Run CodeQL analysis"
+        required: false
+        default: false
 
 jobs:
   build:
@@ -21,6 +26,6 @@ jobs:
 
   codeql:
     if: |
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && inputs.run-codeql) ||
       (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'dev'))
     uses: ./.github/workflows/codeql.yml
