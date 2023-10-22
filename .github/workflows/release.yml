@@ -30,99 +30,117 @@ jobs:
 
   build-packages:
     needs: [calculate-version]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          show-progress: false
+    uses: ./.github/workflows/build-packages.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.version }}
 
-      - name: Cache Packages
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/Artifacts/Packages
-          key: ${{ runner.os }}-packages-${{ needs.calculate-version.outputs.version }}
-          restore-keys: |
-            ${{ runner.os }}-packages-
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: |
-            6.0.x
-            7.0.x
-
-      - name: Build and Test
-        env:
-          DOTNET_NOLOGO: true
-          logger: GitHubActions;report-warnings=false
-          packages-directory: ${{ github.workspace }}/Artifacts/Packages
-          assembly-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
-          file-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
-        run: |
-          dotnet restore
-          dotnet build --no-restore --configuration Release /property:ContinuousIntegrationBuild=true
-          dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}" /property:AssemblyVersion=${{ env.assembly-version }} /property:FileVersion=${{ env.file-version }}
-          dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ needs.calculate-version.outputs.version }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          show-progress: false
+#
+#      - name: Cache Packages
+#        uses: actions/cache@v3
+#        with:
+#          path: ${{ github.workspace }}/Artifacts/Packages
+#          key: ${{ runner.os }}-packages-${{ needs.calculate-version.outputs.version }}
+#          restore-keys: |
+#            ${{ runner.os }}-packages-
+#
+#      - name: Setup .NET
+#        uses: actions/setup-dotnet@v3
+#        with:
+#          dotnet-version: |
+#            6.0.x
+#            7.0.x
+#
+#      - name: Build and Test
+#        env:
+#          DOTNET_NOLOGO: true
+#          logger: GitHubActions;report-warnings=false
+#          packages-directory: ${{ github.workspace }}/Artifacts/Packages
+#          assembly-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
+#          file-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
+#        run: |
+#          dotnet restore
+#          dotnet build --no-restore --configuration Release /property:ContinuousIntegrationBuild=true
+#          dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}" /property:AssemblyVersion=${{ env.assembly-version }} /property:FileVersion=${{ env.file-version }}
+#          dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ needs.calculate-version.outputs.version }}
 
   push-packages:
     needs: [ build-packages, create-tags ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Restore Packages
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/Artifacts/Packages
-          key: ${{ runner.os }}-packages-${{ needs.calculate-version.outputs.version }}
-          lookup-only: true
-          fail-on-cache-miss: true
-          restore-keys: |
-            ${{ runner.os }}-packages-
+    uses: ./.github/workflows/push-packages.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.version }}
+    secrets: inherit
 
-      - name: Push Packages
-        env:
-          NUGET_SOURCE: https://api.nuget.org/v3/index.json
-          package-glob: ${{ github.workspace }}/Artifacts/Packages/*.nupkg
-        run: |
-          for FILE in ${{ env.package-glob }}; do
-            echo "Pushing package: $FILE";
-          done
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Restore Packages
+#        uses: actions/cache@v3
+#        with:
+#          path: ${{ github.workspace }}/Artifacts/Packages
+#          key: ${{ runner.os }}-packages-${{ needs.calculate-version.outputs.version }}
+#          lookup-only: true
+#          fail-on-cache-miss: true
+#          restore-keys: |
+#            ${{ runner.os }}-packages-
+#
+#      - name: Push Packages
+#        env:
+#          NUGET_SOURCE: https://api.nuget.org/v3/index.json
+#          package-glob: ${{ github.workspace }}/Artifacts/Packages/*.nupkg
+#        run: |
+#          for FILE in ${{ env.package-glob }}; do
+#            echo "Pushing package: $FILE";
+#          done
 
   create-tags:
     needs: [ calculate-version, build-packages, cicd ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          show-progress: false
+    uses: ./.github/workflows/create-tags.yml
+    with:
+      tag-name: ${{ needs.calculate-version.outputs.tag-name }}
 
-      - name: Setup Git
-        run: |
-          git config user.name '${{ github.actor }}'
-          git config user.email '${{ github.actor }}@bitcobblers.com'
-
-      - name: Create Tags
-        run: |
-          echo "New tagged version: $tagName"
-          git tag ${{ needs.calculate-version.outputs.tag-name }}
-          git push origin ${{ needs.calculate-version.outputs.tag-name }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          show-progress: false
+#
+#      - name: Setup Git
+#        run: |
+#          git config user.name '${{ github.actor }}'
+#          git config user.email '${{ github.actor }}@bitcobblers.com'
+#
+#      - name: Create Tags
+#        run: |
+#          echo "New tagged version: $tagName"
+#          git tag ${{ needs.calculate-version.outputs.tag-name }}
+#          git push origin ${{ needs.calculate-version.outputs.tag-name }}
 
   create-release:
     needs: [calculate-version, push-packages]
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/create-release.yml
+    with:
+        version: ${{ needs.calculate-version.outputs.version }}
+        tag-name: ${{ needs.calculate-version.outputs.tag-name }}
 
-    steps:
-      - name: Create Release
-        uses: actions/github-script@v6
-        with:
-          script: |
-            await github.request('POST /repos/{owner}/{repo}/releases', {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              target_commitish: "${{ github.sha }}",
-              name: "${{ needs.calculate-version.outputs.version }}",
-              tag_name: "${{ needs.calculate-version.outputs.tag-name }}",
-              generate_release_notes: true,
-              draft: false
-            });
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Create Release
+#        uses: actions/github-script@v6
+#        with:
+#          script: |
+#            await github.request('POST /repos/{owner}/{repo}/releases', {
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              target_commitish: "${{ github.sha }}",
+#              name: "${{ needs.calculate-version.outputs.version }}",
+#              tag_name: "${{ needs.calculate-version.outputs.tag-name }}",
+#              generate_release_notes: true,
+#              draft: false
+#            });

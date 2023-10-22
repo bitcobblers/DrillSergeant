@@ -1,0 +1,31 @@
+﻿name: create-release
+
+on:
+  workflow_call:
+    inputs:
+      tag-name:
+        description: "The tag name"
+        required: true
+        type: string
+      version:
+        description: "The version type (major, minor, or patch)"
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.request('POST /repos/{owner}/{repo}/releases', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              target_commitish: "${{ github.sha }}",
+              name: "${{ inputs.version }}",
+              tag_name: "${{ inputs.tag-name }}",
+              generate_release_notes: true,
+              draft: false
+            });

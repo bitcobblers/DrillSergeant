@@ -1,0 +1,30 @@
+﻿name: create-tags
+
+on:
+  workflow_call:
+    inputs:
+      tag-name:
+        description: "The tag name"
+        required: true
+        type: string
+
+jobs:
+  create-tags:
+    needs: [ calculate-version, build-packages, cicd ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+
+      - name: Setup Git
+        run: |
+          git config user.name '${{ github.actor }}'
+          git config user.email '${{ github.actor }}@bitcobblers.com'
+
+      - name: Create Tags
+        run: |
+          echo "New tagged version: $tagName"
+          git tag ${{ inputs.tag-name }}
+          git push origin ${{ inputs.tag-name }}
