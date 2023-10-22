@@ -16,6 +16,15 @@
           value: ${{ jobs.calculate-version.outputs.tag-name }}
 
   jobs:
+    dummy-step:
+      runs-on: ubuntu-latest
+      needs: [ calculate-version ]
+      steps:
+        - name: Print Values
+          run: |
+            echo "Version: ${{ needs.calculate-version.outputs.version }}"
+            echo "TagName: ${{ needs.calculate-version.outputs.tag-name }}"
+
     calculate-version:
       runs-on: ubuntu-latest
       outputs:

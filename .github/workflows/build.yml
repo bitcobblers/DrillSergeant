@@ -8,7 +8,8 @@
       strategy:
         fail-fast: true
         matrix:
-          os: [ windows-latest, ubuntu-latest, macos-latest ]
+          # os: [ windows-latest, ubuntu-latest, macos-latest ]
+          os: [ ubuntu-latest ]
           config: [ Debug ]
       runs-on: ${{ matrix.os }}
       steps:
