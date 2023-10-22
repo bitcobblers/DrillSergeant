@@ -64,8 +64,8 @@
             }
             
             function saveOutput($name, $value) {
-              Write-Host "Saving output to $env:GITHUB_ENV: $name=$value"
-              Add-Content -Path $env:GITHUB_ENV -Value "$name=$value"
+              Write-Host "Saving output to $($env:GITHUB_ENV): $name=$value"
+              echo "$name=$value" >> $env:GITHUB_ENV
             }
             
             $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
