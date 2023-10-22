@@ -36,18 +36,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.MSTest.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.MSTest", "src\DrillSergeant.MSTest\DrillSergeant.MSTest.csproj", "{4E047335-5497-4401-8C6D-DAC3F63AE668}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{12A10188-CF03-4A0A-96BF-EEE095E2EE0A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.Build", "src\DrillSergeant.Build\DrillSergeant.Build.csproj", "{DDB77159-A42C-4802-BB57-033344932D8E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{12A10188-CF03-4A0A-96BF-EEE095E2EE0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12A10188-CF03-4A0A-96BF-EEE095E2EE0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA4C64F7-2155-438B-8AF5-1EDF7A273189}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -84,10 +78,6 @@ Global
 		{4E047335-5497-4401-8C6D-DAC3F63AE668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E047335-5497-4401-8C6D-DAC3F63AE668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E047335-5497-4401-8C6D-DAC3F63AE668}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDB77159-A42C-4802-BB57-033344932D8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDB77159-A42C-4802-BB57-033344932D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDB77159-A42C-4802-BB57-033344932D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDB77159-A42C-4802-BB57-033344932D8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,7 +93,6 @@ Global
 		{E0D70886-43AA-48F0-85C7-2AC1722CD3E2} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 		{F6874C05-BBF0-4327-9AAE-A3637887F0C0} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 		{4E047335-5497-4401-8C6D-DAC3F63AE668} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
-		{DDB77159-A42C-4802-BB57-033344932D8E} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35E642DB-4DFA-4054-B035-03F437C3F8BD}

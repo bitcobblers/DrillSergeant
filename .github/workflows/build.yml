@@ -1,0 +1,42 @@
+﻿  name: build
+
+  on:
+    workflow_call:
+
+  jobs:
+    build:
+      strategy:
+        fail-fast: true
+        matrix:
+          os: [ windows-latest, ubuntu-latest, macos-latest ]
+          config: [ Debug ]
+      runs-on: ${{ matrix.os }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            show-progress: false
+
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: |
+              6.0.x
+              7.0.x
+
+        - name: Build and Test
+          env:
+            DOTNET_NOLOGO: true
+            logger: GitHubActions;report-warnings=false
+            results-directory: ${{ github.workspace }}/Artifacts/TestResults
+            collect: "XPlat Code Coverage"
+          run: |
+            dotnet restore
+            dotnet build --no-restore --configuration ${{ matrix.config }}
+            dotnet test --no-restore --no-build --configuration ${{ matrix.config }} --collect:"${{ env.collect }}" --logger:"${{ env.logger }}" --results-directory:"${{ env.results-directory }}"
+
+        - name: Upload coverage reports to Codecov
+          if: ${{ matrix.os == 'ubuntu-latest' }}
+          uses: codecov/codecov-action@v3
+          env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

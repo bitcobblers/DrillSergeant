@@ -15,7 +15,7 @@
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.3" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
     <PackageVersion Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="All" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
-    <PackageVersion Include="Nuke.Common" Version="7.0.6" />
+    <PackageVersion Include="Nuke.Common" Version="7.0.5" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="NUnit" Version="3.13.3" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.8.0" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />

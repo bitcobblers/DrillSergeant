@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <PropertyGroup Label="Signing Key" Condition=" $(MSBuildProjectName) != '_build' And $(MSBuildProjectName) != 'DrillSergeant.Build' ">
+  <PropertyGroup Label="Signing Key">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)/DrillSergeant.snk</AssemblyOriginatorKeyFile>
     <DrillSergeantPublicKey>002400000480000094000000060200000024000052534131000400000100010091c593890156651998c7e5439092347863f1acb199c2288a5ff7cf03c2a0d66c317e5e0778619d6e7dbc60facac10c0246a20d327ad665cf070baf9a05675aecaf7c75a9c4a9b69871c37c1c6e0e3a91b792c1277ebcf4c40512b80da79f185b5c7c7146b7fdee155bc4cbd6a286f023adb4b5d8e60e4b6e54041a123ec32ac0</DrillSergeantPublicKey>
@@ -25,7 +25,7 @@
   </ItemGroup>
   
   <Choose>
-    <When Condition=" !$(MSBuildProjectName.EndsWith('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) And !$(MSBuildProjectName.EndsWith('.Build')) ">
+    <When Condition=" !$(MSBuildProjectName.EndsWith('.Tests')) And !$(MSBuildProjectName.Contains('.Shared')) ">
       <PropertyGroup>
         <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
