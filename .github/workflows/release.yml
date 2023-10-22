@@ -51,8 +51,8 @@ jobs:
           DOTNET_NOLOGO: true
           logger: GitHubActions;report-warnings=false
           packages-directory: ${{ github.workspace }}/Artifacts/Packages
-          assembly-version: ${{ needs.calculate-version.outputs.version }}.0
-          file-version: ${{ needs.calculate-version.outputs.version }}.0
+          assembly-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
+          file-version: ${{ format('{0}.0', needs.calculate-version.outputs.version) }}
         shell: pwsh
         run: |
           dotnet restore
