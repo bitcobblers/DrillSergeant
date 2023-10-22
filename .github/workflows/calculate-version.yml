@@ -1,0 +1,71 @@
+﻿  name: calculate-version
+
+  on:
+    workflow_call:
+      inputs:
+        version:
+          description: "The version type (major, minor, or patch)"
+          required: true
+          type: string
+      outputs:
+        version: 
+          description: "The new calculated version"
+          value: ${{ jobs.calculate-version.outputs.version }}
+        tag-name: 
+          description: "The new calculated tag name"
+          value: ${{ jobs.calculate-version.outputs.tag-name }}
+
+  jobs:
+    calculate-version:
+      runs-on: ubuntu-latest
+      outputs:
+        version: ${{ steps.calculate-version.outputs.VERSION }}
+        tag-name: ${{ steps.calculate-version.outputs.TAG_NAME }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: |
+              6.0.x
+
+        - name: Install GitVersion
+          uses: gittools/actions/gitversion/setup@v0.10.2
+          with:
+            versionSpec: '5.x'
+
+        - name: Get Current Version
+          uses: gittools/actions/gitversion/execute@v0.10.2
+
+        - name: Calculate New Version
+          id: calculate-version
+          shell: pwsh
+          run: |
+            function bumpVersion($comp, $value) { 
+              if($comp -eq '${{ inputs.version }}') {
+                return [int]$value + 1
+              }
+              else {
+                return $value
+              }
+            }
+            
+            function saveOutput($name, $value) {
+              Write-Host "Saving output: $name=$value"
+              echo "$name=$value" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8NoBom -Append
+            }
+            
+            $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
+            $major = bumpVersion 'major' $version.Major
+            $minor = bumpVersion 'minor' $version.Minor
+            $patch = bumpVersion 'patch' $version.Build
+  
+            $newVersion = "$major.$minor.$patch"
+            $tagName = "v$newVersion"
+            
+            saveOutput 'VERSION' $newVersion
+            saveOutput 'TAG_NAME' $tagName

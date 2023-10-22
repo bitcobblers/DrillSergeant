@@ -1,9 +1,7 @@
 ﻿name: CodeQL
 
 on:
-  push:
-    branches: [ main, dev ]
-  pull_request:
+  workflow_call:
   schedule:
     - cron: '34 19 * * 2'
 
@@ -19,27 +17,27 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-      
+          show-progress: false
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: csharp
           config-file: .github/codeql-config.yml
-          
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version:
+          dotnet-version: |
             6.0.x
             7.0.x
-          
+
       - name: Build Solution
-        run: ./build.sh Compile
         env:
-          Configuration: Debug
+          DOTNET_NOLOGO: true
+        run: dotnet build --configuration Debug
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

@@ -1,70 +1,30 @@
 ﻿name: CICD
-on: 
+on:
   push:
+    branches: [ main, dev ]
   pull_request:
+  workflow_call:
+    inputs:
+      run-codeql:
+        description: "Run CodeQL analysis"
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
-  release:
-    types: [published]
+    inputs:
+      run-codeql:
+        description: "Run CodeQL analysis"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
-  ci:
-    strategy: 
-      matrix:
-        include:
-          - os: ubuntu-latest
-            nuke: ./build.sh
-          - os: macos-latest
-            nuke: ./build.sh
-          - os: windows-latest
-            nuke: ./build.ps1
-        
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          show-progress: false
-          fetch-depth: 0
-          
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: |
-            6.0.x
-            7.0.x
+  build:
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
 
-      - name: Build and Test
-        run: ${{ matrix.nuke }} Test
-        env:
-          Configuration: Debug
-
-      - name: Upload coverage reports to Codecov
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  cd:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' }}
-    needs: [ci]
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          show-progress: false
-          fetch-depth: 0
-          
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version:
-            6.0.x
-            7.0.x
-
-      - name: Build and Publish
-        run: ./build.sh Publish
-        env:
-          Configuration: Release
-          NuGetApiKey: ${{ secrets.NUGET_API_KEY }}
+  codeql:
+    if: |
+      (github.event_name == 'workflow_dispatch' && inputs.run-codeql) ||
+      (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'dev'))
+    uses: ./.github/workflows/codeql.yml

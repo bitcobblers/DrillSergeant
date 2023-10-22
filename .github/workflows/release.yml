@@ -11,79 +11,47 @@ on:
           - patch
           - minor
           - major
+          - none
+      run-codeql:
+        description: "Run CodeQL analysis"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+  cicd:
+    uses: ./.github/workflows/cicd.yml
+    with:
+      run-codeql: ${{ inputs.run-codeql }}
+    secrets: inherit
 
-    steps:
-      - name: Generate Token
-        id: generate_token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.RELEASE_TAGGER_APP_ID }}
-          private-key: ${{ secrets.RELEASE_TAGGER_APP_PRIVATE_KEY }}
-    
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-          fetch-depth: 0
+  calculate-version:
+    uses: ./.github/workflows/calculate-version.yml
+    with:
+      version: ${{ inputs.version }}
 
-      - name: Setup Git
-        run: |
-          git config user.name '${{ github.actor }}'
-          git config user.email '${{ github.actor }}@bitcobblers.com'      
-          
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.10.2
-        with:
-          versionSpec: '5.x'
-      
-      - name: Get Current Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.10.2
-        
-      - name: Create New Tag
-        shell: pwsh
-        run: |
-          function bumpVersion($comp, $value) { 
-            if($comp -eq '${{ inputs.version }}') {
-              return [int]$value + 1
-            }
-            else {
-              return $value
-            }
-          }
-          
-          $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
-          $major = bumpVersion 'major' $version.Major
-          $minor = bumpVersion 'minor' $version.Minor
-          $patch = bumpVersion 'patch' $version.Build
+  build-packages:
+    needs: [ calculate-version ]
+    uses: ./.github/workflows/build-packages.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.version }}
 
-          $newVersion = "$major.$minor.$patch"
-          $tagName = "v$newVersion"
+  create-tags:
+    needs: [ calculate-version, build-packages, cicd ]
+    uses: ./.github/workflows/create-tags.yml
+    with:
+      tag-name: ${{ needs.calculate-version.outputs.tag-name }}
 
-          Write-Output "New tagged version: $tagName"
-          & git tag $tagName
-          & git push origin $tagName
-          
-          @(
-            "VERSION=$newVersion",
-            "TAG_NAME=$tagName"
-          ) | Out-File -Append $env:GITHUB_ENV
-          
-      - name: Create Release
-        uses: actions/github-script@v6
-        with:
-          script: |
-            await github.request('POST /repos/{owner}/{repo}/releases', {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              target_commitish: "${{ github.sha }}",
-              name: "${{ env.VERSION }}",
-              tag_name: "${{ env.TAG_NAME }}",
-              generate_release_notes: true,
-              draft: false
-            });
+  push-packages:
+    needs: [ build-packages, create-tags ]
+    uses: ./.github/workflows/push-packages.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.version }}
+    secrets: inherit
+
+  create-release:
+    needs: [calculate-version, push-packages]
+    uses: ./.github/workflows/create-release.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.version }}
+      tag-name: ${{ needs.calculate-version.outputs.tag-name }}
