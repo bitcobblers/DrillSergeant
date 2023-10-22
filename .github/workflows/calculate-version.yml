@@ -7,6 +7,14 @@
           description: "The version type (major, minor, or patch)"
           required: true
           type: string
+      outputs:
+        version: 
+          description: "The new calculated version"
+          value: ${{ jobs.calculate-version.outputs.version }}
+        tag-name: 
+          description: "The new calculated tag name"
+          value: ${{ jobs.calculate-version.outputs.tag-name }}        
+
   jobs:
     calculate-version:
       runs-on: ubuntu-latest
