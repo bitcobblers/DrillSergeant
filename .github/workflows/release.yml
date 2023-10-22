@@ -56,9 +56,8 @@ jobs:
         shell: pwsh
         run: |
           dotnet restore
-          dotnet build --no-logo --configuration Release
+          dotnet build --configuration Release
           dotnet test `
-            --no-logo `
             --no-build `
             --no-restore ` 
             --configuration Release `
