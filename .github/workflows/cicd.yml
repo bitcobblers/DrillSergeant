@@ -4,6 +4,12 @@ on:
     branches: [ main, dev ]
   pull_request:
   workflow_call:
+    inputs:
+      run-codeql:
+        description: "Run CodeQL analysis"
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       run-codeql:
