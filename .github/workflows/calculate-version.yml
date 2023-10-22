@@ -13,14 +13,14 @@
           value: ${{ jobs.calculate-version.outputs.version }}
         tag-name: 
           description: "The new calculated tag name"
-          value: ${{ jobs.calculate-version.outputs.tag-name }}        
+          value: ${{ jobs.calculate-version.outputs.tag-name }}
 
   jobs:
     calculate-version:
       runs-on: ubuntu-latest
       outputs:
-        version: ${{ steps.gitversion.outputs.VERSION }}
-        tag-name: ${{ steps.gitversion.outputs.TAG_NAME }}
+        version: ${{ steps.calculate-version.outputs.VERSION }}
+        tag-name: ${{ steps.calculate-version.outputs.TAG_NAME }}
       steps:
         - name: Checkout
           uses: actions/checkout@v4
@@ -39,10 +39,10 @@
             versionSpec: '5.x'
 
         - name: Get Current Version
-          id: gitversion
           uses: gittools/actions/gitversion/execute@v0.10.2
 
-        - name: Create New Tag
+        - name: Calculate New Version
+          id: calculate-version
           shell: pwsh
           run: |
             function bumpVersion($comp, $value) { 
@@ -56,7 +56,7 @@
             
             function saveOutput($name, $value) {
               "$name=$value" | Out-File -Append $env:GITHUB_ENV -Encoding utf8
-              Write-Host "$name=$value"
+              Write-Host "Saving output: $name=$value"
             }
             
             $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
