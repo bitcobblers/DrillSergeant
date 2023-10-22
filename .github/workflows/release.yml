@@ -53,24 +53,25 @@ jobs:
           packages-directory: ${{ github.workspace }}/Artifacts/Packages
           assembly-version: ${{ needs.calculate-version.outputs.version }}.0
           file-version: ${{ needs.calculate-version.outputs.version }}.0
+        shell: pwsh
         run: |
           dotnet restore
           dotnet build --no-logo --configuration Release
-          dotnet test \
-            --no-logo \
-            --no-build \
-            --no-restore \ 
-            --configuration Release \
-            --logger:"${{ env.logger }}" \
-            /property:AssemblyVersion=${{ env.assembly-version }} \
+          dotnet test `
+            --no-logo `
+            --no-build `
+            --no-restore ` 
+            --configuration Release `
+            --logger:"${{ env.logger }}" `
+            /property:AssemblyVersion=${{ env.assembly-version }} `
             /property:FileVersion=${{ env.file-version }}
-          dotnet pack \
-            --no-build \
-            --no-restore \
-            --include-symbols \ 
-            --configuration Release \ 
-            --output ${{ env.packages-directory }} \
-            /property:ContinuousIntegrationBuild=true \
+          dotnet pack `
+            --no-build `
+            --no-restore `
+            --include-symbols ` 
+            --configuration Release ` 
+            --output ${{ env.packages-directory }} `
+            /property:ContinuousIntegrationBuild=true `
             /property:Version=${{ needs.calculate-version.outputs.version }}
 
   push-packages:
@@ -93,11 +94,11 @@ jobs:
             $packages = Get-ChildItem -Path $env:GITHUB_WORKSPACE/Artifacts/Packages -Filter *.nupkg -Recurse
             foreach($package in $packages) {
                 Write-Output "Pushing package: $package"
-                # dotnet nuget push $package.FullName --source $env:NUGET_SOURCE --api-key ${{ secrets.NUGETAPIKEY }}
+                # dotnet nuget push $package.FullName --source $env:NUGET_SOURCE --api-key ${{ secrets.NUGET_API_KEY }}
             }
 
   create-tags:
-    needs: [ calculate-version, build-package ]
+    needs: [ calculate-version, build-package, cicd ]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Git
