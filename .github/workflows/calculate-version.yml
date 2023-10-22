@@ -54,6 +54,11 @@
               }
             }
             
+            function saveOutput($name, $value) {
+              "$name=$value" | Out-File -Append $env:GITHUB_ENV -Encoding utf8
+              Write-Host "$name=$value"
+            }
+            
             $version = [version]"$env:GitVersion_Major.$env:GitVersion_Minor.$env:GitVersion_Patch"
             $major = bumpVersion 'major' $version.Major
             $minor = bumpVersion 'minor' $version.Minor
@@ -62,7 +67,5 @@
             $newVersion = "$major.$minor.$patch"
             $tagName = "v$newVersion"
             
-            @(
-              "VERSION=$newVersion",
-              "TAG_NAME=$tagName"
-            ) | Out-File -Append $env:GITHUB_ENV
+            saveOutput 'VERSION' $newVersion
+            saveOutput 'TAG_NAME' $tagName
