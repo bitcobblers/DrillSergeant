@@ -8,8 +8,7 @@
       strategy:
         fail-fast: true
         matrix:
-          # os: [ windows-latest, ubuntu-latest, macos-latest ]
-          os: [ ubuntu-latest ]
+          os: [ windows-latest, ubuntu-latest, macos-latest ]
           config: [ Debug ]
       runs-on: ${{ matrix.os }}
       steps:
@@ -26,7 +25,6 @@
               7.0.x
 
         - name: Build and Test
-          shell: pwsh
           env:
             DOTNET_NOLOGO: true
             logger: GitHubActions;report-warnings=false
@@ -34,8 +32,18 @@
             collect: "XPlat Code Coverage"
           run: |
             dotnet restore
-            dotnet build --no-restore --configuration ${{ matrix.config }}
-            dotnet test --no-restore --no-build --configuration ${{ matrix.config }} --collect:"${{ env.collect }}" --logger:"${{ env.logger }}" --results-directory:"${{ env.results-directory }}"
+            dotnet build 
+              --no-restore 
+              --configuration 
+              ${{ matrix.config }}
+            
+            dotnet test 
+              --no-restore 
+              --no-build 
+              --configuration ${{ matrix.config }} 
+              --collect:"${{ env.collect }}" 
+              --logger:"${{ env.logger }}" 
+              --results-directory:"${{ env.results-directory }}"
 
         - name: Upload coverage reports to Codecov
           if: ${{ matrix.os == 'ubuntu-latest' }}
