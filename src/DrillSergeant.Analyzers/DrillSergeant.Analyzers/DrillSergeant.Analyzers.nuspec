@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <!-- Required elements-->
+        <id>DrillSergeant.Analyzers</id>
+        <version>1.2.3</version>
+        <description>Provides analysis checks against DrillSergeant behavior tests.</description>
+        <authors>BitCobblers</authors>
+    </metadata>
+    <!-- Optional 'files' node -->
+    <files>
+        <file src="bin\$Configuration$\netstandard2.0\DrillSergeant*.dll" target="analyzers\dotnet\cs" />
+        <file src="tools\*.ps1" target="tools\" />
+        <file src="docs\README.md" target="docs\README.md" />
+    </files>
+</package>
