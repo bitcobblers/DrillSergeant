@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.MSTest.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant.MSTest", "src\DrillSergeant.MSTest\DrillSergeant.MSTest.csproj", "{4E047335-5497-4401-8C6D-DAC3F63AE668}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.Analyzers", "src\DrillSergeant.Analyzers\DrillSergeant.Analyzers\DrillSergeant.Analyzers.csproj", "{0706C41E-8336-4E92-9BD9-FF0C5D1871FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrillSergeant.Analyzers", "src\DrillSergeant.Analyzers\DrillSergeant.Analyzers.csproj", "{6FC82D8F-EFDB-488E-97DB-EF35F6A90DB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,10 +80,10 @@ Global
 		{4E047335-5497-4401-8C6D-DAC3F63AE668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E047335-5497-4401-8C6D-DAC3F63AE668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E047335-5497-4401-8C6D-DAC3F63AE668}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0706C41E-8336-4E92-9BD9-FF0C5D1871FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0706C41E-8336-4E92-9BD9-FF0C5D1871FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0706C41E-8336-4E92-9BD9-FF0C5D1871FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0706C41E-8336-4E92-9BD9-FF0C5D1871FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FC82D8F-EFDB-488E-97DB-EF35F6A90DB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FC82D8F-EFDB-488E-97DB-EF35F6A90DB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FC82D8F-EFDB-488E-97DB-EF35F6A90DB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FC82D8F-EFDB-488E-97DB-EF35F6A90DB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,7 +99,7 @@ Global
 		{E0D70886-43AA-48F0-85C7-2AC1722CD3E2} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 		{F6874C05-BBF0-4327-9AAE-A3637887F0C0} = {F6F6AA0B-F5E0-496C-A763-48ADC3542836}
 		{4E047335-5497-4401-8C6D-DAC3F63AE668} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
-		{0706C41E-8336-4E92-9BD9-FF0C5D1871FD} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
+		{6FC82D8F-EFDB-488E-97DB-EF35F6A90DB4} = {BFEDAF09-08D0-463B-9922-8D90085D92FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35E642DB-4DFA-4054-B035-03F437C3F8BD}
