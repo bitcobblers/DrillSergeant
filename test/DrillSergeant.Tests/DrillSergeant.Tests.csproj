@@ -5,8 +5,11 @@
 	<ItemGroup>
 		<PackageReference Include="xunit" />
 		<PackageReference Include="xunit.runner.visualstudio" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\..\src\DrillSergeant.Analyzers\DrillSergeant.Analyzers.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant.Generators\DrillSergeant.Generators.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant.Xunit2\DrillSergeant.Xunit2.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
