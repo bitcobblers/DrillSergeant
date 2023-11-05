@@ -1,11 +1,11 @@
 <Project>
-    <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    </PropertyGroup>
-
     <ImportGroup>
         <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
     </ImportGroup>
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    </PropertyGroup>
 
     <ItemGroup Condition="$(MSBuildProjectName.Contains('.Shared')) == 'false'">
         <PackageReference Include="coverlet.collector" />
