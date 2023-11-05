@@ -10,7 +10,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\DrillSergeant.Analyzers\DrillSergeant.Analyzers.csproj" />
-	  <ProjectReference Include="..\..\src\DrillSergeant.Analyzers\DrillSergeant.Analyzers\DrillSergeant.Analyzers.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant.Generators\DrillSergeant.Generators.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant.Xunit2\DrillSergeant.Xunit2.csproj" />
 	  <ProjectReference Include="..\..\src\DrillSergeant\DrillSergeant.csproj" />
