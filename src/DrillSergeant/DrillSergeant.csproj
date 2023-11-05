@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>DrillSergeant</RootNamespace>
-  </PropertyGroup>
-  
   <ItemGroup Label="Internals Visible To">
     <InternalsVisibleTo Include="DrillSergeant.Tests" Key="$(DrillSergeantPublicKey)" />
     <InternalsVisibleTo Include="DrillSergeant.Xunit2" Key="$(DrillSergeantPublicKey)" />

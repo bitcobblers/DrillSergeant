@@ -3,7 +3,6 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
         <IncludeBuildeOutput>false</IncludeBuildeOutput>
-        <RootNamespace>DrillSergeant.Analyzers</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
