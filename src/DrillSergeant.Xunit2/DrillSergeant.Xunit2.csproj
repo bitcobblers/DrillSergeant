@@ -5,14 +5,6 @@
     <RootNamespace>DrillSergeant.Xunit2</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Label="SourceLink">
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeDebugSymbolsProjectOutputGroup>true</IncludeDebugSymbolsProjectOutputGroup>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
   <ItemGroup Label="Internals Visible To">
     <InternalsVisibleTo Include="DrillSergeant.Xunit2.Tests" Key="$(DrillSergeantPublicKey)" />
     <InternalsVisibleTo Include="DrillSergeant.Tests" Key="$(DrillSergeantPublicKey)" />

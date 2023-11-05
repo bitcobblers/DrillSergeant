@@ -1,7 +1,25 @@
 <Project>
     <ImportGroup>
-        <Import Project="..\Directory.Build.props" />
+        <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
     </ImportGroup>
+
+    <PropertyGroup>
+        <IsAnalyzer Condition=" $(MSBuildProjectName.EndsWith('.Analyzers')) ">true</IsAnalyzer>
+        <IsGenerator Condition=" $(MSBuildProjectName.EndsWith('.Generators')) ">true</IsGenerator>
+    </PropertyGroup>
+
+    <Choose>
+        <When Condition=" $(IsAnalyzer)!='true' And $(IsGenerator)!='true' ">
+            <PropertyGroup>
+                <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+            </PropertyGroup>
+        </When>
+        <When Condition=" $(IsAnalyzer)=='true' Or $(IsGenerator)=='true' ">
+            <PropertyGroup>
+                <TargetFramework>netstandard2.0</TargetFramework>
+            </PropertyGroup>
+        </When>
+    </Choose>
 
     <PropertyGroup Label="GitVersion">
         <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
@@ -26,4 +44,12 @@
     <ItemGroup>
         <PackageReference Include="GitVersion.MsBuild" />
     </ItemGroup>
+
+    <PropertyGroup Label="SourceLink">
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeDebugSymbolsProjectOutputGroup>true</IncludeDebugSymbolsProjectOutputGroup>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
 </Project>

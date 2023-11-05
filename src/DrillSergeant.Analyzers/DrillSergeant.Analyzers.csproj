@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
         <IncludeBuildeOutput>false</IncludeBuildeOutput>
@@ -32,13 +31,9 @@
       <Folder Include="Properties\" />
     </ItemGroup>
 
-    <PropertyGroup Label="SourceLink">
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <IncludeDebugSymbolsProjectOutputGroup>true</IncludeDebugSymbolsProjectOutputGroup>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <DebugType>portable</DebugType>
-    </PropertyGroup>
+    <ItemGroup>
+      <None Remove="preprocessed.xml" />
+    </ItemGroup>
 
     <PropertyGroup Label="Nuget" >
         <NuspecFile>DrillSergeant.Analyzers.nuspec</NuspecFile>
