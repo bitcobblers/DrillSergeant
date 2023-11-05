@@ -4,16 +4,28 @@
     </ImportGroup>
 
     <PropertyGroup>
+        <!-- Defaults -->
+        <IsAnalyzer>false</IsAnalyzer>
+        <IsGenerator>false</IsGenerator>
+        <IsRegular>false</IsRegular>
+
         <IsAnalyzer Condition=" $(MSBuildProjectName.EndsWith('.Analyzers')) ">true</IsAnalyzer>
         <IsGenerator Condition=" $(MSBuildProjectName.EndsWith('.Generators')) ">true</IsGenerator>
+        <IsRegular Condition=" $(IsAnalyzer)!='true' And $(IsGenerator)!='true' ">true</IsRegular>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" $(IsAnalyzer)!='true' And $(IsGenerator)!='true' ">
+    <PropertyGroup Condition=" $(IsRegular) ">
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <NuspecFile>$(MSBuildThisFileDirectory)DrillSergeant.nuspec</NuspecFile>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" $(IsAnalyzer)=='true' Or $(IsGenerator)=='true' ">
+    <PropertyGroup Condition=" $(IsGenerator) ">
         <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $(IsAnalyzer) ">
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <NuspecFile>$(MSBuildThisFileDirectory)DrillSergeant.Analyzers.nuspec</NuspecFile>
     </PropertyGroup>
 
     <PropertyGroup Label="GitVersion">
