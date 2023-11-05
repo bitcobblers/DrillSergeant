@@ -43,4 +43,8 @@
     <PropertyGroup Label="Nuget" >
         <NuspecFile>DrillSergeant.Analyzers.nuspec</NuspecFile>
     </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <NoWarn>1701;1702;RS2007</NoWarn>
+    </PropertyGroup>
 </Project>
