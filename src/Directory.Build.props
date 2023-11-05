@@ -1,0 +1,29 @@
+<Project>
+    <ImportGroup>
+        <Import Project="..\Directory.Build.props" />
+    </ImportGroup>
+
+    <PropertyGroup Label="GitVersion">
+        <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Package Settings">
+        <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
+        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Title>Drill Sergeant</Title>
+        <Description>Write behavior tests in pure C#.</Description>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(SolutionDir)/.editorconfig" Visible="true" Pack="false" Link=".editorconfig" />
+        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="true" Link="README.md" PackagePath="/"  />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="GitVersion.MsBuild" />
+    </ItemGroup>
+</Project>

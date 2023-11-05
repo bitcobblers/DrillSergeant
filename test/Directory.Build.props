@@ -1,0 +1,13 @@
+<Project>
+    <ImportGroup>
+        <Import Project="..\Directory.Build.props" />
+    </ImportGroup>
+
+    <ItemGroup Condition="$(MSBuildProjectName.Contains('.Shared')) == 'false'">
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="FakeItEasy" />
+        <PackageReference Include="GitHubActionsTestLogger" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Shouldly" />
+    </ItemGroup>
+</Project>
