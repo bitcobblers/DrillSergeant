@@ -8,18 +8,13 @@
         <IsGenerator Condition=" $(MSBuildProjectName.EndsWith('.Generators')) ">true</IsGenerator>
     </PropertyGroup>
 
-    <Choose>
-        <When Condition=" $(IsAnalyzer)!='true' And $(IsGenerator)!='true' ">
-            <PropertyGroup>
-                <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-            </PropertyGroup>
-        </When>
-        <When Condition=" $(IsAnalyzer)=='true' Or $(IsGenerator)=='true' ">
-            <PropertyGroup>
-                <TargetFramework>netstandard2.0</TargetFramework>
-            </PropertyGroup>
-        </When>
-    </Choose>
+    <PropertyGroup Condition=" $(IsAnalyzer)!='true' And $(IsGenerator)!='true' ">
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $(IsAnalyzer)=='true' Or $(IsGenerator)=='true' ">
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
 
     <PropertyGroup Label="GitVersion">
         <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
