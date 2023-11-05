@@ -357,3 +357,5 @@ Generated/
 
 # Nuke
 .nuke/temp
+
+launchSettings.json

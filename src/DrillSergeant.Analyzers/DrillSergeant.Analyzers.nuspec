@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>DrillSergeant.Analyzers</id>
+        <version>$PackageVersion$</version>
+        <title>DrillSergeant [Code Analyzers]</title>
+        <authors>BitCobblers</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="expression">MIT</license>
+        <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+        <description>Provides analysis checks against DrillSergeant behavior tests.</description>
+        <repository type="git">https://github.com/bitcobblers/DrillSergeant</repository>
+        <tags>DrillSergeant.Analyzers, analyzers, DrillSergeant</tags>
+        <releaseNotes>https://github.com/bitcobblers/DrillSergeant/releases/tag/v$PackageVersion$</releaseNotes>
+        <readme>docs\README.md</readme>
+    </metadata>
+    <files>
+        <file src="bin\$Configuration$\netstandard2.0\DrillSergeant*.dll" target="analyzers\dotnet\cs\" />
+        <file src="tools\*.ps1" target="tools\" />
+        <file src="..\..\README.md" target="docs\" />
+    </files>
+</package>
