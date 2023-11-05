@@ -47,4 +47,8 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <NoWarn>1701;1702;RS2007</NoWarn>
     </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <NoWarn>RS2007</NoWarn>
+    </PropertyGroup>
 </Project>
