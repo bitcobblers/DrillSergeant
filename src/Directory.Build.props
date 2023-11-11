@@ -1,0 +1,61 @@
+<Project>
+    <ImportGroup>
+        <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+    </ImportGroup>
+
+    <PropertyGroup Label="Defaults">
+        <IsAnalyzer>false</IsAnalyzer>
+        <IsGenerator>false</IsGenerator>
+        <IsRegular>false</IsRegular>
+
+        <IsAnalyzer Condition=" $(MSBuildProjectName.EndsWith('.Analyzers')) ">true</IsAnalyzer>
+        <IsGenerator Condition=" $(MSBuildProjectName.EndsWith('.Generators')) ">true</IsGenerator>
+        <IsRegular Condition=" $(IsAnalyzer)!='true' And $(IsGenerator)!='true' ">true</IsRegular>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $(IsRegular) ">
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $(IsGenerator) or $(IsAnalyzer) ">
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Label="GitVersion">
+        <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Package Settings">
+        <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
+        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Title>Drill Sergeant</Title>
+        <Description>Write behavior tests in pure C#.</Description>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(SolutionDir)/.editorconfig" Visible="true" Pack="false" Link=".editorconfig" />
+        <None Include="$(SolutionDir)/README.md" Visible="true" Pack="true" Link="README.md" PackagePath="/"  />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="GitVersion.MsBuild" />
+    </ItemGroup>
+
+    <PropertyGroup Label="SourceLink">
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeDebugSymbolsProjectOutputGroup>true</IncludeDebugSymbolsProjectOutputGroup>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Warning Suppression">
+        <NoWarn Condition=" '$(Configuration)' == 'Debug' ">1701;1702;RS2007;CS1591</NoWarn>
+        <NoWarn Condition=" '$(Configuration)' == 'Release' ">RS2007;CS1591</NoWarn>
+    </PropertyGroup>
+</Project>
