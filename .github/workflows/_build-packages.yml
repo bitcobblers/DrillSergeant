@@ -12,6 +12,13 @@ on:
         required: true
         type: string
 
+env:
+  DOTNET_NOLOGO: true
+  logger: GitHubActions;report-warnings=false
+  packages-directory: ${{ github.workspace }}/Artifacts/Packages
+  assembly-version: ${{ format('{0}.0', inputs.version) }}
+  file-version: ${{ format('{0}.0', inputs.version) }}
+
 jobs:
   build-packages:
     runs-on: ubuntu-latest
@@ -37,15 +44,14 @@ jobs:
             6.0.x
             7.0.x
 
-      - name: Build and Test
-        env:
-          DOTNET_NOLOGO: true
-          logger: GitHubActions;report-warnings=false
-          packages-directory: ${{ github.workspace }}/Artifacts/Packages
-          assembly-version: ${{ format('{0}.0', inputs.version) }}
-          file-version: ${{ format('{0}.0', inputs.version) }}
-        run: |
-          dotnet restore
-          dotnet build --no-restore --configuration Release /property:ContinuousIntegrationBuild=true
-          dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}" /property:AssemblyVersion=${{ env.assembly-version }} /property:FileVersion=${{ env.file-version }}                    
-          dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ inputs.semver }}
+      - name: Restore Packages
+        run: dotnet restore
+
+      - name: Build Solution
+        run: dotnet build --no-restore --configuration Release /property:ContinuousIntegrationBuild=true
+
+      - name: Run Tests
+        run: dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}" /property:AssemblyVersion=${{ env.assembly-version }} /property:FileVersion=${{ env.file-version }}
+
+      - name: Create Packages
+        run: dotnet pack --no-restore --no-build --include-symbols --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ inputs.semver }}

@@ -3,6 +3,12 @@
   on:
     workflow_call:
 
+  env:
+    DOTNET_NOLOGO: true
+    logger: GitHubActions;report-warnings=false
+    results-directory: ${{ github.workspace }}/Artifacts/TestResults
+    collect: "XPlat Code Coverage"
+
   jobs:
     build:
       strategy:
@@ -25,16 +31,14 @@
               6.0.x
               7.0.x
 
-        - name: Build and Test
-          env:
-            DOTNET_NOLOGO: true
-            logger: GitHubActions;report-warnings=false
-            results-directory: ${{ github.workspace }}/Artifacts/TestResults
-            collect: "XPlat Code Coverage"
-          run: |
-            dotnet restore
-            dotnet build --no-restore --configuration ${{ matrix.config }}
-            dotnet test --no-restore --no-build --configuration ${{ matrix.config }} --collect:"${{ env.collect }}" --logger:"${{ env.logger }}" --results-directory:"${{ env.results-directory }}"
+        - name: Restore Packages
+          run: dotnet restore
+
+        - name: Build Solution
+          run: dotnet build --no-restore --configuration ${{ matrix.config }}
+
+        - name: Run Tests
+          run: dotnet test --no-restore --no-build --configuration ${{ matrix.config }} --collect:"${{ env.collect }}" --logger:"${{ env.logger }}" --results-directory:"${{ env.results-directory }}"
 
         - name: Upload coverage reports to Codecov
           if: ${{ matrix.os == 'ubuntu-latest' }}
