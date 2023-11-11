@@ -6,7 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BFEDAF09-08D0-463B-9922-8D90085D92FF}"
 	ProjectSection(SolutionItems) = preProject
 		src\Directory.Build.props = src\Directory.Build.props
-		src\DrillSergeant.nuspec = src\DrillSergeant.nuspec
+		src\Directory.Build.targets = src\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F6F6AA0B-F5E0-496C-A763-48ADC3542836}"
@@ -20,7 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.husky\task-runner.json = .husky\task-runner.json
 		Directory.Packages.props = Directory.Packages.props
 		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrillSergeant", "src\DrillSergeant\DrillSergeant.csproj", "{BA4C64F7-2155-438B-8AF5-1EDF7A273189}"

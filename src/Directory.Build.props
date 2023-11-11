@@ -3,8 +3,7 @@
         <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
     </ImportGroup>
 
-    <PropertyGroup>
-        <!-- Defaults -->
+    <PropertyGroup Label="Defaults">
         <IsAnalyzer>false</IsAnalyzer>
         <IsGenerator>false</IsGenerator>
         <IsRegular>false</IsRegular>
@@ -16,16 +15,11 @@
 
     <PropertyGroup Condition=" $(IsRegular) ">
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-        <NuspecFile>$(MSBuildThisFileDirectory)DrillSergeant.nuspec</NuspecFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" $(IsGenerator) ">
+    <PropertyGroup Condition=" $(IsGenerator) or $(IsAnalyzer) ">
         <TargetFramework>netstandard2.0</TargetFramework>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" $(IsAnalyzer) ">
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <NuspecFile>$(MSBuildThisFileDirectory)DrillSergeant.Analyzers.nuspec</NuspecFile>
     </PropertyGroup>
 
     <PropertyGroup Label="GitVersion">
@@ -58,5 +52,10 @@
         <IncludeDebugSymbolsProjectOutputGroup>true</IncludeDebugSymbolsProjectOutputGroup>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <DebugType>portable</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Warning Suppression">
+        <NoWarn Condition=" '$(Configuration)' == 'Debug' ">1701;1702;RS2007;CS1591</NoWarn>
+        <NoWarn Condition=" '$(Configuration)' == 'Release' ">RS2007;CS1591</NoWarn>
     </PropertyGroup>
 </Project>

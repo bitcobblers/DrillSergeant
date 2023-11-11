@@ -16,9 +16,6 @@
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
         <Compile Update="Resources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
@@ -32,13 +29,5 @@
 
     <PropertyGroup Label="Nuget" >
         <NuspecFile>DrillSergeant.Analyzers.nuspec</NuspecFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <NoWarn>1701;1702;RS2007</NoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <NoWarn>RS2007</NoWarn>
     </PropertyGroup>
 </Project>
