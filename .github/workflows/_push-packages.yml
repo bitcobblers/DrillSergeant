@@ -17,7 +17,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/Artifacts/Packages
           key: ${{ runner.os }}-packages-${{ inputs.version }}
-          lookup-only: true
           fail-on-cache-miss: true
           restore-keys: |
             ${{ runner.os }}-packages-
