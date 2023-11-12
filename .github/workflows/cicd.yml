@@ -1,30 +1,39 @@
 ﻿name: CICD
 on:
   push:
-    branches: [ main, dev ]
   pull_request:
-  workflow_call:
-    inputs:
-      run-codeql:
-        description: "Run CodeQL analysis"
-        required: false
-        type: boolean
-        default: false
   workflow_dispatch:
-    inputs:
-      run-codeql:
-        description: "Run CodeQL analysis"
-        required: false
-        type: boolean
-        default: false
 
 jobs:
-  build:
-    uses: ./.github/workflows/_build.yml
+  test:
+    uses: ./.github/workflows/_test.yml
     secrets: inherit
 
   codeql:
-    if: |
-      (github.event_name == 'workflow_dispatch' && inputs.run-codeql) ||
-      (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'dev'))
     uses: ./.github/workflows/_codeql.yml
+
+  calculate-version:
+    uses: ./.github/workflows/_calculate-version.yml
+
+  build-packages:
+    needs: [ calculate-version ]
+    uses: ./.github/workflows/_build-packages.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.version }}
+      semver: ${{ needs.calculate-version.outputs.semver }}
+
+  push-packages:
+    if: github.tag_name != '' || github.ref_name == 'dev'
+    needs: [ test, calculate-version, build-packages, codeql ]
+    uses: ./.github/workflows/_push-packages.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.semver }}
+    secrets: inherit
+
+  create-release:
+    if: github.tag_name != '' && github.ref_name == 'main'
+    needs: [push-packages, calculate-version]
+    uses: ./.github/workflows/_create-release.yml
+    with:
+      version: ${{ needs.calculate-version.outputs.version }}
+      tag-name: ${{ github.tag_name }}

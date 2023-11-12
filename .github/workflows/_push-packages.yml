@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       version:
-        description: "The version type (major, minor, or patch)"
+        description: "The semantic version of the packages to push"
         required: true
         type: string
 
