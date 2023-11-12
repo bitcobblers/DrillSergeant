@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/_build.yml
+    uses: ./.github/workflows/_test.yml
     secrets: inherit
 
   codeql:
