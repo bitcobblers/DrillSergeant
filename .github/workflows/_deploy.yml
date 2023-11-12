@@ -1,4 +1,4 @@
-﻿name: build-packages
+﻿name: deploy
 
 on:
   workflow_call:
