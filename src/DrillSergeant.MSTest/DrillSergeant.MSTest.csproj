@@ -5,7 +5,7 @@
   </ItemGroup>
   
   <ItemGroup Label="Dependencies">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+    <PackageReference Include="DotNet.ReproducibleBuilds" />
     <PackageReference Include="MSTest.TestAdapter" />
     <PackageReference Include="MSTest.TestFramework" />
   </ItemGroup>
