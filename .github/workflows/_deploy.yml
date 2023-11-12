@@ -10,6 +10,7 @@ on:
 
 env:
   DOTNET_NOLOGO: true
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
   logger: GitHubActions;report-warnings=false
   packages-directory: ${{ github.workspace }}/Artifacts/Packages
 
@@ -46,5 +47,5 @@ jobs:
         shell: pwsh
         run: |
           Get-ChildItem -Path ${{ env.packages-directory }} *.nupkg | ForEach-Object {
-            dotnet nuget push $_.FullName --source $env:NUGET_SOURCE --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+            dotnet nuget push $_.FullName --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
           }
