@@ -4,10 +4,10 @@
     workflow_call:
       outputs:
         version: 
-          description: "The calculated version"
+          description: "The version for the assembly"
           value: ${{ jobs.calculate-version.outputs.version }}
-        semver:
-          description: "The calculated version as a semver"
+        package-version:
+          description: "The version to use for packaging"
           value: ${{ jobs.calculate-version.outputs.semver }}
 
   jobs:
@@ -15,11 +15,12 @@
       runs-on: ubuntu-latest
       outputs:
         version: ${{ steps.calculate-version.outputs.VERSION }}
-        semver: ${{ steps.calculate-version.outputs.SEMVER }}
+        package-version: ${{ steps.calculate-version.outputs.PACKAGE_VERSION }}
       steps:
         - name: Checkout
           uses: actions/checkout@v4
           with:
+            show-progress: false
             fetch-depth: 0
 
         - name: Setup .NET
@@ -52,4 +53,4 @@
             }
             
             saveOutput 'VERSION' $env:GitVersion_MajorMinorPatch
-            saveOutput 'SEMVER' $packageVersion
+            saveOutput 'PACKAGE_VERSION' $packageVersion

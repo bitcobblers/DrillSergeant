@@ -1,0 +1,50 @@
+﻿name: build-packages
+
+on:
+  workflow_call:
+    inputs:
+      package-version:
+        description: "The version for nuget packaging"
+        required: true
+        type: string
+
+env:
+  DOTNET_NOLOGO: true
+  logger: GitHubActions;report-warnings=false
+  packages-directory: ${{ github.workspace }}/Artifacts/Packages
+
+jobs:
+  build-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+
+      - name: Restore Packages
+        run: dotnet restore
+
+      - name: Build Solution
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run Tests
+        run: dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}"
+
+      - name: Create Packages
+        run: dotnet pack --no-restore --no-build --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ inputs.package-version }}
+
+      - name: Push Packages
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path ${{ env.packages-directory }} *.nupkg | ForEach-Object {
+            dotnet nuget push $_.FullName --source $env:NUGET_SOURCE --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          }
