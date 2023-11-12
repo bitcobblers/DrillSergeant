@@ -16,7 +16,7 @@ public class MutatingInputAnalyzer : BehaviorMethodAnalyzer
         title: "Behavior input is immutable and cannot be modified",
         messageFormat: "Behavior input is immutable and cannot be modified",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Behavior input cannot be modified once set.  Any changes to the input will be lost once the current step finishes executing.");
 
