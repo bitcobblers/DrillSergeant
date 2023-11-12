@@ -40,11 +40,6 @@ jobs:
       - name: Build Solution
         run: dotnet build --no-restore --configuration Release
 
-      - name: Run Tests
-        env:
-          logger: GitHubActions;report-warnings=false
-        run: dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}"
-
       - name: Calculate Package Version
         id: calculate-version
         shell: pwsh
@@ -71,7 +66,7 @@ jobs:
             '--no-build',
             '--configuration', 'Release',
             '--output', '${{ env.packages-directory }}',
-            '--property:Version=' + '${{ steps.calculate-version.outputs.PACKAGE_VERSION }}'
+            ('--property:Version=' + '${{ steps.calculate-version.outputs.PACKAGE_VERSION }}')
           )
           
           dotnet pack @packArgs

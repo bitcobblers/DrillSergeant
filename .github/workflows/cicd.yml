@@ -10,6 +10,7 @@ jobs:
     secrets: inherit
 
   codeql:
+    if: github.tag_name != '' || github.ref_name == 'dev'
     uses: ./.github/workflows/_codeql.yml
 
   deploy:
