@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Composition;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -7,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DrillSergeant.Analyzers.Fixes;
 
+[ExportCodeFixProvider(LanguageNames.CSharp), Shared]
 public class BehaviorMethodAccessorFixProvider : CodeFixProvider
 {
     private const string Title = "Change modifier to public";

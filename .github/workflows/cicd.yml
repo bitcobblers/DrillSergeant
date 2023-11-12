@@ -10,30 +10,19 @@ jobs:
     secrets: inherit
 
   codeql:
+    if: github.tag_name != '' || github.ref_name == 'dev'
     uses: ./.github/workflows/_codeql.yml
 
-  calculate-version:
-    uses: ./.github/workflows/_calculate-version.yml
-
-  build-packages:
-    needs: [ calculate-version ]
-    uses: ./.github/workflows/_build-packages.yml
-    with:
-      version: ${{ needs.calculate-version.outputs.version }}
-      semver: ${{ needs.calculate-version.outputs.semver }}
-
-  push-packages:
+  deploy:
     if: github.tag_name != '' || github.ref_name == 'dev'
-    needs: [ test, calculate-version, build-packages, codeql ]
-    uses: ./.github/workflows/_push-packages.yml
-    with:
-      version: ${{ needs.calculate-version.outputs.semver }}
+    needs: [ test, codeql ]
+    uses: ./.github/workflows/_deploy.yml
     secrets: inherit
 
   create-release:
     if: github.tag_name != '' && github.ref_name == 'main'
-    needs: [push-packages, calculate-version]
+    needs: [deploy]
     uses: ./.github/workflows/_create-release.yml
     with:
-      version: ${{ needs.calculate-version.outputs.version }}
+      version: ${{ needs.deploy.outputs.version }}
       tag-name: ${{ github.tag_name }}

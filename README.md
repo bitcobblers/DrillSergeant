@@ -33,7 +33,7 @@ public class CalculatorTests
     public void TestAdditionBehavior(int a, int b, int expected)
     {
         var calculator = Given("Create a calculator", () => new Calculator());
-        var result = When($"Add {a} and {b}", () => calculator.Add(a, b));
+        var result = When($"Add {a} and {b}", () => calculator.Resolve().Add(a, b));
         Then(CheckResult("Check result", () => Assert.Equal(expected, result));
     }
 }
@@ -166,11 +166,18 @@ The MSTest integration on the other hand should be considered experimental.  Thi
 
 DrillSergeant is a regular library and can be installed via package manager with either the `Install-Package` or `dotnet add package` commands.  Note that because DrillSergeant is still in beta that you will need check the 'Include Prelease' checkbox to find it in nuget manager.
 
-|Framework|Package             |Example                                  |
-|---------|--------------------|-----------------------------------------|
-|Xunit    |DrillSergeant.Xunit2|`dotnet add package DrillSergeant.Xunit2`|
-|NUnit    |DrillSergeant.NUnit3|`dotnet add package DrillSergeant.NUnit3`|
-|MSTest   |DrillSergeant.MSTest|`dotnet add package DrillSergeant.MSTest`|
+| Framework | Package                 | Example                                      |
+|-----------|-------------------------|----------------------------------------------|
+| Xunit     | DrillSergeant.Xunit2    | `dotnet add package DrillSergeant.Xunit2`    |
+| NUnit     | DrillSergeant.NUnit3    | `dotnet add package DrillSergeant.NUnit3`    |
+| MSTest    | DrillSergeant.MSTest    | `dotnet add package DrillSergeant.MSTest`    |
+| Analyzers | DrillSergeant.Analyzers | `dotnet add package DrillSergeant.Analyzers` |
+
+## Analyzer Support
+
+As of version 1.1.0, DrillSergeant now has an optional analyzers package (`DrillSergeant.Analyzers`) that can provide real-time static analysis of behaviors to look for common mistakes and ensure best practices are being followed.  You can read more about them in the [wiki](https://github.com/bitcobblers/DrillSergeant/wiki/Analyzer-Support) section:
+
+> Note: The analyzers are still in beta and have only had limited testing.  If you encounter any issues, please report them [here](https://github.com/bitcobblers/DrillSergeant/issues/new/choose).
 
 ## Support
 

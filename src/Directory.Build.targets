@@ -1,7 +1,2 @@
 <Project>
-    <Target Name="UpdateNuSpecProperties" BeforeTargets="GenerateNuspec">
-        <PropertyGroup>
-            <NuspecProperties>Configuration=$(Configuration);PackageVersion=$(PackageVersion)</NuspecProperties>
-        </PropertyGroup>
-    </Target>
 </Project>

@@ -32,9 +32,9 @@
     <PropertyGroup Label="Package Settings">
         <PackageProjectUrl>https://github.com/bitcobblers/DrillSergeant</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant</RepositoryUrl>
-        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
         <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/bitcobblers/DrillSergeant.git</RepositoryUrl>
+        <PackageTags>unit testing;behavior testing;acceptance testing;bdd</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Title>Drill Sergeant</Title>
         <Description>Write behavior tests in pure C#.</Description>
