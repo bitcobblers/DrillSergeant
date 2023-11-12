@@ -12,21 +12,16 @@ jobs:
   codeql:
     uses: ./.github/workflows/_codeql.yml
 
-  calculate-version:
-    uses: ./.github/workflows/_calculate-version.yml
-
   deploy:
     if: github.tag_name != '' || github.ref_name == 'dev'
-    needs: [ test, calculate-version, codeql ]
+    needs: [ test, codeql ]
     uses: ./.github/workflows/_deploy.yml
-    with:
-      package-version: ${{ needs.calculate-version.outputs.package-version }}
     secrets: inherit
 
   create-release:
     if: github.tag_name != '' && github.ref_name == 'main'
-    needs: [deploy, calculate-version]
+    needs: [deploy]
     uses: ./.github/workflows/_create-release.yml
     with:
-      version: ${{ needs.calculate-version.outputs.version }}
+      version: ${{ needs.deploy.outputs.version }}
       tag-name: ${{ github.tag_name }}

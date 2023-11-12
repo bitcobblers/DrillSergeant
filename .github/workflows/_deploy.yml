@@ -2,21 +2,24 @@
 
 on:
   workflow_call:
-    inputs:
+    outputs:
+      version:
+        description: "The version for the assembly"
+        value: ${{ jobs.package-and-deploy.outputs.version }}
       package-version:
-        description: "The version for nuget packaging"
-        required: true
-        type: string
+        description: "The version for the package"
+        value: ${{ jobs.package-and-deploy.outputs.package-version }}
 
 env:
   DOTNET_NOLOGO: true
-  NUGET_SOURCE: https://api.nuget.org/v3/index.json
-  logger: GitHubActions;report-warnings=false
   packages-directory: ${{ github.workspace }}/Artifacts/Packages
 
 jobs:
-  build-packages:
+  package-and-deploy:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calculate-version.outputs.VERSION }}
+      package-version: ${{ steps.calculate-version.outputs.PACKAGE_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,14 +41,53 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Run Tests
+        env:
+          logger: GitHubActions;report-warnings=false
         run: dotnet test --no-restore --no-build --configuration Release --logger:"${{ env.logger }}"
 
+      - name: Calculate Package Version
+        id: calculate-version
+        shell: pwsh
+        run: |
+          function saveOutput($name, $value) {
+            echo "Saving output: $name=$value"
+            echo "$name=$value" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8NoBom -Append
+          }
+          
+          $packageVersion = if ($env:GitVersion_TagName) {
+            $env:GitVersion_MajorMinorPatch + '-' + $env:GitVersion_TagName
+          } else {
+            $env:GitVersion_SemVer
+          }
+          
+          saveOutput 'VERSION' $env:GitVersion_MajorMinorPatch
+          saveOutput 'PACKAGE_VERSION' $packageVersion
+
       - name: Create Packages
-        run: dotnet pack --no-restore --no-build --configuration Release --output ${{ env.packages-directory }} /property:Version=${{ inputs.package-version }}
+        shell: pwsh
+        run: |
+          $packArgs = @(
+            '--no-restore',
+            '--no-build',
+            '--configuration', 'Release',
+            '--output', '${{ env.packages-directory }}',
+            '--property:Version=' + '${{ steps.calculate-version.outputs.PACKAGE_VERSION }}'
+          )
+          
+          dotnet pack @packArgs
 
       - name: Push Packages
         shell: pwsh
+        env:
+          NUGET_SOURCE: https://api.nuget.org/v3/index.json
         run: |
           Get-ChildItem -Path ${{ env.packages-directory }} *.nupkg | ForEach-Object {
-            dotnet nuget push $_.FullName --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+            $pushArgs = @(
+              $_.FullName,
+              '--source', '${{ env.NUGET_SOURCE }}',
+              '--api-key', '${{ secrets.NUGET_API_KEY }}',
+              '--skip-duplicate'
+            )
+          
+            dotnet nuget push @pushArgs
           }
