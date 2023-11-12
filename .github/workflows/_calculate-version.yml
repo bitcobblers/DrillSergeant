@@ -7,8 +7,8 @@
           description: "The calculated version"
           value: ${{ jobs.calculate-version.outputs.version }}
         semver:
-            description: "The calculated version as a semver"
-            value: ${{ jobs.calculate-version.outputs.semver }}
+          description: "The calculated version as a semver"
+          value: ${{ jobs.calculate-version.outputs.semver }}
 
   jobs:
     calculate-version:
@@ -45,5 +45,11 @@
               echo "$name=$value" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8NoBom -Append
             }
             
+            $packageVersion = if ($env:GitVersion_TagName) {
+              $env:GitVersion_MajorMinorPatch + '-' + $env:GitVersion_TagName
+            } else {
+              $env:GitVersion_SemVer
+            }
+            
             saveOutput 'VERSION' $env:GitVersion_MajorMinorPatch
-            saveOutput 'SEMVER' $env:GitVersion_SemVer
+            saveOutput 'SEMVER' $packageVersion
