@@ -22,7 +22,7 @@ jobs:
             echo "$name=$value" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8NoBom -Append
           }
 
-          $isTag = '$${{ github.ref_type == 'tag' }}'
+          $isTag = $${{ github.ref_type == 'tag' }}
           $refName = '${{ github.ref_name }}'
           $pattern = [regex]'^\d+\.\d+\.\d+$'
 
