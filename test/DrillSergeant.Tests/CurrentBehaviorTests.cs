@@ -173,6 +173,143 @@ public class CurrentBehaviorTests
         }
     }
 
+    public class MapInputMethod : CurrentBehaviorTests
+    {
+        [Fact]
+        public void MappingToDefinedTypeReturnsMappedType()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1
+            };
+
+            CurrentBehavior.Set(new Behavior().SetInput(input));
+
+            // Act.
+            var result = CurrentBehavior.MapInput<StubInput>();
+
+            // Assert.
+            result.IntValue.ShouldBe(1);
+        }
+
+        [Fact]
+        public void MappingToDefinedRecordReturnsMappedType()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1,
+                ["StringValue"] = "expected"
+            };
+
+            CurrentBehavior.Set(new Behavior().SetInput(input));
+
+            // Act.
+            var result = CurrentBehavior.MapInput<StubRecord>();
+
+            // Assert.
+            result.ShouldNotBeNull();
+            result.IntValue.ShouldBe(1);
+            result.StringValue.ShouldBe("expected");
+        }
+
+        [Fact]
+        public void MappingToDefinedInlineRecordReturnsMappedType()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1,
+                ["StringValue"] = "expected"
+            };
+
+            CurrentBehavior.Set(new Behavior().SetInput(input));
+
+            // Act.
+            var result = CurrentBehavior.MapInput<StubRecordWithCtor>();
+
+            // Assert.
+            result.ShouldNotBeNull();
+            result.IntValue.ShouldBe(1);
+            result.StringValue.ShouldBe("expected");
+        }
+
+        [Fact]
+        public void MappingToReferenceReturnsEquivalentReference()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1,
+                ["StringValue"] = "expected"
+            };
+
+            CurrentBehavior.Set(new Behavior().SetInput(input));
+
+            // Act.
+            var result = CurrentBehavior.MapInput(new
+            {
+                IntValue = 0,
+                StringValue = string.Empty
+            });
+
+            // Assert.
+            result.ShouldNotBeNull();
+            result.IntValue.ShouldBe(1);
+            result.StringValue.ShouldBe("expected");
+        }
+
+        [Fact]
+        public void MappingToReferenceReturnsIgnoresMissingProperties()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1,
+                ["StringValue"] = "expected"
+            };
+
+            CurrentBehavior.Set(new Behavior().SetInput(input));
+
+            // Act.
+            var result = CurrentBehavior.MapInput(new
+            {
+                IntValue = 0,
+                StringValue = string.Empty,
+                UnknownValue = string.Empty
+            });
+
+            // Assert.
+            result.ShouldNotBeNull();
+            result.UnknownValue.ShouldBeNull();
+        }
+
+        [Fact]
+        public void MappingToReferenceReturnsIgnoresPropertiesWithDifferentTypes()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1,
+                ["StringValue"] = 1
+            };
+
+            CurrentBehavior.Set(new Behavior().SetInput(input));
+
+            // Act.
+            var result = CurrentBehavior.MapInput(new
+            {
+                IntValue = 0,
+                StringValue = string.Empty
+            });
+
+            // Assert.
+            result.ShouldNotBeNull();
+            result.StringValue.ShouldBeNull();
+        }
+    }
+
     public class CopyInputMethod : CurrentBehaviorTests
     {
         [Fact]
@@ -253,9 +390,26 @@ public class CurrentBehaviorTests
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local
+    private record StubRecordWithCtor(int IntValue, string? StringValue);
+
+    // ReSharper disable once ClassNeverInstantiated.Local
+    private record StubRecord()
+    {
+        public int IntValue { get; init; }
+        public string? StringValue { get; init; }
+    }
+
+    // ReSharper disable once ClassNeverInstantiated.Local
     private class StubContext
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        public string? StringValue { get; set; }
+    }
+
+    // ReSharper disable once ClassNeverInstantiated.Local
+    private class StubInput
+    {
+        public int IntValue { get; set; }
         public string? StringValue { get; set; }
     }
 }

@@ -89,6 +89,30 @@ public static class CurrentBehavior
     }
 
     /// <summary>
+    /// Maps the current behavior input to a strongly typed object.
+    /// </summary>
+    /// <param name="reference">An anonymous object describing the shape of the input to return.</param>
+    /// <typeparam name="T">The type of object to map to.</typeparam>
+    /// <returns>An object containing the input properties in the referenced object.</returns>
+    public static T MapInput<T>(T reference) where T : class
+    {
+        AssertBehavior();
+
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty;
+
+        var args =
+            from property in typeof(T).GetProperties(flags)
+            let input = Instance.Value!.CopiedInput
+            let hasProperty = input.ContainsKey(property.Name)
+            let hasMatchingType = hasProperty && input[property.Name]?.GetType() == property.PropertyType
+            select hasMatchingType ? input[property.Name] : null;
+
+        var result = Activator.CreateInstance(typeof(T), args.ToArray());
+
+        return (result as T)!;
+    }
+
+    /// <summary>
     /// Tells the current behavior to take ownership of a disposable object.
     /// </summary>
     /// <typeparam name="T">The type of object to take ownership of.</typeparam>
