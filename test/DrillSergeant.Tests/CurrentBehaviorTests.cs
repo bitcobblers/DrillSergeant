@@ -284,6 +284,30 @@ public class CurrentBehaviorTests
             result.ShouldNotBeNull();
             result.UnknownValue.ShouldBeNull();
         }
+
+        [Fact]
+        public void MappingToReferenceReturnsIgnoresPropertiesWithDifferentTypes()
+        {
+            // Arrange.
+            var input = new Dictionary<string, object?>
+            {
+                ["IntValue"] = 1,
+                ["StringValue"] = 1
+            };
+
+            CurrentBehavior.Set(new Behavior().SetInput(input));
+
+            // Act.
+            var result = CurrentBehavior.MapInput(new
+            {
+                IntValue = 0,
+                StringValue = string.Empty
+            });
+
+            // Assert.
+            result.ShouldNotBeNull();
+            result.StringValue.ShouldBeNull();
+        }
     }
 
     public class CopyInputMethod : CurrentBehaviorTests

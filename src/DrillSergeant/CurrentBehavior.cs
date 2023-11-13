@@ -1,7 +1,6 @@
 ﻿using System.Dynamic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using static DrillSergeant.ParameterCaster;
 
 namespace DrillSergeant;
@@ -105,7 +104,8 @@ public static class CurrentBehavior
             from property in typeof(T).GetProperties(flags)
             let input = Instance.Value!.CopiedInput
             let hasProperty = input.ContainsKey(property.Name)
-            select hasProperty ? input[property.Name] : null;
+            let hasMatchingType = hasProperty && input[property.Name].GetType() == property.PropertyType
+            select hasMatchingType ? input[property.Name] : null;
 
         var result = Activator.CreateInstance(typeof(T), args.ToArray());
 
