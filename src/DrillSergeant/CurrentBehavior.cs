@@ -102,7 +102,7 @@ public static class CurrentBehavior
 
         var args =
             from property in typeof(T).GetProperties(flags)
-            let input = Instance.Value!.CopiedInput
+            let input = Instance.Value!.CopiedInput!
             let hasProperty = input.ContainsKey(property.Name)
             let hasMatchingType = hasProperty && input[property.Name].GetType() == property.PropertyType
             select hasMatchingType ? input[property.Name] : null;
