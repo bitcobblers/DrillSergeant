@@ -6,7 +6,6 @@
   </ItemGroup>
   
   <ItemGroup Label="Dependencies">
-    <PackageReference Include="DotNet.ReproducibleBuilds" />
     <PackageReference Include="xunit.extensibility.execution" />
   </ItemGroup>
   
