@@ -1,5 +1,4 @@
 ﻿using static DrillSergeant.GWT;
-using Shouldly;
 
 #if NUNIT
 using AutoFixture.NUnit3;

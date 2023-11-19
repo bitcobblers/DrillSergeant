@@ -1,5 +1,4 @@
-﻿using Shouldly;
-using static DrillSergeant.GWT;
+﻿using static DrillSergeant.GWT;
 
 namespace DrillSergeant.Tests.Features;
 
@@ -119,18 +118,18 @@ public class BaseStepFeature
             .Handle(() => throw new Exception("I SHOULD NOT HAVE EXECUTED"))
             .Skip();
 
-    public Behavior SetupContext =>
+    private Behavior SetupContext =>
         BehaviorBuilder.Build(_ =>
         {
             Given("Background Step 1", () => CurrentBehavior.Context.A = 1);
             And("Background Step 2", () => CurrentBehavior.Context.B = 2);
         });
 
-    public Behavior SetupContextFromInput =>
+    private Behavior SetupContextFromInput =>
         BehaviorBuilder.Build(_ =>
             Given("Setup Context", () => CurrentBehavior.Context.Value = CurrentBehavior.Input.Value));
 
-    public Behavior SetupContextFromInputAsync =>
+    private Behavior SetupContextFromInputAsync =>
         BehaviorBuilder.Build(_ =>
             GivenAsync("Setup Context", () =>
             {

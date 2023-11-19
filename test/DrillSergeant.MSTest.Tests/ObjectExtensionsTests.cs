@@ -1,5 +1,4 @@
-﻿using Shouldly;
-// ReSharper disable UnusedAutoPropertyAccessor.Local
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace DrillSergeant.MSTest.Tests;
 
@@ -10,19 +9,6 @@ public class ObjectExtensionsTests
 
     [ClassInitialize]
     public static void Init(TestContext context) => MyContext = context;
-
-    //[Behavior]
-    //public void MyBehavior()
-    //{
-    //    Console.Out.WriteLine("OUT LINE");
-    //    MyContext?.WriteLine("FOO");
-    //    Console.Error.WriteLine("ERR LINE");
-    //    Trace.WriteLine("TRACE LINE");
-    //    Trace.WriteLine("TRACE LINE2");
-    //    Debug.WriteLine("DEBUG LINE");
-    //    Debug.WriteLine("DEBUG LINE2");
-    //}
-
 
     [TestClass]
     public class GetPrivatePropertyMethod : ObjectExtensionsTests

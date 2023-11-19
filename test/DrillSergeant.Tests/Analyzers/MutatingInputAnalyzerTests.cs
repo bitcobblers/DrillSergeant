@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using Analyzer =
+﻿using Analyzer =
     Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
         DrillSergeant.Analyzers.Rules.MutatingInputAnalyzer>;
 

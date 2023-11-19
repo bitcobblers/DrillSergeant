@@ -36,7 +36,7 @@ public class BehaviorMissingStepsAnalyzer : DiagnosticAnalyzer
 
     private void AnalyzeBlock(CodeBlockAnalysisContext context)
     {
-        if (context.CodeBlock is not MethodDeclarationSyntax method)
+        if (context.CodeBlock is not MethodDeclarationSyntax _)
         {
         }
     }

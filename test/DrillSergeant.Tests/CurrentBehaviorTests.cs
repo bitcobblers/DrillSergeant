@@ -393,7 +393,7 @@ public class CurrentBehaviorTests
     private record StubRecordWithCtor(int IntValue, string? StringValue);
 
     // ReSharper disable once ClassNeverInstantiated.Local
-    private record StubRecord()
+    private record StubRecord
     {
         public int IntValue { get; init; }
         public string? StringValue { get; init; }

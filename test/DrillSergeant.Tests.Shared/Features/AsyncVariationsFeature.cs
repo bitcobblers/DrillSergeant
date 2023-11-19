@@ -1,5 +1,4 @@
-﻿using Shouldly;
-using static DrillSergeant.GWT;
+﻿using static DrillSergeant.GWT;
 
 namespace DrillSergeant.Tests.Features;
 
@@ -53,7 +52,7 @@ public class AsyncVariationsFeature
         Then("Check result", () => ((bool)CurrentBehavior.Context.IsSuccess).ShouldBeTrue());
     }
 
-    public LambdaStep DelayAndSet(int milliseconds) =>
+    private LambdaStep DelayAndSet(int milliseconds) =>
         new LambdaStep()
             .SetName($"Adding delay of {milliseconds:N0}ms")
             .HandleAsync(async () =>
