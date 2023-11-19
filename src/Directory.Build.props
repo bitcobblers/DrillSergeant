@@ -45,6 +45,7 @@
         <None Include="$(SolutionDir)README.md" Visible="true" Pack="true" Link="README.md" PackagePath="/"  />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="DotNet.ReproducibleBuilds" />
         <PackageReference Include="GitVersion.MsBuild" />
     </ItemGroup>
 
