@@ -15,7 +15,8 @@ env:
   packages-directory: ${{ github.workspace }}/Artifacts/Packages
 
 jobs:
-  package-and-deploy:
+  nuget:
+    if: github.tag_name != '' || github.ref_name == 'dev'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.calculate-version.outputs.VERSION }}
@@ -86,3 +87,13 @@ jobs:
           
             dotnet nuget push @pushArgs
           }
+
+  pages:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
