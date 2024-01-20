@@ -20,8 +20,6 @@ jobs:
     secrets: inherit
 
   docfx:
-    if: github.tag_name != '' || github.ref_name == 'dev'
-    needs: [ test, codeql ]
     uses: ./.github/workflows/_docfx.yml
     secrets: inherit
 
