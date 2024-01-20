@@ -10,24 +10,24 @@ jobs:
     secrets: inherit
 
   codeql:
-    if: github.ref_type == 'tag' || github.ref_name == 'dev' || github.ref_name == 'main'
+    if: github.ref_type == 'tag' || github.ref_name == 'main'
     uses: ./.github/workflows/_codeql.yml
 
   deploy:
-    if: github.tag_name != '' || github.ref_name == 'dev'
+    if: github.ref_type == 'tag' || github.ref_name == 'main'
     needs: [test, codeql, docfx]
     uses: ./.github/workflows/_deploy.yml
     secrets: inherit
 
   docfx:
-    if: github.tag_name != '' || github.ref_name == 'dev'
+    if: github.ref_type == 'tag' || github.ref_name == 'main'
     uses: ./.github/workflows/_docfx.yml
     secrets: inherit
 
   create-release:
-    if: github.tag_name != '' && github.ref_name == 'main'
+    if: github.ref_type == 'tag' || github.ref_name == 'main'
     needs: [deploy]
     uses: ./.github/workflows/_create-release.yml
     with:
       version: ${{ needs.deploy.outputs.version }}
-      tag-name: ${{ github.tag_name }}
+      tag-name: ${{ github.tag_name || needs.deploy.outputs.version }}
