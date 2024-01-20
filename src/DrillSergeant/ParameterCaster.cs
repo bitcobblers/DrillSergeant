@@ -74,7 +74,7 @@ internal static class ParameterCaster
         var ctorParameters = ctor.GetParameters();
         var properties = type.GetProperties(flags);
 
-        return properties.Where(p => ctorParameters.Any(x => x.Name == p.Name) == false).ToArray();
+        return properties.Where(p => ctorParameters.Any(x => x.Name == p.Name) == false);
     }
 
     [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
