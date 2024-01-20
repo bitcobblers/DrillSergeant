@@ -14,8 +14,8 @@ jobs:
     uses: ./.github/workflows/_codeql.yml
 
   deploy:
-    if: github.tag_name != '' || github.ref_name == 'dev'
-    needs: [ test, codeql ]
+    # if: github.tag_name != '' || github.ref_name == 'dev'
+    needs: [ test, codeql, docfx ]
     uses: ./.github/workflows/_deploy.yml
     secrets: inherit
 
