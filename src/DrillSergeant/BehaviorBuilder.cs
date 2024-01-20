@@ -13,7 +13,7 @@ public static class BehaviorBuilder
         {
             var stack = GetCurrentStack();
 
-            if (stack.Any())
+            if (stack.Count > 0)
             {
                 return stack.Peek();
             }

@@ -39,7 +39,7 @@ public class VerbStep : BaseStep
                              select g).ToArray();
 
 
-        if (allCandidates.Any() == false)
+        if (allCandidates.Length == 0)
         {
             throw new MissingVerbHandlerException(Verb);
         }
