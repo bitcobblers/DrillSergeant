@@ -16,7 +16,6 @@ env:
 
 jobs:
   nuget:
-    if: github.tag_name != '' || github.ref_name == 'dev'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.calculate-version.outputs.VERSION }}
