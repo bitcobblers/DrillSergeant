@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Verifier =
+﻿using Verifier =
     Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
         DrillSergeant.Analyzers.Rules.BehaviorMethodScopeAnalyzer>;
 

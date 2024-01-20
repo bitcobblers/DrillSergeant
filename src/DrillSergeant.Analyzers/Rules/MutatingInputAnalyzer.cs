@@ -30,10 +30,10 @@ public class MutatingInputAnalyzer : BehaviorMethodAnalyzer
             return;
         }
 
-        AnalyzeStatements(context, declaration, method);
+        AnalyzeStatements(context, declaration);
     }
 
-    private static void AnalyzeStatements(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax declaration, IMethodSymbol method)
+    private static void AnalyzeStatements(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax declaration)
     {
         var assignments = GetAssignments(declaration);
 

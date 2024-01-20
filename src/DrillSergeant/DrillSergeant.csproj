@@ -28,7 +28,6 @@
   
   <ItemGroup Label="Dependencies">
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="DotNet.ReproducibleBuilds" />
   </ItemGroup>
   
   <ItemGroup Label="Project References">

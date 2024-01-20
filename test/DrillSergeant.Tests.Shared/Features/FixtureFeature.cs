@@ -1,5 +1,4 @@
-﻿using Shouldly;
-using static DrillSergeant.GWT;
+﻿using static DrillSergeant.GWT;
 
 namespace DrillSergeant.Tests.Features;
 

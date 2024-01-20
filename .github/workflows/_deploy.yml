@@ -10,12 +10,21 @@ on:
         description: "The version for the package"
         value: ${{ jobs.package-and-deploy.outputs.package-version }}
 
+permissions:
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 env:
   DOTNET_NOLOGO: true
   packages-directory: ${{ github.workspace }}/Artifacts/Packages
 
 jobs:
-  package-and-deploy:
+  nuget:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.calculate-version.outputs.VERSION }}
@@ -80,8 +89,19 @@ jobs:
             $pushArgs = @(
               $_.FullName,
               '--source', '${{ env.NUGET_SOURCE }}',
-              '--api-key', '${{ secrets.NUGET_API_KEY }}'
+              '--api-key', '${{ secrets.NUGET_API_KEY }}',
+              '--skip-duplicate'
             )
           
             dotnet nuget push @pushArgs
           }
+
+  pages:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
