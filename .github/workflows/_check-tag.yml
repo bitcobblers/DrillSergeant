@@ -1,0 +1,35 @@
+name: check-tag
+
+on:
+  workflow_call:
+    outputs:
+      has-release-tag:
+        description: "True if the tag follows the release format."
+        value: ${{ jobs.check-tag.outputs.has-release-tag }}
+
+jobs:
+  check-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      has-release-tag: ${{ steps.check-for-release.outputs.HAS_RELEASE }}
+    steps:
+      - name: Check for release tag
+        id: check-for-release
+        shell: pwsh
+        run: |
+          function saveOutput($name, $value) {
+            echo "Saving output: $name=$value"
+            echo "$name=$value" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8NoBom -Append
+          }
+
+          $isTag = $${{ github.ref_type == 'tag' }}
+          $refName = '${{ github.ref_name }}'
+          $pattern = [regex]'^\d+\.\d+\.\d+$'
+
+          $isRelease = if($isTag -and ($refName -match $pattern)) {
+            'true'
+          } else {
+            'false'
+          }
+
+          saveOutput 'HAS_RELEASE' $isRelease
