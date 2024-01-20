@@ -19,6 +19,12 @@ jobs:
     uses: ./.github/workflows/_deploy.yml
     secrets: inherit
 
+  docfx:
+    if: github.tag_name != '' || github.ref_name == 'dev'
+    needs: [ test, codeql ]
+    uses: ./.github/workflows/_docfx.yml
+    secrets: inherit
+
   create-release:
     if: github.tag_name != '' && github.ref_name == 'main'
     needs: [deploy]
