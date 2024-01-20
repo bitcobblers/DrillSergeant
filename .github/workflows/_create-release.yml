@@ -26,6 +26,5 @@ jobs:
               target_commitish: "${{ github.sha }}",
               name: "${{ inputs.version }}",
               tag_name: "${{ inputs.tag-name }}",
-              generate_release_notes: true,
-              draft: false
+              generate_release_notes: true
             });
