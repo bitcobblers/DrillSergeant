@@ -355,7 +355,9 @@ Generated/
 # JetBrains Rider
 .idea
 
-# Nuke
-.nuke/temp
-
 launchSettings.json
+
+# DocFX
+_site
+docfx/api
+docfx/**/*.html
