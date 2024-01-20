@@ -14,13 +14,13 @@ jobs:
     uses: ./.github/workflows/_codeql.yml
 
   deploy:
-    # if: github.tag_name != '' || github.ref_name == 'dev'
-    needs: [ test, codeql, docfx ]
+    if: github.tag_name != '' || github.ref_name == 'dev'
+    needs: [test, codeql, docfx]
     uses: ./.github/workflows/_deploy.yml
     secrets: inherit
 
   docfx:
-    # if: github.tag_name != '' || github.ref_name == 'dev'
+    if: github.tag_name != '' || github.ref_name == 'dev'
     uses: ./.github/workflows/_docfx.yml
     secrets: inherit
 
