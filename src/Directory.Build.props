@@ -51,6 +51,6 @@
 
     <PropertyGroup Label="Warning Suppression">
         <NoWarn Condition=" '$(Configuration)' == 'Debug' ">1701;1702;RS2007;CS1591</NoWarn>
-        <NoWarn Condition=" '$(Configuration)' == 'Release' ">RS2007;CS1591</NoWarn>
+        <NoWarn Condition=" '$(Configuration)' == 'Release' ">RS2007;CS1591;NETSDK1187</NoWarn>
     </PropertyGroup>
 </Project>
