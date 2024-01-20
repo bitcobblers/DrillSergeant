@@ -1,9 +1,10 @@
 {
   "metadata": [
     {
+
       "src": [
         {
-          "src": "./src",
+          "src": "../src",
           "files": [
             "**/*.csproj"
           ]
@@ -17,9 +18,6 @@
       {
         "files": [
           "**/*.{md,yml}"
-        ],
-        "exclude": [
-          "_site/**"
         ]
       }
     ],
@@ -30,7 +28,7 @@
         ]
       }
     ],
-    "output": "_site",
+    "output": "../_site",
     "template": [
       "default",
       "modern"
