@@ -177,7 +177,7 @@ public class LambdaStep : BaseStep
     [PublicAPI]
     public LambdaStep Skip(Func<bool>? shouldSkip = null)
     {
-        _shouldSkip = shouldSkip ?? new Func<bool>(() => true);
+        _shouldSkip = shouldSkip ?? (() => true);
         return this;
     }
 
