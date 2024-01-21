@@ -6,6 +6,7 @@ on:
 
 jobs:
   calc-variables:
+    if: github.ref_type == 'tag' || github.ref_name == 'main'
     uses: ./.github/workflows/_calc-variables.yml
 
   test:
