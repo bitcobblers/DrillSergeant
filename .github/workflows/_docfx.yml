@@ -1,4 +1,4 @@
-﻿name: DocFX
+﻿name: docfx
 
 on:
   workflow_call:
