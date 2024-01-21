@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/GitTools/GitVersion/main/schemas/5.12/GitVersion.configuration.json": "file:///e%3A/projects/DrillSergeant/GitVersion.yml"
+    }
+}
