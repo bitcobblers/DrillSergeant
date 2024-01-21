@@ -1,4 +1,4 @@
-name: calculate-versions
+name: calculate-variables
 
 on:
   workflow_call:
