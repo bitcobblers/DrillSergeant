@@ -1,4 +1,4 @@
-name: deploy
+name: nuget
 
 on:
   workflow_call:
@@ -16,7 +16,7 @@ env:
   DOTNET_NOLOGO: true
 
 jobs:
-  nuget:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,5 +48,22 @@ jobs:
             '--output', '${{ inputs.packages-directory }}',
             ('--property:Version=' + '${{ inputs.package-version }}')
           )
-          
+
           dotnet pack @packArgs
+
+      - name: Push Packages
+        if: false
+        shell: pwsh
+        env:
+          NUGET_SOURCE: https://api.nuget.org/v3/index.json
+        run: |
+          Get-ChildItem -Path ${{ inputs.packages-directory }} *.nupkg | ForEach-Object {
+              $pushArgs = @(
+              $_.FullName,
+              '--source', '${{ env.NUGET_SOURCE }}',
+              '--api-key', '${{ secrets.NUGET_API_KEY }}',
+              '--skip-duplicate'
+              )
+
+              dotnet nuget push @pushArgs
+          }
