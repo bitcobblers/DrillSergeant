@@ -6,15 +6,15 @@ on:
 
 jobs:
   calc-variables:
-    if: github.ref_type == 'tag' || github.ref_name == 'main'
+    # if: github.ref_type == 'tag' || github.ref_name == 'main'
     uses: ./.github/workflows/_calc-variables.yml
 
   test:
     uses: ./.github/workflows/_test.yml
     secrets: inherit
-    
+
   codeql:
-    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
     uses: ./.github/workflows/_codeql.yml
 
   docfx:
@@ -24,7 +24,7 @@ jobs:
     secrets: inherit
 
   pack:
-    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
     needs: [calc-variables]
     uses: ./.github/workflows/_pack.yml
     secrets: inherit
@@ -33,7 +33,7 @@ jobs:
       packages-directory: ${{ needs.calc-variables.outputs.packages-directory }}
 
   push:
-    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
     needs: [calc-variables, codeql, pack]
     uses: ./.github/workflows/_push.yml
     secrets: inherit
@@ -41,7 +41,8 @@ jobs:
       packages-directory: ${{ needs.calc-variables.outputs.packages-directory }}
 
   create-release:
-    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    if: false
     needs: [calc-variables, push]
     uses: ./.github/workflows/_create-release.yml
     with:
