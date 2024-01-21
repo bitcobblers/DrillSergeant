@@ -38,12 +38,6 @@ jobs:
             6.0.x
             7.0.x
 
-      # - name: Restore Packages
-      #   run: dotnet restore
-
-      # - name: Build Solution
-      #   run: dotnet build --no-restore --configuration Release
-
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.10.2
         with:
