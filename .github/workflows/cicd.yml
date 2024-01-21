@@ -25,29 +25,12 @@ jobs:
 
   nuget:
     # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
-    needs: [calc-variables]
+    needs: [calc-variables, test, codeql]
     uses: ./.github/workflows/_nuget.yml
     secrets: inherit
     with:
       package-version: ${{ needs.calc-variables.outputs.package-version }}
       packages-directory: ${{ needs.calc-variables.outputs.packages-directory }}
-
-  # pack:
-  #   # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
-  #   needs: [calc-variables]
-  #   uses: ./.github/workflows/_pack.yml
-  #   secrets: inherit
-  #   with:
-  #     package-version: ${{ needs.calc-variables.outputs.package-version }}
-  #     packages-directory: ${{ needs.calc-variables.outputs.packages-directory }}
-
-  # push:
-  #   # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
-  #   needs: [calc-variables, codeql, pack]
-  #   uses: ./.github/workflows/_push.yml
-  #   secrets: inherit
-  #   with:
-  #     packages-directory: ${{ needs.calc-variables.outputs.packages-directory }}
 
   create-release:
     # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
