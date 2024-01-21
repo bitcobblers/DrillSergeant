@@ -5,10 +5,10 @@ on:
     outputs:
       version:
         description: "The version for the assembly"
-        value: ${{ jobs.package-and-deploy.outputs.version }}
+        value: ${{ jobs.nuget.outputs.version }}
       package-version:
         description: "The version for the package"
-        value: ${{ jobs.package-and-deploy.outputs.package-version }}
+        value: ${{ jobs.nuget.outputs.package-version }}
 
 permissions:
   actions: read
