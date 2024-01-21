@@ -26,7 +26,7 @@ jobs:
 
   pack:
     if: needs.calc-variables.outputs.should-deploy
-    needs: [test]
+    needs: [calc-variables, test]
     uses: ./.github/workflows/_pack.yml
     secrets: inherit
     with:
