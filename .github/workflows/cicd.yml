@@ -14,19 +14,18 @@ jobs:
     secrets: inherit
     
   codeql:
-    if: needs.calc-variables.outputs.should-deploy
-    needs: [calc-variables]
+    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
     uses: ./.github/workflows/_codeql.yml
 
   docfx:
-    if: needs.calc-variables.outputs.should-deploy
-    needs: [calc-variables, test]
+    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    needs: [test, codeql]
     uses: ./.github/workflows/_docfx.yml
     secrets: inherit
 
   pack:
-    if: needs.calc-variables.outputs.should-deploy
-    needs: [calc-variables, test]
+    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    needs: [calc-variables]
     uses: ./.github/workflows/_pack.yml
     secrets: inherit
     with:
@@ -34,16 +33,16 @@ jobs:
       packages-directory: ${{ needs.calc-variables.outputs.packages-directory }}
 
   push:
-    if: needs.calc-variables.outputs.should-deploy
-    needs: [pack, codeql]
+    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    needs: [calc-variables, codeql, pack]
     uses: ./.github/workflows/_push.yml
     secrets: inherit
     with:
       packages-directory: ${{ needs.calc-variables.outputs.packages-directory }}
 
   create-release:
-    if: needs.calc-variables.outputs.should-deploy
-    needs: [push]
+    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    needs: [calc-variables, push]
     uses: ./.github/workflows/_create-release.yml
     with:
       tag-name: ${{ github.tag_name || needs.calc-variables.outputs.version }}
