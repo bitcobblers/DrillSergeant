@@ -16,20 +16,19 @@ jobs:
   nuget:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Download Packages
+        uses: actions/download-artifact@v4
         with:
-          show-progress: false
-          fetch-depth: 0
+          name: packages
+          path: ${{ inputs.packages-directory }}
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: |
-            6.0.x
-            7.0.x
+      - name: List Packages
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path ${{ inputs.packages-directory }}
 
       - name: Push Packages
+        if: false
         shell: pwsh
         env:
           NUGET_SOURCE: https://api.nuget.org/v3/index.json
@@ -41,6 +40,6 @@ jobs:
               '--api-key', '${{ secrets.NUGET_API_KEY }}',
               '--skip-duplicate'
             )
-          
+
             dotnet nuget push @pushArgs
           }

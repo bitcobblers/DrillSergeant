@@ -1,4 +1,4 @@
-name: deploy
+name: pack
 
 on:
   workflow_call:
@@ -48,5 +48,12 @@ jobs:
             '--output', '${{ inputs.packages-directory }}',
             ('--property:Version=' + '${{ inputs.package-version }}')
           )
-          
+
           dotnet pack @packArgs
+
+      - name: Upload Packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: "packages"
+          path: ${{ inputs.packages-directory }}/*.nupkg
+          retention-days: 1
