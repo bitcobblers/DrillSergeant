@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace DrillSergeant;
 
 /// <summary>
 /// Defines an exception that is thrown when DrillSergeant is unable to determine which handler to execute.
 /// </summary>
-[ExcludeFromCodeCoverage]
+[Serializable, ExcludeFromCodeCoverage]
 public class AmbiguousVerbHandlerException : Exception
 {
     /// <summary>
@@ -15,6 +16,17 @@ public class AmbiguousVerbHandlerException : Exception
     public AmbiguousVerbHandlerException(string verb) : base($"Cannot pick an implementation for the verb ${verb}.  Two or more candidates have the same number of parameters.")
     {
         Verb = verb;
+    }
+
+    protected AmbiguousVerbHandlerException(SerializationInfo info, StreamingContext context)
+    {
+        Verb = info.GetString(nameof(Verb))!;
+    }
+
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        base.GetObjectData(info, context);
+        info.AddValue(nameof(Verb), Verb);
     }
 
     /// <summary>

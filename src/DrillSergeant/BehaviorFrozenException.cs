@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DrillSergeant;
 
-[ExcludeFromCodeCoverage]
+[ExcludeFromCodeCoverage, Serializable]
 public class BehaviorFrozenException : Exception
 {
     /// <summary>
@@ -14,6 +14,17 @@ public class BehaviorFrozenException : Exception
         : base($"Cannot modify a behavior once it has been frozen.  The method '{methodName}' was called.")
     {
         MethodName = methodName;
+    }
+
+    protected BehaviorFrozenException(SerializationInfo info, StreamingContext context)
+    {
+        MethodName = info.GetString(nameof(MethodName))!;
+    }
+
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        base.GetObjectData(info, context);
+        info.AddValue(nameof(MethodName), MethodName);
     }
 
     /// <summary>
