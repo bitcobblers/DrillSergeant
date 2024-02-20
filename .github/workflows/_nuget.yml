@@ -52,7 +52,6 @@ jobs:
           dotnet pack @packArgs
 
       - name: Push Packages
-        if: false
         shell: pwsh
         env:
           NUGET_SOURCE: https://api.nuget.org/v3/index.json
