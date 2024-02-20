@@ -1,47 +1,47 @@
-﻿  name: test
+﻿name: test
 
-  on:
-    workflow_call:
+on:
+  workflow_call:
 
-  env:
-    DOTNET_NOLOGO: true
-    logger: GitHubActions;report-warnings=false
-    results-directory: ${{ github.workspace }}/Artifacts/TestResults
-    collect: "XPlat Code Coverage"
+env:
+  DOTNET_NOLOGO: true
+  logger: GitHubActions;report-warnings=false
+  results-directory: ${{ github.workspace }}/Artifacts/TestResults
+  collect: "XPlat Code Coverage"
 
-  jobs:
-    build:
-      strategy:
-        fail-fast: true
-        matrix:
-          os: [ windows-latest, ubuntu-latest, macos-latest ]
-          config: [ Debug ]
-      runs-on: ${{ matrix.os }}
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
-          with:
-            show-progress: false
-            fetch-depth: 0
+jobs:
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        config: [Debug]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+          fetch-depth: 0
 
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v3
-          with:
-            dotnet-version: |
-              6.0.x
-              7.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
 
-        - name: Restore Packages
-          run: dotnet restore
+      - name: Restore Packages
+        run: dotnet restore
 
-        - name: Build Solution
-          run: dotnet build --no-restore --configuration ${{ matrix.config }}
+      - name: Build Solution
+        run: dotnet build --no-restore --configuration ${{ matrix.config }}
 
-        - name: Run Tests
-          run: dotnet test --no-restore --no-build --configuration ${{ matrix.config }} --collect:"${{ env.collect }}" --logger:"${{ env.logger }}" --results-directory:"${{ env.results-directory }}"
+      - name: Run Tests
+        run: dotnet test --no-restore --no-build --configuration ${{ matrix.config }} --collect:"${{ env.collect }}" --logger:"${{ env.logger }}" --results-directory:"${{ env.results-directory }}"
 
-        - name: Upload coverage reports to Codecov
-          if: ${{ matrix.os == 'ubuntu-latest' }}
-          uses: codecov/codecov-action@v3
-          env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage reports to Codecov
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
