@@ -13,7 +13,7 @@ jobs:
     secrets: inherit
 
   codeql:
-    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
+    # if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
     uses: ./.github/workflows/_codeql.yml
 
   docfx:
