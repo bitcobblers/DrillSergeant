@@ -31,11 +31,13 @@
     "output": "../_site",
     "template": [
       "default",
-      "modern"
+      "modern",
+      "template/material"
     ],
     "globalMetadata": {
       "_appName": "DrillSergeant",
       "_appTitle": "DrillSergeant",
+      "_appLogoPath": "images/logo.svg",
       "_enableSearch": true,
       "pdf": true
     }
