@@ -1,4 +1,23 @@
-- name: Introduction
-  href: introduction.md
-- name: Getting Started
-  href: getting-started.md
+items:
+  - name: Introduction
+    expanded: true
+    items:
+    - href: overview.md
+    - href: getting-started.md
+    - href: analyzer-support.md
+    - href: test-execution.md
+    - href: gherkin-comparison.md
+  - name: Topics
+    expanded: true
+    items:
+    - href: steps.md
+    - href: verbs.md
+    - href: step-results.md
+    - href: behavior-builder.md
+  - name: Advanced Topics
+    expanded: true
+    items:
+    - href: context-and-input.md
+    - href: fixtures.md
+    - href: executor.md
+    - href: extension-generator.md
