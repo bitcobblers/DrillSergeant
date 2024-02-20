@@ -3,7 +3,7 @@
 on:
   workflow_call:
   schedule:
-    - cron: '34 19 * * 2'
+    - cron: "34 19 * * 2"
 
 jobs:
   analyze:
@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: csharp
           config-file: .github/codeql-config.yml
@@ -40,4 +40,4 @@ jobs:
         run: dotnet build --configuration Debug
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
