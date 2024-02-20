@@ -6,7 +6,7 @@ namespace DrillSergeant;
 /// <summary>
 /// Defines an exception that is thrown when no DrillSergeant is unable to find a handler to execute.
 /// </summary>
-[Serializable, ExcludeFromCodeCoverage]
+[ExcludeFromCodeCoverage]
 public class MissingVerbHandlerException : Exception
 {
     /// <summary>
@@ -17,17 +17,6 @@ public class MissingVerbHandlerException : Exception
         : base($"Could not find any implementation for the verb ${verb}.")
     {
         Verb = verb;
-    }
-
-    protected MissingVerbHandlerException(SerializationInfo info, StreamingContext context)
-    {
-        Verb = info.GetString(nameof(Verb))!;
-    }
-
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        base.GetObjectData(info, context);
-        info.AddValue(nameof(Verb), Verb);
     }
 
     /// <summary>
