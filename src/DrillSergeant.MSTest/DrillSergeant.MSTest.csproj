@@ -5,8 +5,8 @@
   </ItemGroup>
   
   <ItemGroup Label="Dependencies">
-    <PackageReference Include="MSTest.TestAdapter" />
-    <PackageReference Include="MSTest.TestFramework" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
   </ItemGroup>
   
   <ItemGroup Label="Project References">

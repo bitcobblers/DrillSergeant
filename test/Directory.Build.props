@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup Condition="$(MSBuildProjectName.Contains('.Shared')) == 'false'">
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="FakeItEasy" />
-        <PackageReference Include="GitHubActionsTestLogger" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Shouldly" />
+        <PackageReference Include="coverlet.collector" Version="6.0.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+        <PackageReference Include="FakeItEasy" Version="8.0.0" />
+        <PackageReference Include="GitHubActionsTestLogger" Version="2.3.3" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageReference Include="Shouldly" Version="4.2.1" />
     </ItemGroup>
 
     <ItemGroup>
