@@ -27,7 +27,7 @@
   </ItemGroup>
   
   <ItemGroup Label="Dependencies">
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="[13.0.1,14.0.0)" />
   </ItemGroup>
   
   <ItemGroup Label="Project References">
