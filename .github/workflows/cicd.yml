@@ -1,6 +1,9 @@
 ﻿name: CICD
 on:
   push:
+    paths-ignore:
+      - "README.md"
+      - "docfx/**"
   pull_request:
   workflow_dispatch:
 
@@ -15,12 +18,6 @@ jobs:
   codeql:
     if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
     uses: ./.github/workflows/_codeql.yml
-
-  docfx:
-    if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
-    needs: [test, codeql]
-    uses: ./.github/workflows/_docfx.yml
-    secrets: inherit
 
   nuget:
     if: ${{ github.ref_type=='tag' || github.ref_name=='main' }}
