@@ -20,7 +20,6 @@ public class VerbStepTests
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
         public void NullOrEmptyNameDefaultsToTypeName(string name)

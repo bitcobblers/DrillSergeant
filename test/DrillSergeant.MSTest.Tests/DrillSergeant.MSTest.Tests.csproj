@@ -4,8 +4,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSTest.TestAdapter" />
-		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.3.1" />
+		<PackageReference Update="coverlet.collector" Version="6.0.2" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+		<PackageReference Update="FakeItEasy" Version="8.2.0" />
+		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 	</ItemGroup>
 
 	<ItemGroup>
