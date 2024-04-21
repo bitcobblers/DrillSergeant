@@ -9,7 +9,7 @@ public class LambdaStepTests
         [InlineData("")]
         [InlineData(" ")]
         [InlineData("\t")]
-        public void SettingBlankNameDoesNotChangeExistingValue(string blankValue)
+        public void SettingBlankNameDoesNotChangeExistingValue(string? blankValue)
         {
             // Arrange.
             var step = new LambdaStep("Test").SetName("expected");

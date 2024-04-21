@@ -34,7 +34,7 @@ internal class BehaviorCommand : TestCommand
 
         context.CurrentResult.SetResult(ResultState.Success);
 
-        using var behavior = await executor.LoadBehavior(obj, method, args);
+        using var behavior = await executor.LoadBehavior(obj!, method, args);
 
         try
         {

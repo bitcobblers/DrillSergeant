@@ -10,7 +10,7 @@ public class VerbDefinitionParserTests
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public void NullOrEmptyInputContentReturnsEmptyArray(string content)
+        public void NullOrEmptyInputContentReturnsEmptyArray(string? content)
         {
             // Act.
             var result = VerbDefinitionParser.FilterLines(content).ToArray();
