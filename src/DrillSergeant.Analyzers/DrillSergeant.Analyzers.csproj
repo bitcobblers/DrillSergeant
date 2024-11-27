@@ -7,6 +7,7 @@
         <GenerateDocumentationFile>false</GenerateDocumentationFile>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <IsPackable>true</IsPackable>
+        <LangVersion>11.0</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
