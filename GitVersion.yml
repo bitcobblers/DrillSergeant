@@ -5,9 +5,8 @@ patch-version-bump-message: "^(build|chore|ci|docs|fix|perf|refactor|revert|styl
 
 branches:
   release:
-    tag: rc
+    label: rc
   pull-request:
     mode: ContinuousDeployment
-    tag: pr
+    label: pr
     regex: ^((pull|pull\-requests|pr)[/-]|[/-](merge))
-    prevent-increment-of-merged-branch-version: false
