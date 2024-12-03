@@ -16,6 +16,7 @@ public static class StepBuilder
             verb,
             new LambdaStep()
                 .SetName(name)
+                .SetVerb(verb)
                 .Handle(handler));
     }
 
@@ -24,9 +25,10 @@ public static class StepBuilder
     {
         AddStep(
             verb,
-            new LambdaStep()
+            new AsyncLambdaStep()
                 .SetName(name)
-                .HandleAsync(handler));
+                .SetVerb(verb)
+                .Handle(handler));
     }
 
     // --- Methods with return value.
@@ -37,6 +39,7 @@ public static class StepBuilder
         var result = new StepResult<T>(name);
         var step = new LambdaStep<T>()
             .SetName(name)
+            .SetVerb(verb)
             .SetResult(result)
             .Handle(handler);
 
@@ -48,10 +51,11 @@ public static class StepBuilder
     public static AsyncStepResult<T> AddStepAsync<T>(string verb, string name, Func<Task<T>> handler)
     {
         var result = new AsyncStepResult<T>(name);
-        var step = new LambdaStep<T>()
+        var step = new AsyncLambdaStep<T>()
             .SetName(name)
-            .SetResultAsync(result)
-            .HandleAsync(handler);
+            .SetVerb(verb)
+            .SetResult(result)
+            .Handle(handler);
 
         AddStep(verb, step);
         return result;
@@ -80,11 +84,6 @@ public static class StepBuilder
     [PublicAPI]
     public static void AddStep(string verb, IStep step)
     {
-        if (step is LambdaStep lambda)
-        {
-            lambda.SetVerb(verb);
-        }
-
         BehaviorBuilder.Current.AddStep(step);
     }
 }

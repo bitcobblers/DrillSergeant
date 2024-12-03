@@ -131,9 +131,9 @@ public class CalculatorFeature
                 context.Result = calculator.Add(context.a, context.b);
             });
 
-    public LambdaStep AddNumbersAsync(Calculator calculator) =>
-        new LambdaStep("Add numbers")
-            .HandleAsync(() =>
+    public AsyncLambdaStep AddNumbersAsync(Calculator calculator) =>
+        new AsyncLambdaStep("Add numbers")
+            .Handle(() =>
             {
                 var context = CurrentBehavior.Context;
                 context.Result = calculator.Add(context.a, context.b);

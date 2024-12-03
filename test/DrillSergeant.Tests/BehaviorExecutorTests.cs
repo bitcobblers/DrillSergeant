@@ -281,20 +281,20 @@ public class BehaviorExecutorTests
                         new LambdaStep("Successful step")
                             .Handle(() => CurrentBehavior.Context.IsSuccess = true))
                     .AddStep(
-                        new LambdaStep("Delay 100ms (1)")
-                            .HandleAsync(() => Task.Delay(100)))
+                        new AsyncLambdaStep("Delay 100ms (1)")
+                            .Handle(() => Task.Delay(100)))
                     .AddStep(
-                        new LambdaStep("Delay 100ms (2)")
-                            .HandleAsync(() => Task.Delay(100)))
+                        new AsyncLambdaStep("Delay 100ms (2)")
+                            .Handle(() => Task.Delay(100)))
                     .AddStep(
-                        new LambdaStep("Delay 100ms (3)")
-                            .HandleAsync(() => Task.Delay(100)))
+                        new AsyncLambdaStep("Delay 100ms (3)")
+                            .Handle(() => Task.Delay(100)))
                     .AddStep(
-                        new LambdaStep("Delay 100ms (4)")
-                            .HandleAsync(() => Task.Delay(100)))
+                        new AsyncLambdaStep("Delay 100ms (4)")
+                            .Handle(() => Task.Delay(100)))
                     .AddStep(
-                        new LambdaStep("Delay 100ms (5)")
-                            .HandleAsync(() => Task.Delay(100)))
+                        new AsyncLambdaStep("Delay 100ms (5)")
+                            .Handle(() => Task.Delay(100)))
                     .AddStep(
                         new LambdaStep("Should not execute")
                             .Handle(() => CurrentBehavior.Context.IsSuccess = false));

@@ -1,38 +1,41 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace DrillSergeant;
 
 /// <summary>
 /// Defines a step that is defined as a method handler.
 /// </summary>
-public class LambdaStep : LambdaStepBuilder<LambdaStep>
+public class AsyncLambdaStep : LambdaStepBuilder<AsyncLambdaStep>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="LambdaStep"/> class.
+    /// Initializes a new instance of the <see cref="AsyncLambdaStep"/> class.
     /// </summary>
     // ReSharper disable once MemberCanBeProtected.Global
-    public LambdaStep()
+    public AsyncLambdaStep()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LambdaStep"/> class.
+    /// Initializes a new instance of the <see cref="AsyncLambdaStep"/> class.
     /// </summary>
     /// <param name="name">The name of the step.</param>
-    public LambdaStep(string? name)
+    public AsyncLambdaStep(string? name)
         : base(name)
     {
     }
 
     /// <summary>
-    /// Sets an asynchronous handler.
+    /// Sets the handler.
     /// </summary>
     /// <param name="handler">The handler to set.</param>
     /// <returns>The current step.</returns>
     [PublicAPI]
-    public LambdaStep Handle(Action handler)
+    public AsyncLambdaStep Handle(Func<Task> handler)
     {
-        Handler = handler;
+        Handler = async () =>
+        {
+            await handler();
+        };
 
         return this;
     }
@@ -42,22 +45,22 @@ public class LambdaStep : LambdaStepBuilder<LambdaStep>
 /// Defines a lambda step that returns a result when executed.
 /// </summary>
 /// <typeparam name="T">The return type for the step.</typeparam>
-public class LambdaStep<T> : LambdaStepBuilder<LambdaStep<T>>
+public class AsyncLambdaStep<T> : LambdaStepBuilder<AsyncLambdaStep<T>>
 {
-    private StepResult<T>? _result;
+    private AsyncStepResult<T>? _asyncResult;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LambdaStep{T}"/> class.
+    /// Initializes a new instance of the <see cref="AsyncLambdaStep{T}"/> class.
     /// </summary>
-    public LambdaStep()
+    public AsyncLambdaStep()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LambdaStep{T}"/> class.
+    /// Initializes a new instance of the <see cref="AsyncLambdaStep{T}"/> class.
     /// </summary>
     /// <param name="name">The name of the step.</param>
-    public LambdaStep(string? name)
+    public AsyncLambdaStep(string? name)
         : base(name)
     {
     }
@@ -65,27 +68,27 @@ public class LambdaStep<T> : LambdaStepBuilder<LambdaStep<T>>
     /// <summary>
     /// Caches the step result that will be set when the step is executed.
     /// </summary>
-    /// <param name="result">The result to cache.</param>
+    /// <param name="asyncResult">The result to cache.</param>
     /// <returns>The current step.</returns>
     [PublicAPI]
-    public LambdaStep<T> SetResult(StepResult<T> result)
+    public AsyncLambdaStep<T> SetResult(AsyncStepResult<T> asyncResult)
     {
-        _result = result;
+        _asyncResult = asyncResult;
         return this;
     }
 
     /// <summary>
-    /// Sets the handler.
+    /// Sets an asynchronous handler.
     /// </summary>
     /// <param name="handler">The handler to set.</param>
     /// <returns>The current step.</returns>
     [PublicAPI]
-    public LambdaStep<T> Handle(Func<T> handler)
+    public AsyncLambdaStep<T> Handle(Func<Task<T>> handler)
     {
-        Handler = () =>
+        Handler = async () =>
         {
-            var value = handler();
-            _result?.SetResult(() => value);
+            var value = await handler();
+            _asyncResult?.SetResult(() => Task.FromResult(value));
         };
 
         return this;

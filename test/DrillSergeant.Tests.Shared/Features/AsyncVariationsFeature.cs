@@ -52,10 +52,10 @@ public class AsyncVariationsFeature
         Then("Check result", () => ((bool)CurrentBehavior.Context.IsSuccess).ShouldBeTrue());
     }
 
-    private LambdaStep DelayAndSet(int milliseconds) =>
-        new LambdaStep()
+    private AsyncLambdaStep DelayAndSet(int milliseconds) =>
+        new AsyncLambdaStep()
             .SetName($"Adding delay of {milliseconds:N0}ms")
-            .HandleAsync(async () =>
+            .Handle(async () =>
             {
                 await Task.Delay(milliseconds);
                 CurrentBehavior.Context.IsSuccess = true;

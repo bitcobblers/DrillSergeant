@@ -17,6 +17,7 @@
     <PropertyGroup Condition=" $(IsRegular) ">
         <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" $(IsGenerator) or $(IsAnalyzer) ">
