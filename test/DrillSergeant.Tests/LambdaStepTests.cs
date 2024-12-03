@@ -1,24 +1,32 @@
-﻿namespace DrillSergeant.Tests;
+﻿using System.Collections;
+
+namespace DrillSergeant.Tests;
 
 public class LambdaStepTests
 {
     public class SetNameMethod : LambdaStepTests
     {
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("\t")]
-        public void SettingBlankNameDoesNotChangeExistingValue(string? blankValue)
+        public class LambdaStep : Facts<DrillSergeant.LambdaStep>;
+
+        public class Facts<TLambdaStep> : SetNameMethod
+            where TLambdaStep : LambdaStepBuilder<TLambdaStep>, new()
         {
-            // Arrange.
-            var step = new LambdaStep("Test").SetName("expected");
+            [Theory]
+            [InlineData(null)]
+            [InlineData("")]
+            [InlineData(" ")]
+            [InlineData("\t")]
+            public void SettingBlankNameDoesNotChangeExistingValue(string? blankValue)
+            {
+                // Arrange.
+                var step = new TLambdaStep().SetName("expected");
 
-            // Act.
-            step.SetName(blankValue);
+                // Act.
+                step.SetName(blankValue);
 
-            // Assert.
-            step.Name.ShouldBe("expected");
+                // Assert.
+                step.Name.ShouldBe("expected");
+            }
         }
     }
 
