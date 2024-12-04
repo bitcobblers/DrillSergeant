@@ -2,35 +2,31 @@
 
 namespace DrillSergeant.Tests;
 
-public class LambdaStepTests
+public class LambdaStepBuilderTests
 {
-    public class SetNameMethod : LambdaStepTests
+    public class StubLambdaStep : LambdaStepBuilder<StubLambdaStep>;
+
+    public class SetNameMethod : LambdaStepBuilderTests
     {
-        public class LambdaStep : Facts<DrillSergeant.LambdaStep>;
-
-        public class Facts<TLambdaStep> : SetNameMethod
-            where TLambdaStep : LambdaStepBuilder<TLambdaStep>, new()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("\t")]
+        public void SettingBlankNameDoesNotChangeExistingValue(string? blankValue)
         {
-            [Theory]
-            [InlineData(null)]
-            [InlineData("")]
-            [InlineData(" ")]
-            [InlineData("\t")]
-            public void SettingBlankNameDoesNotChangeExistingValue(string? blankValue)
-            {
-                // Arrange.
-                var step = new TLambdaStep().SetName("expected");
+            // Arrange.
+            var step = new StubLambdaStep().SetName("expected");
 
-                // Act.
-                step.SetName(blankValue);
+            // Act.
+            step.SetName(blankValue);
 
-                // Assert.
-                step.Name.ShouldBe("expected");
-            }
+            // Assert.
+            step.Name.ShouldBe("expected");
         }
     }
 
-    public class SetVerbMethod : LambdaStepTests
+    public class SetVerbMethod : LambdaStepBuilderTests
     {
         [Theory]
         [InlineData(null)]
@@ -40,7 +36,7 @@ public class LambdaStepTests
         public void SettingBlankVerbDoesNotChangeExistingValue(string? blankValue)
         {
             // Arrange.
-            var step = new LambdaStep().SetVerb("expected");
+            var step = new StubLambdaStep().SetVerb("expected");
 
             // Act.
             step.SetVerb(blankValue);
@@ -50,13 +46,13 @@ public class LambdaStepTests
         }
     }
 
-    public class SkipMethod : LambdaStepTests
+    public class SkipMethod : LambdaStepBuilderTests
     {
         [Fact]
         public void SkipDisabledByDefault()
         {
             // Arrange.
-            var step = new LambdaStep();
+            var step = new StubLambdaStep();
 
             // Act.
             var result = step.ShouldSkip;
@@ -69,7 +65,7 @@ public class LambdaStepTests
         public void NullPredicateEnablesSkip()
         {
             // Arrange.
-            var step = new LambdaStep();
+            var step = new StubLambdaStep();
 
             // Act.
             step.Skip();
@@ -83,7 +79,7 @@ public class LambdaStepTests
         public void NotNullPredicateEnablesSkip()
         {
             // Arrange.
-            var step = new LambdaStep();
+            var step = new StubLambdaStep();
 
             // Act.
             step.Skip(() => true);
